@@ -620,10 +620,8 @@ public class MainWindow extends JFrame implements ComponentListener,TreeSelectio
 			List<Resource> res = new ArrayList<>();
 			
 			int resCount = 0;
-			int namelength = 0;
-			int foundtag = 0;
 			
-			String curTag = "atlas";
+			String curTag = "<undefined>";
 			
 			int datatag = decodeFNum(Arrays.copyOfRange(data, 4, 8));
 			int pointer = 0x12;
@@ -638,29 +636,13 @@ public class MainWindow extends JFrame implements ComponentListener,TreeSelectio
 //			System.out.println(Integer.toHexString(datatag));
 			
 			while(pointer < datatag){				
-				if((foundtag == 0 && data[pointer] == (byte) 0x01) || 
-						foundtag == 1 || foundtag == 2 ||
-						((foundtag == 3 || foundtag == 4) && data[pointer] == (byte) 0x00)){
-					foundtag++;
-				}else if(foundtag == 1 || foundtag == 2){
-					foundtag++;
-				}else if(foundtag == 5){
-					curTag = new String(Arrays.copyOfRange(data, pointer - namelength - 3, pointer - 5));
-					logger.append("Found tag: " + curTag + "\n");
-					foundtag = 0;
-					namelength = 0;
-					pointer++;
-				}else{
-					foundtag = 0;
-				}
-				
-				if(!(data[pointer] == (byte) 0x00)){
-					namelength++;
-				}else if(foundtag == 0){
+
+				int namelen = data[pointer] & 0xFF;
+				String name = vm.getNameWithIndex(new String(Arrays.copyOfRange(data, pointer + 1, pointer + namelen + 1)));
+				pointer += namelen + 1;
+				if((data[pointer] & 0xFF) == 0){
 					int offset = decodeFNum(Arrays.copyOfRange(data, pointer + 1, pointer + 5));
 					int length = decodeFNum(Arrays.copyOfRange(data, pointer + 5, pointer + 9));
-					String name = vm.getNameWithIndex(new String(Arrays.copyOfRange(data, pointer - namelength, pointer)));
-
 					resCount++;
 					Resource current = new Resource(offset, datatag, length, name, data, curTag);
 					logger.append("#" + resCount + " [Pointer:" + Resource.decAndHex(pointer) + "]; Found: " + current + "\n");
@@ -668,11 +650,12 @@ public class MainWindow extends JFrame implements ComponentListener,TreeSelectio
 					vm.addResource(current);
 					resPakHeader.assignResourceLocation(pointer, name);
 					pointer += 0x0D;
-					namelength = 0;
+				}else if((data[pointer] & 0xFF) == 1){
+					curTag = name;
+					pointer += 5;
 				}
-				pointer++;
 			}
-			
+
 			resPakHeader.stopReadStructure();
 			
 			logger.append("DATA tag reached, sopping search for resources\n");

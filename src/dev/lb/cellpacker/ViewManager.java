@@ -37,6 +37,7 @@ public class ViewManager {
 
 	public String getNameWithIndex(String s){
 		int index = s.lastIndexOf('.');
+		if(index == -1) return s;
 		String main = s.substring(0, index);
 		String end = s.substring(index);
 		for(Resource r : rawRes){
