@@ -213,7 +213,7 @@ public class MainWindow extends JFrame implements ComponentListener,TreeSelectio
 		
 		//LAZYLOAD
 		lazy = new JCheckBox("Lazy load Resources",true);
-		lazy.setEnabled(false);
+		lazy.setVisible(false);
 		lazy.setToolTipText("<html>Load resource only when used.<br/>This option is diasbled as turning it off often<br/>leads to GC Overhead exceptions.</html>");
 		JButton lazyInfo = new JButton("Info");
 		lazyInfo.setToolTipText("Show information about lazy loading");
@@ -394,7 +394,7 @@ public class MainWindow extends JFrame implements ComponentListener,TreeSelectio
 		
 		content.add(pathIn);
 		content.add(pathOut);
-		content.add(lazyCon);
+		//content.add(lazyCon);
 		content.add(barCon);
 		content.add(vCon);
 		content.add(sortCon);
