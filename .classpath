@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="D:/Lars/Prgm/WorkspaceEclipse/CodecJOrbis/CodecJOrbis.jar"/>
-	<classpathentry kind="lib" path="D:/Lars/Prgm/WorkspaceEclipse/JOrbisStandalone.jar"/>
+	<classpathentry kind="lib" path="lib/CodecJOrbis.jar"/>
+	<classpathentry kind="lib" path="lib/JOrbisStandalone.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
