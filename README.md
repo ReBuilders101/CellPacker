@@ -3,7 +3,7 @@ A modding utility for Dead Cells
 
 Version 0.8 of CellPacker: Information and license  
 Please read this file completely before using the program.
-
+  
 --------------------------------------------------------------------------------------------------------
 CellPacker is an application to view and modify the resources of the game
 Dead Cells.  
@@ -11,7 +11,7 @@ Dead Cells.
 	documentation. This program was designed to be used with the Brutal Update, but will most
 	likely also work on newer and older versions.  
 **NOTE:** CellPacker will need Java/a JRE to run.
-
+  
 --------------------------------------------------------------------------------------------------------
 ### Features:  
 1) View all images/textures of the game that are stored in the resource file
@@ -27,7 +27,7 @@ Dead Cells.
 	to any version of the resource file
 
 The file data.exported.cdb contains the game data and can be edited with the program 'CastleDB'.
-
+  
 --------------------------------------------------------------------------------------------------------
 ### How to use:  
 NOTE: Almost every element has a tooltip that describes what it does.
@@ -54,6 +54,10 @@ Exporting Patches:
 1) Hit 'Export patch file'. This will only work if there are modified resources.  
 2) Choose a name for the created patch file.  
 3) From the upcoming list, select all resources you want to inclue in your patch and hit 'Ok'.  
+  
+--------------------------------------------------------------------------------------------------------  
+### How to build:
+This repository contains a full eclipse project, you can just clone and import it. It will probably also work with any other IDE, but you will have to set the .jar files in the lib folder as dependencies. 
   
 --------------------------------------------------------------------------------------------------------
 ### License:  
