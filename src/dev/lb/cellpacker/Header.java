@@ -36,6 +36,7 @@ public class Header {
 		pointers.put(name, address);
 	}
 	
+	
 	public void startBuilding(int fileSize){
 		System.out.println("\nSize: " + fileSize/1000000 + "mb\n");
 		content = new byte[fileSize];
