@@ -35,6 +35,7 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 	private boolean pressing;
 	
 	public JAudioPlayer(){
+		super();
 		contentHolder = new JPanel();
 		contentHolder.setLayout(new FlowLayout());
 		

@@ -18,7 +18,15 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 	}
 	
 	public static Resource createFromExtension(String name, byte[] data){
-		return null;
+		switch(getExtension(name)){
+			case ".png": return new ImageResource(name, data);
+			case ".ogg": return new SoundResource(name, data);
+			case ".wav": return new SoundResource(name, data);
+			case ".atlas": return new JsonResource(name, data);
+			case ".json": return new JsonResource(name, data);
+			case ".fnt": return new XmlResource(name, data);
+			default: return new StaticResourceView(name, "Could not read resource").main;
+		}
 	}
 	
 	protected void setName(String newName){

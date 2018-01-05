@@ -35,10 +35,10 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 	@Override
 	public TreeNode createTree() {
 		DefaultMutableTreeNode root = 
-				new DefaultMutableTreeNode(SingleResourceView.getTextView("res.pak", "Resource file root node"));
+				new DefaultMutableTreeNode(new StaticResourceView("res.pak", "Resource file root node"));
 		for(Map.Entry<String, List<SingleResourceView>> cat : views.entrySet()){
 			DefaultMutableTreeNode catNode =
-					new DefaultMutableTreeNode(SingleResourceView.getTextView(cat.getKey(), "Category root node"));
+					new DefaultMutableTreeNode(new StaticResourceView(cat.getKey(), "Category root node"));
 			for(SingleResourceView rv : cat.getValue()){
 				if(rv.getName().contains(searchString))
 					catNode.add(new DefaultMutableTreeNode(rv));

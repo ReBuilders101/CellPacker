@@ -15,6 +15,7 @@ public class JImageViewer extends JScrollPane{
 	private JInnerComponent image;
 
 	public JImageViewer(Image image) {
+		super();
 		this.image = new JInnerComponent(image);
 		this.add(this.image);
 	}

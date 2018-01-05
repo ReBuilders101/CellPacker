@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 
 import dev.lb.cellpacker.Logger;
 import dev.lb.cellpacker.annotation.Calculated;
+import dev.lb.cellpacker.controls.JImageViewer;
 
 public class ImageResource extends Resource{
 
@@ -59,9 +60,7 @@ public class ImageResource extends Resource{
 
 	@Override
 	public Component getComponent() {
-		JLabel display = new JLabel();
-		display.setIcon(getIcon());
-		return display;
+		return new JImageViewer(content);
 	}
 
 	@Override

@@ -11,11 +11,11 @@ import dev.lb.cellpacker.controls.ControlUtils;
 
 public class SingleResourceView {
 	
-	private Resource main;
-	private Resource mainOriginal;
-	private JButton replace;
-	private JButton restore;
-	private JCheckBox showOriginal;
+	protected Resource main;
+	protected Resource mainOriginal;
+	protected JButton replace;
+	protected JButton restore;
+	protected JCheckBox showOriginal;
 	
 	private String name;
 	
@@ -24,6 +24,9 @@ public class SingleResourceView {
 		replace = ControlUtils.setWidth(new JButton("Replace resource"), 200);
 		restore = ControlUtils.setWidth(new JButton("Restore original resource"), 200);
 		showOriginal = ControlUtils.setWidth(new JCheckBox("Show original"), 200);
+		replace.addActionListener((e) -> {
+			
+		});
 	}
 	
 	protected SingleResourceView(String name, Resource res){
@@ -62,25 +65,6 @@ public class SingleResourceView {
 		
 		
 		return con;
-	}
-	
-	public static SingleResourceView getTextView(String name, String text){
-		return new SingleResourceView(name, new Resource() {
-			@Override
-			public void init() {}
-			@Override
-			public Object getContent() {
-				return text;
-			}
-			@Override
-			public Component getComponent() {
-				return new JTextField(text);
-			}
-			@Override
-			public Resource clone() {
-				return this; //$Dev: NEVER DO THIS! $me: but it works...it should never be called anyways...
-			}
-		});
 	}
 
 	public void buildResources() {
