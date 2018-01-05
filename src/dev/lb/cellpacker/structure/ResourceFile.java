@@ -15,6 +15,7 @@ import dev.lb.cellpacker.Logger;
 import dev.lb.cellpacker.annotation.Shortcut;
 import dev.lb.cellpacker.annotation.Unmodifiable;
 import dev.lb.cellpacker.structure.ResourceFile.Category;
+import dev.lb.cellpacker.structure.resource.Resource;
 
 public class ResourceFile implements Iterable<Category>,ByteData{
 	

@@ -1,4 +1,6 @@
-package dev.lb.cellpacker.structure;
+package dev.lb.cellpacker.structure.view;
+
+import dev.lb.cellpacker.structure.resource.Resource;
 
 public class FilteredImageResourceView extends SingleResourceView{
 

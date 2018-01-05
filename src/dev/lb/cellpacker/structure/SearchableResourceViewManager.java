@@ -7,6 +7,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import dev.lb.cellpacker.structure.view.SingleResourceView;
+import dev.lb.cellpacker.structure.view.StaticResourceView;
+
 public class SearchableResourceViewManager extends ResourceViewManager{
 
 	private String searchString;

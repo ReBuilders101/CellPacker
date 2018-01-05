@@ -1,4 +1,4 @@
-package dev.lb.cellpacker.structure;
+package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
 import javax.swing.BoxLayout;
@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import dev.lb.cellpacker.controls.ControlUtils;
+import dev.lb.cellpacker.structure.resource.Resource;
 
 public class SingleResourceView {
 	

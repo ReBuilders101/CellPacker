@@ -1,12 +1,14 @@
-package dev.lb.cellpacker.structure;
+package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
 
 import javax.swing.JLabel;
 
+import dev.lb.cellpacker.structure.resource.Resource;
+
 public class StaticResourceView extends SingleResourceView{
 
-	protected StaticResourceView(String name, String message) {
+	public StaticResourceView(String name, String message) {
 		super(name);
 		this.main = new Resource() {
 			

@@ -1,4 +1,4 @@
-package dev.lb.cellpacker.structure;
+package dev.lb.cellpacker.structure.resource;
 
 import java.awt.Component;
 import java.awt.image.BufferedImage;

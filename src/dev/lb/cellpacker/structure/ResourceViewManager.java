@@ -11,6 +11,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import dev.lb.cellpacker.structure.resource.Resource;
+import dev.lb.cellpacker.structure.view.SingleResourceView;
+
 public class ResourceViewManager {
 
 	protected Map<String,List<SingleResourceView>> views;

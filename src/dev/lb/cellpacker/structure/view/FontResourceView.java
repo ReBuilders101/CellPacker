@@ -1,4 +1,4 @@
-package dev.lb.cellpacker.structure;
+package dev.lb.cellpacker.structure.view;
 
 public class FontResourceView extends SingleResourceView {
 

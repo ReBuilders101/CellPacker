@@ -1,6 +1,9 @@
-package dev.lb.cellpacker.structure;
+package dev.lb.cellpacker.structure.resource;
 
 import java.awt.Component;
+
+import dev.lb.cellpacker.structure.ByteData;
+import dev.lb.cellpacker.structure.view.StaticResourceView;
 
 public abstract class Resource implements ByteData, Comparable<Resource>{
 	
@@ -25,7 +28,7 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 			case ".atlas": return new JsonResource(name, data);
 			case ".json": return new JsonResource(name, data);
 			case ".fnt": return new XmlResource(name, data);
-			default: return new StaticResourceView(name, "Could not read resource").main;
+			default: return new StaticResourceView(name, "Could not read resource").getSelectedResource();
 		}
 	}
 	
