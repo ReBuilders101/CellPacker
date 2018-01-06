@@ -79,6 +79,11 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 		this.add(contentHolder);
 	}
 	
+	public JAudioPlayer(Clip clip){
+		this();
+		this.setClip(clip);
+	}
+	
 	public void play(){
 		playpause.setText("Pause");
 		if(sound == null || playing)

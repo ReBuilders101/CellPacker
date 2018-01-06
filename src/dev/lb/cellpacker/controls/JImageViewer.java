@@ -24,19 +24,29 @@ public class JImageViewer extends JScrollPane{
 		this.image.image = image;
 		if(resetZoom)
 			this.image.zoomFactor = 1D;
+		this.image.repaint();
+	}
+	
+	public JImageViewer setOverlay(Image img){
+		this.image.overlay = img;
+		this.image.repaint();
+		return this;
 	}
 
 	public void setZoomFactor(double zoom){
 		this.image.zoomFactor = zoom;
+		this.image.repaint();
 	}
 
 	public void setBackground(Color color){
 		this.image.bgCol = color;
+		this.image.repaint();
 	}
 	
 	private class JInnerComponent extends JComponent implements MouseWheelListener{
 		private static final long serialVersionUID = -1242350202586655640L;
 		private Image image;
+		private Image overlay;
 		private double zoomFactor;
 		private Color bgCol;
 
@@ -67,6 +77,9 @@ public class JImageViewer extends JScrollPane{
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(image, 0, 0, getPreferredSize().width, getPreferredSize().height, bgCol, this);
+			if(overlay != null){
+				g.drawImage(overlay, 0, 0, getPreferredSize().width, getPreferredSize().height, bgCol, this);
+			}
 		}
 
 	}

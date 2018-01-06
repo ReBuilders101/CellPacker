@@ -1,12 +1,18 @@
 package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
-import javax.swing.BoxLayout;
+import java.awt.FlowLayout;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
+import dev.lb.cellpacker.CellPackerMain;
+import dev.lb.cellpacker.Logger;
 import dev.lb.cellpacker.controls.ControlUtils;
 import dev.lb.cellpacker.structure.resource.Resource;
 
@@ -14,9 +20,12 @@ public class SingleResourceView {
 	
 	protected Resource main;
 	protected Resource mainOriginal;
-	protected JButton replace;
-	protected JButton restore;
-	protected JCheckBox showOriginal;
+	protected final JButton replace;
+	protected final JButton restore;
+	protected final JCheckBox showOriginal;
+	
+	protected final JPanel controls;
+	protected final JPanel content;
 	
 	private String name;
 	
@@ -25,13 +34,48 @@ public class SingleResourceView {
 		replace = ControlUtils.setWidth(new JButton("Replace resource"), 200);
 		restore = ControlUtils.setWidth(new JButton("Restore original resource"), 200);
 		showOriginal = ControlUtils.setWidth(new JCheckBox("Show original"), 200);
-		replace.addActionListener((e) -> {
-			
+		showOriginal.setEnabled(false);
+		showOriginal.addChangeListener((e) -> {
+			updateUI();
 		});
+		replace.addActionListener((e) -> {
+			JFileChooser jfc =  new JFileChooser();
+			jfc.setCurrentDirectory(CellPackerMain.CHOOSE_ROOT_FILE);
+			jfc.setFileFilter(this.getSelectedResource().getFileFilter());
+			jfc.setMultiSelectionEnabled(false);
+			if(jfc.showOpenDialog(CellPackerMain.getMainFrame()) == JFileChooser.APPROVE_OPTION){
+				if(jfc.getSelectedFile().exists()){
+					CellPackerMain.CHOOSE_ROOT_FILE = jfc.getCurrentDirectory();
+					byte[] data = new byte[(int) jfc.getSelectedFile().length()];
+					try(InputStream in = new FileInputStream(jfc.getSelectedFile())){
+						in.read(data);
+					}catch(IOException ex){
+						Logger.throwFatal(ex);
+					}
+					this.replaceSelectedResource(Resource.createFromExtension(jfc.getSelectedFile().getName(), data));
+				}else{
+					JOptionPane.showMessageDialog(CellPackerMain.getMainFrame(), "The selected file could not be found", "File not found", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		restore.addActionListener((e) -> {
+			if(!CellPackerMain.ASK_RESOURCE_RESTORE || JOptionPane.showConfirmDialog(
+					CellPackerMain.getMainFrame(), 
+					"<html>Do you want to restore this resource to its original version?<br/>This staep can not be undone!</html>", "Restore resource",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+				this.restoreSelectedResource();
+			}
+		});
+		
+		controls = new JPanel(new FlowLayout());
+		content = new JPanel(new FlowLayout());
+		controls.add(replace);
+		controls.add(restore);
+		controls.add(showOriginal);
 	}
 	
 	protected SingleResourceView(String name, Resource res){
-		this.name = name;
+		this(name);
 		this.addResource(res);
 	}
 	
@@ -43,6 +87,9 @@ public class SingleResourceView {
 		main = r;
 	}
 	
+	/**
+	 * This method should never return original versions.
+	 */
 	public Resource getSelectedResource(){
 		return main;
 	}
@@ -52,23 +99,41 @@ public class SingleResourceView {
 			mainOriginal = main;
 		}
 		main = newRes;
+		showOriginal.setEnabled(true);
+		updateUI();
 	}
 	
 	public void restoreSelectedResource(){
 		main = mainOriginal;
 		mainOriginal = null;
+		showOriginal.setSelected(false);
+		showOriginal.setEnabled(false);
+		updateUI();
 	}
 	
-	public Component getComponent(){
-		JPanel con = new JPanel();
-		con.setLayout(new BoxLayout(con, BoxLayout.Y_AXIS));
-		
-		
-		
-		return con;
+	public final Component getControls(){
+		return controls;
+	}
+	
+	public final Component getDisplay(){
+		return content;
 	}
 
 	public void buildResources() {
 		main.init();
+	}
+	
+	public void updateUI(){
+		content.removeAll();
+		if(showOriginal.isSelected()){
+			if(mainOriginal != null){
+				content.add(mainOriginal.getComponent());
+			}else{
+				showOriginal.setSelected(false);
+				showOriginal.setEnabled(false);
+			}
+		}else if(!showOriginal.isSelected()){
+			content.add(main.getComponent());
+		}
 	}
 }

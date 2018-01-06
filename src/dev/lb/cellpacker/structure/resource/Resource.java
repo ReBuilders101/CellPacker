@@ -2,6 +2,8 @@ package dev.lb.cellpacker.structure.resource;
 
 import java.awt.Component;
 
+import javax.swing.filechooser.FileFilter;
+
 import dev.lb.cellpacker.structure.ByteData;
 import dev.lb.cellpacker.structure.view.StaticResourceView;
 
@@ -27,7 +29,7 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 			case ".wav": return new SoundResource(name, data);
 			case ".atlas": return new JsonResource(name, data);
 			case ".json": return new JsonResource(name, data);
-			case ".fnt": return new XmlResource(name, data);
+			case ".fnt": return new FontResource(name, data);
 			default: return new StaticResourceView(name, "Could not read resource").getSelectedResource();
 		}
 	}
@@ -51,6 +53,7 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 	public abstract Component getComponent();
 	public abstract Object getContent();
 	public abstract Resource clone();
+	public abstract FileFilter getFileFilter();
 	
 	public static String getExtension(String name){
 		return name.substring(0, name.lastIndexOf('.'));

@@ -1,12 +1,18 @@
 package dev.lb.cellpacker.structure.resource;
 
 import java.awt.Component;
+import java.awt.GridBagLayout;
 import java.io.IOException;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dev.lb.cellpacker.Logger;
+import dev.lb.cellpacker.controls.ControlUtils;
 import dev.lb.cellpacker.controls.JAudioPlayer;
 import dev.lb.sound.ogg.JOrbisDecoder;
 
@@ -55,14 +61,30 @@ public class SoundResource extends Resource{
 
 	@Override
 	public Component getComponent() {
-		JAudioPlayer display = new JAudioPlayer();
-		display.setClip(getSoundClip());
-		return display;
+		if(isInitialized){
+			return new JAudioPlayer(getSoundClip());
+		}else{
+			JPanel con = new JPanel(new GridBagLayout()); //Center
+			JProgressBar pro = ControlUtils.setWidth(new JProgressBar(), 300);
+			pro.setIndeterminate(true);
+			con.add(pro);
+			new Thread(() -> { //Load resorce without freezing
+				init();
+				con.removeAll();
+				con.add(new JAudioPlayer(getSoundClip()));
+			}).start();
+			return con;
+		}
 	}
 
 	@Override
 	public Resource clone() {
 		return new SoundResource(getName(), getSoundClip());
+	}
+
+	@Override
+	public FileFilter getFileFilter() {
+		return new FileNameExtensionFilter("OGG Sound", "*.ogg", ".ogg", "ogg");
 	}
 
 }
