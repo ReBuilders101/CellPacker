@@ -30,13 +30,6 @@ public class ImageResource extends Resource{
 		this.isInitialized = false;
 	}
 
-	public ImageResource(String name, BufferedImage image) {
-		this.isInitialized = true;
-		this.name = name;
-		this.data = new byte[]{(byte) 0x47, (byte) 0x45, (byte) 0x4E}; //GEN for generated
-		this.content = image;
-	}
-
 	@Override
 	public void init() {
 		if(isInitialized)
@@ -88,7 +81,7 @@ public class ImageResource extends Resource{
 
 	@Override
 	public Resource clone() {
-		return new ImageResource(getName(), getImage());
+		return new ImageResource(getName(), getData());
 	}
 
 	@Override

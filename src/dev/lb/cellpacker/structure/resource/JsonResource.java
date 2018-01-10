@@ -2,7 +2,10 @@ package dev.lb.cellpacker.structure.resource;
 
 import java.awt.Component;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -16,13 +19,6 @@ public class JsonResource extends Resource{
 		isInitialized = false;
 		this.data = data;
 		this.name = name;
-	}
-	
-	public JsonResource(String name, JsonElement jsonElement) {
-		this.isInitialized = true;
-		this.name = name;
-		this.data = new byte[]{(byte) 0x47, (byte) 0x45, (byte) 0x4E}; //GEN for generated
-		this.content = jsonElement;
 	}
 
 	@Override
@@ -47,12 +43,17 @@ public class JsonResource extends Resource{
 	public Component getComponent() {
 		JTextArea display = new JTextArea();
 		display.setText(new Gson().toJson(getJsonElement()));
-		return display;
+		return new JScrollPane(display);
 	}
 
 	@Override
 	public Resource clone() {
-		return new JsonResource(getName(), getJsonElement());
+		return new JsonResource(getName(), getData());
+	}
+
+	@Override
+	public FileFilter getFileFilter() {
+		return new FileNameExtensionFilter("JSON File", "*.json", ".json", "json");
 	}
 	
 }

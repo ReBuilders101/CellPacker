@@ -28,13 +28,6 @@ public class SoundResource extends Resource{
 			name = name.substring(0, name.length() - 4) + ".ogg";
 		this.name = name;
 	}
-	
-	public SoundResource(String name, Clip soundClip) {
-		this.isInitialized = true;
-		this.name = name;
-		this.data = new byte[]{(byte) 0x47, (byte) 0x45, (byte) 0x4E}; //GEN for generated
-		this.content = soundClip;
-	}
 
 	@Override
 	public void init() {
@@ -79,7 +72,7 @@ public class SoundResource extends Resource{
 
 	@Override
 	public Resource clone() {
-		return new SoundResource(getName(), getSoundClip());
+		return new SoundResource(getName(), getData());
 	}
 
 	@Override
