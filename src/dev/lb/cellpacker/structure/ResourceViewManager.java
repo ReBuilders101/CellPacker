@@ -11,8 +11,12 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import dev.lb.cellpacker.structure.resource.FontResource;
+import dev.lb.cellpacker.structure.resource.ImageResource;
 import dev.lb.cellpacker.structure.resource.Resource;
+import dev.lb.cellpacker.structure.view.FontResourceView;
 import dev.lb.cellpacker.structure.view.SingleResourceView;
+import dev.lb.cellpacker.structure.view.StaticResourceView;
 
 public class ResourceViewManager {
 
@@ -22,8 +26,16 @@ public class ResourceViewManager {
 		views = new HashMap<>();
 		for(ResourceFile.Category cat : res.getCategories()){
 			for(Resource r : cat.getResources()){
-				this.addResource(cat.getName(), r);
+				//Find the type of the resource
+				if(r.getName().endsWith(".ogg")){//Sound
+					this.addResourceView(cat.getName(), new SingleResourceView(r.getName(),r));
+				}else if(r.getName().endsWith(".fnt")){//Find the png
+					this.addResourceView(cat.getName(), new FontResourceView(
+							r.getName(),(ImageResource) cat.getByName(r.getMainName() + ".png"), 
+							(FontResource) r));
+				}
 			}
+			
 		}
 	}
 	
@@ -51,29 +63,12 @@ public class ResourceViewManager {
 		return getResourceView(getCategoryName(path), getViewName(path));
 	}
 	
-	//TODO
-	public void addResource(String category, Resource res){
-		if(views.get(category) == null){
-			List<SingleResourceView> c = new ArrayList<>();
-			c.add(new SingleResourceView(res.getMainName(), res));
-			views.put(category, c);
-			return;
-		}
-		for(SingleResourceView rv : views.get(category)){
-			if(rv.getName().equals(res.getMainName())){
-				rv.addResource(res);
-				return;
-			}
-		}
-		views.get(category).add(new SingleResourceView(res.getMainName(), res));
-	}
-	
 	public TreeNode createTree(){
 		DefaultMutableTreeNode root = 
-				new DefaultMutableTreeNode(SingleResourceView.getTextView("res.pak", "Resource file root node"));
+				new DefaultMutableTreeNode(new StaticResourceView("res.pak", "Resource file root node"));
 		for(Map.Entry<String, List<SingleResourceView>> cat : views.entrySet()){
 			DefaultMutableTreeNode catNode =
-					new DefaultMutableTreeNode(SingleResourceView.getTextView(cat.getKey(), "Category root node"));
+					new DefaultMutableTreeNode(new StaticResourceView(cat.getKey(), "Category root node"));
 			for(SingleResourceView rv : cat.getValue()){
 				catNode.add(new DefaultMutableTreeNode(rv));
 			}

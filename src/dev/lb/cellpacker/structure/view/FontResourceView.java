@@ -8,7 +8,7 @@ public class FontResourceView extends SingleResourceView {
 	public FontResource xmlres;
 	public ImageResource pngfile;
 	
-	protected FontResourceView(String name) {
+	public FontResourceView(String name, ImageResource png, FontResource fnt) {
 		super(name);
 	}
 

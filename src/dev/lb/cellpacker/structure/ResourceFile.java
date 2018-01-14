@@ -66,6 +66,14 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 			resources.add(res);
 		}
 		
+		public Resource getByName(String name){
+			for(Resource r : resources){
+				if(r.getName().equals(name))
+					return r;
+			}
+			return null;
+		}
+		
 		@Unmodifiable
 		public List<Resource> getResources(){
 			return Collections.unmodifiableList(resources);

@@ -74,7 +74,7 @@ public class SingleResourceView {
 		controls.add(showOriginal);
 	}
 	
-	protected SingleResourceView(String name, Resource res){
+	public SingleResourceView(String name, Resource res){
 		this(name);
 		this.addResource(res);
 	}
