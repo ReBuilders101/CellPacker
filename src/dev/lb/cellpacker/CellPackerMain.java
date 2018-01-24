@@ -1,11 +1,12 @@
 package dev.lb.cellpacker;
 
-import java.awt.Font;
 import java.io.File;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import dev.lb.cellpacker.controls.MainWindow;
 
 public class CellPackerMain {
 
@@ -22,8 +23,8 @@ public class CellPackerMain {
 			Logger.printWarning("CellPackerMain.main()", "Could not set L&F for this platform");
 		}
 		
-		mainFrame = //TODO show main frame
-		
+		mainFrame = new MainWindow();
+		mainFrame.setVisible(true);
 	}
 
 	public static JFrame getMainFrame(){

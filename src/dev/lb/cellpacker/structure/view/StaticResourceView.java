@@ -34,9 +34,24 @@ public class StaticResourceView extends SingleResourceView{
 
 			@Override
 			public FileFilter getFileFilter() {
-				return new FileNameExtensionFilter("<No File>", "");
+				return null;
 			}
 		};
+		
+		updateUI();
+	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
+
+	@Override
+	public void updateUI() {
+		controls.removeAll();
+		controls.add(new JLabel("This object is unmodifiable and has no options"));
+		content.removeAll();
+		content.add(main.getComponent());
 	}
 
 }

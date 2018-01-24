@@ -72,6 +72,7 @@ public class SingleResourceView {
 		controls.add(replace);
 		controls.add(restore);
 		controls.add(showOriginal);
+		
 	}
 	
 	public SingleResourceView(String name, Resource res){
@@ -135,5 +136,8 @@ public class SingleResourceView {
 		}else if(!showOriginal.isSelected()){
 			content.add(main.getComponent());
 		}
+		
+		showOriginal.setEnabled(mainOriginal != null);
+		restore.setEnabled(showOriginal.isEnabled());
 	}
 }
