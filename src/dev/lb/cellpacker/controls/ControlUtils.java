@@ -3,6 +3,7 @@ package dev.lb.cellpacker.controls;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.util.function.Supplier;
 
@@ -92,7 +93,7 @@ public final class ControlUtils {
 	}
 	
 	public static JPanel pack(Component...components){
-		JPanel container = new JPanel();
+		JPanel container = new JPanel(new FlowLayout());
 		for(Component c : components){
 			container.add(c);
 		}

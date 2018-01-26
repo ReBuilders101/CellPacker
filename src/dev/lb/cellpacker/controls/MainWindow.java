@@ -1,8 +1,11 @@
 package dev.lb.cellpacker.controls;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -31,14 +34,26 @@ public class MainWindow extends JFrame implements TreeSelectionListener{
 		tree =  new JTree(root);
 		tree.setSelectionPath(new TreePath(root));
 		tree.addTreeSelectionListener(this);
-		
+		this.setSize(new Dimension(600, 400));
 		controlSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		controlSplit.setTopComponent(tree);
 		
 		JPanel con = new JPanel();
 		con.setLayout(new BoxLayout(con, BoxLayout.Y_AXIS));
 		
+		JButton load = new JButton("Load resource file");
+		JButton save = new JButton("Save resource file");
+		JButton export = new JButton("Export all resources");
+		
+		con.add(ControlUtils.setWidth(load, 300));
+		con.add(ControlUtils.setWidth(save, 300));
+//		JPanel test = new JPanel();
+//		test.add(save);
+//		con.add(test);
+//		con.add(ControlUtils.pack(load, save));
+		con.add(ControlUtils.setWidth(export, 300));
 		con.add(controls);
+		con.add(Box.createVerticalGlue());
 		
 		controlSplit.setBottomComponent(con);
 		split.setRightComponent(controlSplit);

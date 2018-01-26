@@ -72,6 +72,7 @@ public class SingleResourceView {
 		controls.add(replace);
 		controls.add(restore);
 		controls.add(showOriginal);
+		ControlUtils.setHeight(controls, 150);
 		
 	}
 	
