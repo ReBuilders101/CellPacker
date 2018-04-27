@@ -61,6 +61,12 @@ public class AtlasImageResourceView extends SingleResourceView{
 		});
 	}
 
+	public AtlasImageResourceView(String name, ImageResource main, JsonResource atlas, ImageResource filter) {
+		this(name);
+		this.main = main;
+		this.atlas = atlas;
+		this.filter = filter;
+	}
 
 
 	@Override

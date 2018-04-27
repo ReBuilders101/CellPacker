@@ -8,7 +8,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class FontResource extends Resource{
 	
 	public FontResource(String name, byte[] data) {
-		// TODO Auto-generated constructor stub
+		this.name = name;
+		this.data = data;
 	}
 
 	@Override

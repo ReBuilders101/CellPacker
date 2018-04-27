@@ -141,4 +141,9 @@ public class SingleResourceView {
 		showOriginal.setEnabled(mainOriginal != null);
 		restore.setEnabled(showOriginal.isEnabled());
 	}
+	
+	@Override
+	public String toString(){
+		return this.getName();
+	}
 }

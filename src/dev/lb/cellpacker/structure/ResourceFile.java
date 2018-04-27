@@ -129,31 +129,34 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 		int datatag = decodeInt(Arrays.copyOfRange(bytes, 4, 8));
 		int pointer = 0x12;
 		//2. Read header
-		Category current;
+		Category current = null;
 		List<Category> all = new ArrayList<>();
-		pointer = 0;
 		
-		while(pointer < datatag){
-			//Read Category
-			int strlen = bytes[pointer] & 0xFF;
-			current = new Category(new String(Arrays.copyOfRange(bytes, pointer + 1, pointer + strlen + 1)));
-			pointer += strlen + 2;
-			int catlen = decodeInt(Arrays.copyOfRange(bytes, pointer, pointer + 4));
-			//Read by category header, maybe working (please work!)
-			for(int i = 0; i < catlen; i++){
-				//Read Resource
-				int namelen = bytes[pointer] & 0xFF;
-				String name = new String(new String(Arrays.copyOfRange(bytes, pointer + 1, pointer + namelen + 1)));
-				pointer += namelen + 2;
-				int offset = decodeInt(Arrays.copyOfRange(bytes, pointer    , pointer + 4 ));
-				int length = decodeInt(Arrays.copyOfRange(bytes, pointer + 4, pointer + 8 ));
-//				int magicn = decodeInt(Arrays.copyOfRange(bytes, pointer + 8, pointer + 12));
-				pointer += 12;
-				current.addResource(Resource.createFromExtension(name,
-						Arrays.copyOfRange(bytes, datatag + offset, datatag + offset + length)));
+		do{
+			//Read identifier
+			int stringLength = bytes[pointer] & 0xFF;
+			String name = new String(Arrays.copyOfRange(bytes, pointer + 1, pointer + stringLength + 1));
+			pointer += stringLength + 1;
+			//Category or Resource
+			if(bytes[pointer] == (byte) 0x00){//Resource
+				if(current == null) Logger.throwFatal(new Exception("The first item has to be a category"));
+				int offset = decodeInt(Arrays.copyOfRange(bytes, pointer + 1, pointer + 4));
+				int length = decodeInt(Arrays.copyOfRange(bytes, pointer + 5, pointer + 8));
+				Resource newRes = Resource.createFromExtension(name, Arrays.copyOfRange(bytes, datatag + offset, datatag + offset + length));
+				current.addResource(newRes);
+				pointer += 13;
+				System.out.println("Added " + name + " to " + current.getName());
+			}else{//new Category
+				if(current != null){
+					all.add(current);
+					System.out.println("Finished Category: " + current.getName() + "; Items: " + current.resources.size());
+				}
+				current =  new Category(name);
+				pointer += 5;
+				System.out.println("Category: " + name);
 			}
-			all.add(current);
-		}
+			//System.out.println(pointer + " | " + datatag);
+		}while(pointer + 5 < datatag);
 		
 		return new ResourceFile(all, bytes, datatag);
 		

@@ -34,7 +34,7 @@ public class SoundResource extends Resource{
 		if(isInitialized)
 			return;
 		try {
-			content = JOrbisDecoder.decodeOggSteramToClip(getDataAsStream());
+			content = JOrbisDecoder.decodeOggSteramToClip(getDataAsStream()); //Typo in method name, too lazy to change
 		} catch (LineUnavailableException | IOException e) {
 			Logger.throwFatal(e);
 		}
