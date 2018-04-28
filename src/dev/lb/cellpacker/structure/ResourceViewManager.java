@@ -13,18 +13,19 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import dev.lb.cellpacker.structure.resource.AtlasResource;
 import dev.lb.cellpacker.structure.resource.FontResource;
 import dev.lb.cellpacker.structure.resource.ImageResource;
-import dev.lb.cellpacker.structure.resource.JsonResource;
 import dev.lb.cellpacker.structure.resource.Resource;
 import dev.lb.cellpacker.structure.view.AtlasImageResourceView;
 import dev.lb.cellpacker.structure.view.FontResourceView;
+import dev.lb.cellpacker.structure.view.ResourceView;
 import dev.lb.cellpacker.structure.view.SingleResourceView;
 import dev.lb.cellpacker.structure.view.StaticResourceView;
 
 public class ResourceViewManager {
 
-	protected Map<String,List<SingleResourceView>> views;
+	protected Map<String,List<ResourceView>> views;
 	protected ResourceFile file;
 	
 	public ResourceViewManager(ResourceFile res){
@@ -54,13 +55,13 @@ public class ResourceViewManager {
 					}else{
 						if(n && a){
 							ImageResource nr = (ImageResource) getFirst(cat.getResources(), (s) -> s.getName().equals(r.getMainName() + "_n.png"));
-							JsonResource  ar = (JsonResource)  getFirst(cat.getResources(), (s) -> s.getName().equals(r.getMainName() + ".atlas"));
+							AtlasResource  ar = (AtlasResource)  getFirst(cat.getResources(), (s) -> s.getName().equals(r.getMainName() + ".atlas"));
 							this.addResourceView(cat.getName(), new AtlasImageResourceView(r.getName(), (ImageResource) r, ar, nr));
 						}else if(n){
 							ImageResource nr = (ImageResource) getFirst(cat.getResources(), (s) -> s.getName().equals(r.getMainName() + "_n.png"));
-							this.addResourceView(cat.getName(), new AtlasImageResourceView(r.getName(), (ImageResource) r, new JsonResource(r.getMainName() + ".atlas", "{\"text\":\"No Atlas\"}".getBytes()) , nr));
+							this.addResourceView(cat.getName(), new AtlasImageResourceView(r.getName(), (ImageResource) r, AtlasResource.createEmptyAtlas() , nr));
 						}else if(a){
-							JsonResource  ar = (JsonResource)  getFirst(cat.getResources(), (s) -> s.getName().equals(r.getMainName() + ".atlas"));
+							AtlasResource  ar = (AtlasResource)  getFirst(cat.getResources(), (s) -> s.getName().equals(r.getMainName() + ".atlas"));
 							this.addResourceView(cat.getName(), new AtlasImageResourceView(r.getName(), (ImageResource) r, ar,
 									StaticResourceView.defaultImage(r.getMainName() + ".atlas", "No Filter Found")));
 						}else{ //It's a single image
@@ -92,9 +93,9 @@ public class ResourceViewManager {
 		return null;
 	}
 	
-	public void addResourceView(String category, SingleResourceView res){
+	public void addResourceView(String category, ResourceView res){
 		if(views.get(category) == null){
-			List<SingleResourceView> c = new ArrayList<>();
+			List<ResourceView> c = new ArrayList<>();
 			c.add(res);
 			views.put(category, c);
 		}else{
@@ -102,9 +103,9 @@ public class ResourceViewManager {
 		}
 	}
 	
-	public SingleResourceView getResourceView(String category, String name){
+	public ResourceView getResourceView(String category, String name){
 		if(views.containsKey(category)){
-			for(SingleResourceView rv : views.get(category)){
+			for(ResourceView rv : views.get(category)){
 				if(rv.getName().equals(name))
 					return rv;
 			}
@@ -116,17 +117,17 @@ public class ResourceViewManager {
 		return file;
 	}
 	
-	public SingleResourceView getResourceView(TreePath path){
+	public ResourceView getResourceView(TreePath path){
 		return getResourceView(getCategoryName(path), getViewName(path));
 	}
 	
 	public TreeNode createTree(){
 		DefaultMutableTreeNode root = 
 				new DefaultMutableTreeNode(new StaticResourceView("res.pak", "Resource file root node"));
-		for(Map.Entry<String, List<SingleResourceView>> cat : views.entrySet()){
+		for(Map.Entry<String, List<ResourceView>> cat : views.entrySet()){
 			DefaultMutableTreeNode catNode =
 					new DefaultMutableTreeNode(new StaticResourceView(cat.getKey(), "Category root node"));
-			for(SingleResourceView rv : cat.getValue()){
+			for(ResourceView rv : cat.getValue()){
 				catNode.add(new DefaultMutableTreeNode(rv));
 			}
 			root.add(catNode);
@@ -135,9 +136,9 @@ public class ResourceViewManager {
 	}
 	
 	public void buildAll(){
-		for(Map.Entry<String, List<SingleResourceView>> cat : views.entrySet()){
-			for(SingleResourceView rv : cat.getValue()){
-				rv.buildResources(); //pls no gc overhead
+		for(Map.Entry<String, List<ResourceView>> cat : views.entrySet()){
+			for(ResourceView rv : cat.getValue()){
+				rv.init(); //pls no gc overhead
 			}
 		}
 	}

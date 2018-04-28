@@ -24,8 +24,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import dev.lb.cellpacker.CheckBoxDialog;
 import dev.lb.cellpacker.structure.ResourceFile;
 import dev.lb.cellpacker.structure.ResourceViewManager;
+import dev.lb.cellpacker.structure.view.ResourceView;
 import dev.lb.cellpacker.structure.view.SingleResourceView;
 import dev.lb.cellpacker.structure.view.StaticResourceView;
 
@@ -58,9 +60,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		controlSplit.setBottomComponent(con);
 		split.setRightComponent(controlSplit);
 		
-		split.setLeftComponent(((SingleResourceView) root.getUserObject()).getDisplay());
+		split.setLeftComponent(((ResourceView) root.getUserObject()).getDisplay());
 		controls.removeAll();
-		controls.add(((SingleResourceView) root.getUserObject()).getControls());
+		controls.add(((ResourceView) root.getUserObject()).getControls());
 		
 		
 		JMenuItem reuseable;
@@ -82,6 +84,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		//SAVE
 		reuseable = new JMenuItem("Save");
 		reuseable.setToolTipText("Save the currently opened resource file with all modifications. (To use in-game, simply replace the original res.pak with this one)");
+		reuseable.addActionListener((e) -> {
+			
+		});
 		file.add(reuseable);
 		file.addSeparator();
 		//IMPORT
@@ -113,11 +118,10 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		menu.add(file);
 		
 		JMenu edit = new JMenu("Edit");
-		edit.add(new JMenuItem("Replace this resource"));
-		edit.add(new JMenuItem("Restore this resource"));
-		edit.add(new JMenuItem("Restore all resources"));
+		edit.add(new JMenu("Resource Options"));
 		edit.addSeparator();
-		edit.add(new JMenuItem("Seach resource"));
+		edit.add(new JMenuItem("Restore all resources"));
+		edit.add(new JMenuItem("Seach for resource"));
 		menu.add(edit);
 		JMenu data = new JMenu("Game Data");
 		data.add(new JMenuItem("Open data.cdb"));

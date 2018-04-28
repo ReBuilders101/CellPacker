@@ -47,6 +47,10 @@ public class AtlasResource extends Resource implements TreeSelectionListener{
 		this.name = name;
 	}
 
+	public static AtlasResource createEmptyAtlas(){
+		return null;
+	}
+	
 	@Override
 	public void init() {
 		animations = new ArrayList<>();

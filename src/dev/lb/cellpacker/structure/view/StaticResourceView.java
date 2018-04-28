@@ -7,59 +7,71 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import dev.lb.cellpacker.Logger;
 import dev.lb.cellpacker.structure.resource.ImageResource;
 import dev.lb.cellpacker.structure.resource.Resource;
 
-public class StaticResourceView extends SingleResourceView{
+public class StaticResourceView extends ResourceView{
 
-	public StaticResourceView(String name, String message) {
-		super(name);
-		this.main = new Resource() {
+	private String name;
+	private Resource resource;
+	
+	private Component controls;
+	private Component display;
+	private JMenuItem[] menu;
+	
+	public StaticResourceView(String name, Resource resource){
+		this.name = name;
+		this.resource = resource;
+	}
+	
+	public StaticResourceView(String name, String text){
+		this.name = name;
+		this.resource = staticTextResource(name, text);
+	}
+	
+	public static Resource staticTextResource(String name2, String text){
+		return new Resource() {
+			
+			JLabel textA = new JLabel(text);
 			
 			{
-				this.name = StaticResourceView.this.getName();
+				this.name = name2;
+				this.data = text.getBytes();
+				this.isInitialized = true;
 			}
 			
 			@Override
 			public void init() {}
 			
 			@Override
+			public FileFilter getFileFilter() {
+				return new FileNameExtensionFilter("<No Files>", "");
+			}
+			
+			@Override
 			public Object getContent() {
-				return message;
+				return text;
 			}
 			
 			@Override
 			public Component getComponent() {
-				return new JLabel(message);
+				return textA;
 			}
 			
+			//I know this is bad
 			@Override
 			public Resource clone() {
 				return null;
 			}
-
-			@Override
-			public FileFilter getFileFilter() {
-				return null;
-			}
 		};
-		
-		updateUI();
-	}
-
-	@Override
-	public String toString() {
-		return getName();
-	}
-
-	@Override
-	public void updateUI() {
-		controls.removeAll();
-		controls.add(new JLabel("This object is unmodifiable and has no options"));
-		content.removeAll();
-		content.add(main.getComponent());
 	}
 	
 	public static ImageResource defaultImage(String name, String text){
@@ -75,4 +87,76 @@ public class StaticResourceView extends SingleResourceView{
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public Component getControls() {
+		init();
+		return controls;
+	}
+
+	@Override
+	public Component getDisplay() {
+		init();
+		return display;
+	}
+
+	@Override
+	public boolean setShowOriginals(boolean value) {
+		return false;
+	}
+
+	@Override
+	public void replaceCurrentResource(Component dialogParent) {
+		JOptionPane.showMessageDialog(dialogParent, "This resource can not be modified.", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	@Override
+	public void restoreCurrentResource(Component dialogParent) {
+		JOptionPane.showMessageDialog(dialogParent, "This resource can not be modified and can not be restored", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	@Override
+	public void restoreAllResources(Component dialogParent) {
+		//No message 
+	}
+
+	@Override
+	public JMenuItem[] getContextMenu() {
+		init();
+		return menu;
+	}
+
+	@Override
+	public void init() {
+		if(menu == null){
+			menu = new JMenuItem[1];
+			menu[0] = new JMenuItem("<No options available>");
+			menu[0].setToolTipText("This resource can not be modified and has no options");
+		}
+		if(display == null){
+			JTabbedPane tabs = new JTabbedPane();
+			tabs.add("Static", resource.getComponent());
+			display = tabs;
+			tabs.setComponentPopupMenu(ResourceView.createPopup(menu));
+		}
+		if(controls == null){
+			JPanel con = new JPanel();
+			con.add(new JLabel("This resource can not be modified and has no options"));
+			controls = con;
+		}
+	}
+
+	@Override
+	public void exportResource(Component dialogParent) {
+		JOptionPane.showMessageDialog(dialogParent, "This resource can not be modified and can not be written to a file", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	@Override
+	public void exportResourceView(Component dialogParent) {
+		JOptionPane.showMessageDialog(dialogParent, "This resource can not be modified and can not be written to a file", "Error", JOptionPane.ERROR_MESSAGE);
+	}
 }
