@@ -7,7 +7,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-import dev.lb.cellpacker.structure.view.SingleResourceView;
+import dev.lb.cellpacker.structure.view.ResourceView;
 import dev.lb.cellpacker.structure.view.StaticResourceView;
 
 public class SearchableResourceViewManager extends ResourceViewManager{
@@ -39,10 +39,10 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 	public TreeNode createTree() {
 		DefaultMutableTreeNode root = 
 				new DefaultMutableTreeNode(new StaticResourceView("res.pak", "Resource file root node"));
-		for(Map.Entry<String, List<SingleResourceView>> cat : views.entrySet()){
+		for(Map.Entry<String, List<ResourceView>> cat : views.entrySet()){
 			DefaultMutableTreeNode catNode =
 					new DefaultMutableTreeNode(new StaticResourceView(cat.getKey(), "Category root node"));
-			for(SingleResourceView rv : cat.getValue()){
+			for(ResourceView rv : cat.getValue()){
 				if(rv.getName().contains(searchString))
 					catNode.add(new DefaultMutableTreeNode(rv));
 			}
