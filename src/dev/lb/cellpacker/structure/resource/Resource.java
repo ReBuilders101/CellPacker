@@ -28,10 +28,26 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 			case ".png": return new ImageResource(name, data);
 			case ".ogg": return new SoundResource(name, data);
 			case ".wav": return new SoundResource(name, data);
-			case ".atlas": return new JsonResource(name, data);
+			case ".atlas": return new AtlasResource(name, data);
 			case ".json": return new JsonResource(name, data);
 			case ".fnt": return new FontResource(name, data);
 			default: return StaticResourceView.staticTextResource(name, "Could not read resource");
+		}
+	}
+	
+	public static Resource createFromType(String name, byte[] data, Class<? extends Resource> type){
+		if(type == ImageResource.class){
+			return new ImageResource(name, data);
+		}else if(type == SoundResource.class){
+			return new SoundResource(name, data);
+		}else if(type == AtlasResource.class){
+			return new AtlasResource(name, data);
+		}else if(type == FontResource.class){
+			return new FontResource(name, data);
+		}else if(type == JsonResource.class){
+			return new JsonResource(name, data);
+		}else{
+			return StaticResourceView.staticTextResource(name, "Ooops. Something went wrong while creating a resource: Resource:createFromType()");
 		}
 	}
 	

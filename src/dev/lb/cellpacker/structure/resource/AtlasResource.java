@@ -47,12 +47,15 @@ public class AtlasResource extends Resource implements TreeSelectionListener{
 		this.name = name;
 	}
 
-	public static AtlasResource createEmptyAtlas(){
-		return null;
+	public Component createSpriteView(ImageResource main, ImageResource filter){
+		JPanel con = new JPanel();
+		con.add(new JLabel("Feature not yet supported"));
+		return con;
 	}
 	
 	@Override
 	public void init() {
+		if(1 == 1) return;
 		animations = new ArrayList<>();
 		String[] lines = new String(data).split(System.getProperty("\r\n"));
 		this.imageName = lines[0];

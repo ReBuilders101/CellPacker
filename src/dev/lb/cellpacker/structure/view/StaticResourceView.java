@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -23,7 +22,6 @@ public class StaticResourceView extends ResourceView{
 	private String name;
 	private Resource resource;
 	
-	private Component controls;
 	private Component display;
 	private JMenuItem[] menu;
 	
@@ -93,12 +91,6 @@ public class StaticResourceView extends ResourceView{
 	}
 
 	@Override
-	public Component getControls() {
-		init();
-		return controls;
-	}
-
-	@Override
 	public Component getDisplay() {
 		init();
 		return display;
@@ -142,11 +134,6 @@ public class StaticResourceView extends ResourceView{
 			tabs.add("Static", resource.getComponent());
 			display = tabs;
 			tabs.setComponentPopupMenu(ResourceView.createPopup(menu));
-		}
-		if(controls == null){
-			JPanel con = new JPanel();
-			con.add(new JLabel("This resource can not be modified and has no options"));
-			controls = con;
 		}
 	}
 

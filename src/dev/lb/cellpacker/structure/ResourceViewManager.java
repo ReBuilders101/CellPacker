@@ -59,11 +59,10 @@ public class ResourceViewManager {
 							this.addResourceView(cat.getName(), new AtlasImageResourceView(r.getName(), (ImageResource) r, ar, nr));
 						}else if(n){
 							ImageResource nr = (ImageResource) getFirst(cat.getResources(), (s) -> s.getName().equals(r.getMainName() + "_n.png"));
-							this.addResourceView(cat.getName(), new AtlasImageResourceView(r.getName(), (ImageResource) r, AtlasResource.createEmptyAtlas() , nr));
+							this.addResourceView(cat.getName(), new AtlasImageResourceView(r.getName(), (ImageResource) r, null , nr));
 						}else if(a){
 							AtlasResource  ar = (AtlasResource)  getFirst(cat.getResources(), (s) -> s.getName().equals(r.getMainName() + ".atlas"));
-							this.addResourceView(cat.getName(), new AtlasImageResourceView(r.getName(), (ImageResource) r, ar,
-									StaticResourceView.defaultImage(r.getMainName() + ".atlas", "No Filter Found")));
+							this.addResourceView(cat.getName(), new AtlasImageResourceView(r.getName(), (ImageResource) r, ar, null));
 						}else{ //It's a single image
 							this.addResourceView(cat.getName(), new SingleResourceView(r.getName(), (ImageResource) r));
 						}

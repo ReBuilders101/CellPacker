@@ -41,4 +41,9 @@ public class FontResource extends Resource{
 		return new FileNameExtensionFilter("XML Font", "*.fnt", ".fnt", "fnt");
 	}
 
+	public Component getCharView(ImageResource image) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -32,10 +32,11 @@ public class ImageResource extends Resource{
 
 	@Override
 	public void init() {
-		if(isInitialized)
+		if(!isInitialized)
 			return;
 		try {
 			content = ImageIO.read(new ByteArrayInputStream(data));
+			overlay = new BufferedImage(content.getWidth(), content.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		} catch (IOException e) {
 			Logger.throwFatal(new IOException("Could not read image from byte stream: " + e.getMessage(), e));
 		}
@@ -64,7 +65,7 @@ public class ImageResource extends Resource{
 	@Override
 	public Component getComponent() {
 		if(isInitialized){
-			return new JImageViewer(getImage()).setOverlay(overlay);
+			return new JPanel();//JImageViewer(getImage()).setOverlay(overlay);
 		}else{
 			JPanel con = new JPanel(new GridBagLayout()); //Center
 			JProgressBar pro = ControlUtils.setWidth(new JProgressBar(), 300);

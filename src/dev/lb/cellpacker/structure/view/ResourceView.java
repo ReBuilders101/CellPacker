@@ -20,10 +20,6 @@ public abstract class ResourceView {
 	 */
 	public abstract String getName();
 	/**
-	 * Returns a component containing all options for this resource
-	 */
-	public abstract Component getControls();
-	/**
 	 * Returns a component that should be displayed in the main area when this view is selected
 	 */
 	public abstract Component getDisplay();
@@ -85,19 +81,22 @@ public abstract class ResourceView {
 		JFileChooser jfc = new JFileChooser();
 		jfc.setFileFilter(resource.getFileFilter());
 		if(jfc.showSaveDialog(dialogParent) == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
-			File file = jfc.getSelectedFile();
-			if(!file.exists() || JOptionPane.showConfirmDialog(dialogParent, "The file already exists. Are you sure you want to overwrite it?", "Overwrite file", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-				try {
-					if(!file.exists())
-						file.createNewFile();
-					try(FileOutputStream fos = new FileOutputStream(file)){
-						fos.write(resource.getData());
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(dialogParent, "An error occurred while writing: ", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
+			exportResourceToFile(dialogParent, resource, jfc.getSelectedFile());
+		}
+	}
+	
+	public static void exportResourceToFile(Component dialogParent, Resource resource, File file){
+		if(!file.exists() || JOptionPane.showConfirmDialog(dialogParent, "The file already exists. Are you sure you want to overwrite it?", "Overwrite file", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+			try {
+				if(!file.exists())
+					file.createNewFile();
+				try(FileOutputStream fos = new FileOutputStream(file)){
+					fos.write(resource.getData());
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(dialogParent, "An error occurred while writing: ", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
 		}
 	}
@@ -114,7 +113,7 @@ public abstract class ResourceView {
 				JOptionPane.showMessageDialog(dialogParent, "An error occurred while reading file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				return null;
 			}
-			return Resource.createFromExtension(oldResource.getName(), data);
+			return Resource.createFromType(oldResource.getName(), data, oldResource.getClass());
 		}
 		return null;
 	}

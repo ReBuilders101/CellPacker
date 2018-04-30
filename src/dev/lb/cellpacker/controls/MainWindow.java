@@ -1,12 +1,9 @@
 package dev.lb.cellpacker.controls;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -14,7 +11,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
@@ -24,45 +20,31 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import dev.lb.cellpacker.CheckBoxDialog;
 import dev.lb.cellpacker.structure.ResourceFile;
 import dev.lb.cellpacker.structure.ResourceViewManager;
 import dev.lb.cellpacker.structure.view.ResourceView;
-import dev.lb.cellpacker.structure.view.SingleResourceView;
 import dev.lb.cellpacker.structure.view.StaticResourceView;
 
 public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener{
 	private static final long serialVersionUID = 3681709759315746587L;
 	
 	private JSplitPane split;
-	private JSplitPane controlSplit;
 	private JTree tree;
-	private JPanel controls;
 	private ResourceViewManager view;
+	private JMenu resourceMenu;
 	
 	public MainWindow(){
 		super("Cellpacker alpha");
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		controls = ControlUtils.createGroupBox("Resource Options", new FlowLayout());
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new StaticResourceView("No Files", "No files loaded"));
 		tree =  new JTree(root);
 		tree.setSelectionPath(new TreePath(root));
 		tree.addTreeSelectionListener(this);
 		this.setSize(new Dimension(800, 600));
-		controlSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		controlSplit.setTopComponent(new JScrollPane(tree));
-		
-		JPanel con = new JPanel();
-		con.setLayout(new BoxLayout(con, BoxLayout.Y_AXIS));
-		con.add(controls);
-		con.add(Box.createVerticalGlue());
 
-		controlSplit.setBottomComponent(con);
-		split.setRightComponent(controlSplit);
+		split.setRightComponent(new JScrollPane(tree));
 		
 		split.setLeftComponent(((ResourceView) root.getUserObject()).getDisplay());
-		controls.removeAll();
-		controls.add(((ResourceView) root.getUserObject()).getControls());
 		
 		
 		JMenuItem reuseable;
@@ -71,6 +53,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		//OPEN
 		reuseable = new JMenuItem("Open");
 		reuseable.addActionListener((e) -> {
+			if(view != null){
+				if(JOptionPane.showConfirmDialog(this, "A resource file is already opened. Unsaved changes will be lost. Do you want to continue?", "Open Resource",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION){
+					return;
+				}
+			}
 			JFileChooser jfc =  new JFileChooser();
 			jfc.setFileFilter(new FileNameExtensionFilter("Dead Cells Resource File", "*.pak", "pak", ".pak"));
 			int result = jfc.showOpenDialog(this);
@@ -118,7 +106,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		menu.add(file);
 		
 		JMenu edit = new JMenu("Edit");
-		edit.add(new JMenu("Resource Options"));
+		resourceMenu = new JMenu("Resource Options");
+		resourceMenu.add("<No options available>");
+		edit.add(resourceMenu);
 		edit.addSeparator();
 		edit.add(new JMenuItem("Restore all resources"));
 		edit.add(new JMenuItem("Seach for resource"));
@@ -150,11 +140,17 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-		SingleResourceView rv = (SingleResourceView) (
+		ResourceView rv = (ResourceView) (
 				((DefaultMutableTreeNode) e.getPath().getLastPathComponent()).getUserObject());
-		split.setLeftComponent(rv.getDisplay());		
-		controls.removeAll();
-		controls.add(rv.getControls());
+		split.setLeftComponent(rv.getDisplay());
+		resourceMenu.removeAll();
+		for(JMenuItem menu : rv.getContextMenu()){
+			if(menu.getText().equals("$Sep$")){
+				resourceMenu.addSeparator();
+			}else{
+				resourceMenu.add(menu);
+			}
+		}
 	}
 
 	@Override
