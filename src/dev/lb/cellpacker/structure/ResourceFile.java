@@ -140,8 +140,9 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 			//Category or Resource
 			if(bytes[pointer] == (byte) 0x00){//Resource
 				if(current == null) Logger.throwFatal(new Exception("The first item has to be a category"));
-				int offset = decodeInt(Arrays.copyOfRange(bytes, pointer + 1, pointer + 4));
-				int length = decodeInt(Arrays.copyOfRange(bytes, pointer + 5, pointer + 8));
+				int offset = decodeInt(Arrays.copyOfRange(bytes, pointer + 1, pointer + 5));
+				int length = decodeInt(Arrays.copyOfRange(bytes, pointer + 5, pointer + 9));
+//				System.err.println(offset + " | " + length);
 				Resource newRes = Resource.createFromExtension(name, Arrays.copyOfRange(bytes, datatag + offset, datatag + offset + length));
 				current.addResource(newRes);
 				pointer += 13;
@@ -171,8 +172,8 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 	}
 	
 	public static int decodeInt(byte[] num){
-		if(num.length < 4)
-			return 0;
+		if(num.length != 4)
+			throw new NumberFormatException("Array size must be 4");
 		return ((num[0]) & 0xFF) + ((num[1] & 0xFF) << 8) +
 				((num[2] & 0xFF) << 16) + ((num[3] & 0xFF) << 24);
 	}
