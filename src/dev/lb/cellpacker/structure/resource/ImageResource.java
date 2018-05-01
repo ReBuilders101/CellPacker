@@ -30,7 +30,6 @@ public class ImageResource extends Resource{
 		this.isInitialized = false;
 	}
 
-	@Override
 	public void init() {
 		if(!isInitialized)
 			return;

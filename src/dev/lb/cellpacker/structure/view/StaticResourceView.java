@@ -47,9 +47,6 @@ public class StaticResourceView extends ResourceView{
 			}
 			
 			@Override
-			public void init() {}
-			
-			@Override
 			public FileFilter getFileFilter() {
 				return new FileNameExtensionFilter("<No Files>", "");
 			}

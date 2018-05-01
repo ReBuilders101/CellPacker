@@ -76,11 +76,12 @@ public final class ControlUtils {
 			Component com = content.get();
 			con.remove(wait);
 			con.add(com);
+			con.revalidate();
 		}).start();
 		return con;
 	}
 	
-	public Container asyncFill(Supplier<Component> content, int waitBarWidth, Object constraints){
+	public static Container asyncFill(Supplier<Component> content, int waitBarWidth, Object constraints){
 		JPanel con = new JPanel();
 		JProgressBar wait = getWaitingBar(waitBarWidth);
 		con.add(wait, constraints);
@@ -88,6 +89,7 @@ public final class ControlUtils {
 			Component com = content.get();
 			con.remove(wait);
 			con.add(com, constraints);
+			con.revalidate();
 		}).start();
 		return con;
 	}

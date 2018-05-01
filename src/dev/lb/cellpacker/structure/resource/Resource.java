@@ -24,6 +24,7 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 	
 	public static Resource createFromExtension(String name, byte[] data){
 //		System.out.println("Extension for:" + name + ": " + getExtension(name));
+//		System.err.println(data.length);
 		switch(getExtension(name)){
 			case ".png": return new ImageResource(name, data);
 			case ".ogg": return new SoundResource(name, data);
@@ -66,14 +67,12 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 		return getMainName().compareTo(r.getMainName());
 	}
 	
-	public abstract void init(); 
 	public abstract Component getComponent();
 	public abstract Object getContent();
 	public abstract Resource clone();
 	public abstract FileFilter getFileFilter();
 	
 	public static String getExtension(String name){
-//		System.out.println(name);
 		return name.substring(name.lastIndexOf('.'));
 	}
 }

@@ -7,6 +7,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import dev.lb.cellpacker.structure.resource.Resource;
+import dev.lb.cellpacker.structure.resource.SoundResource;
 
 public class SingleResourceView extends ResourceView{
 
@@ -116,14 +117,12 @@ public class SingleResourceView extends ResourceView{
 			});
 		}
 		if(currentResource != null){
-			currentResource.init();
 			JTabbedPane tabs = new JTabbedPane();
 			tabs.add("Resource", currentResource.getComponent());
 			display = tabs;
 			tabs.setComponentPopupMenu(ResourceView.createPopup(menu));
 		}
 		if(originalResource != null){
-			originalResource.init();
 			JTabbedPane tabs = new JTabbedPane();
 			tabs.add("Resource", originalResource.getComponent());
 			displayOriginal = tabs;
@@ -139,6 +138,17 @@ public class SingleResourceView extends ResourceView{
 	@Override
 	public void exportResourceView(Component dialogParent) {
 		exportResource(dialogParent);
+	}
+
+	@Override
+	public void focusLost() {
+//		System.out.println("Focus lost");
+		if(currentResource instanceof SoundResource){
+			((SoundResource) currentResource).stopPlaying();
+		}
+		if(originalResource instanceof SoundResource){
+			((SoundResource) originalResource).stopPlaying();
+		}
 	}
 	
 	

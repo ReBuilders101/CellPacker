@@ -1,17 +1,13 @@
 package dev.lb.cellpacker.structure.resource;
 
 import java.awt.Component;
-import java.awt.GridBagLayout;
 import java.io.IOException;
-
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import dev.lb.cellpacker.Logger;
+import dev.lb.cellpacker.annotation.Async;
 import dev.lb.cellpacker.controls.ControlUtils;
 import dev.lb.cellpacker.controls.JAudioPlayer;
 import dev.lb.sound.ogg.JOrbisDecoder;
@@ -20,6 +16,7 @@ import dev.lb.sound.ogg.JOrbisDecoder;
 public class SoundResource extends Resource{
 
 	private Clip content;
+	private JAudioPlayer current;
 	
 	public SoundResource(String name, byte[] data) {
 		this.isInitialized = false;
@@ -29,44 +26,48 @@ public class SoundResource extends Resource{
 		this.name = name;
 	}
 
-	@Override
-	public void init() {
-		if(isInitialized)
-			return;
+	
+	@Async
+	private void init() {
+		if(isInitialized) return;
 		try {
-			content = JOrbisDecoder.decodeOggSteramToClip(getDataAsStream()); //Typo in method name, too lazy to change
+			content = JOrbisDecoder.decodeOggSteramToClip(getDataAsStream());
 		} catch (LineUnavailableException | IOException e) {
-			Logger.throwFatal(e);
+			e.printStackTrace();
 		}
 		isInitialized = true;
 	}
 
+	@Async
 	public Clip getSoundClip(){
 		if(!isInitialized)
 			init();
 		return content;
 	}
 	
+	@Async
 	@Override
 	public Object getContent() {
 		return getSoundClip();
 	}
 
+	public void stopPlaying(){
+		if(current != null)
+			current.stop();
+	}
+	
 	@Override
 	public Component getComponent() {
-		if(isInitialized){
-			return new JAudioPlayer(getSoundClip());
-		}else{
-			JPanel con = new JPanel(new GridBagLayout()); //Center
-			JProgressBar pro = ControlUtils.setWidth(new JProgressBar(), 300);
-			pro.setIndeterminate(true);
-			con.add(pro);
-			new Thread(() -> { //Load resorce without freezing
+		if(!isInitialized){
+			return ControlUtils.asyncFill(() -> {
 				init();
-				con.removeAll();
-				con.add(new JAudioPlayer(getSoundClip()));
-			}).start();
-			return con;
+				current = new JAudioPlayer(content);
+				return current;
+			}, 300);
+		}else{
+			if(current != null) current.stop();
+			current = new JAudioPlayer(content);
+			return current;
 		}
 	}
 

@@ -95,6 +95,7 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 	}
 	
 	public void pause(){
+		System.out.println("pause");
 		if(sound == null || !playing)
 			return;
 		barUpdater.stop();
@@ -106,7 +107,7 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 	
 	public void stop(){
 		playpause.setText("Play");
-		if(sound == null || !playing)
+		if(sound == null)
 			return;
 		barUpdater.stop();
 		sound.stop();

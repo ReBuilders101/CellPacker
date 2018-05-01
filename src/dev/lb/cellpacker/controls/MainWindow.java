@@ -1,6 +1,8 @@
 package dev.lb.cellpacker.controls;
 
 import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -11,6 +13,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
@@ -25,10 +28,11 @@ import dev.lb.cellpacker.structure.ResourceViewManager;
 import dev.lb.cellpacker.structure.view.ResourceView;
 import dev.lb.cellpacker.structure.view.StaticResourceView;
 
-public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener{
+public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, ComponentListener{
 	private static final long serialVersionUID = 3681709759315746587L;
 	
 	private JSplitPane split;
+	
 	private JTree tree;
 	private ResourceViewManager view;
 	private JMenu resourceMenu;
@@ -36,15 +40,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	public MainWindow(){
 		super("Cellpacker alpha");
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new StaticResourceView("No Files", "No files loaded"));
 		tree =  new JTree(root);
 		tree.setSelectionPath(new TreePath(root));
 		tree.addTreeSelectionListener(this);
-		this.setSize(new Dimension(800, 600));
+		this.setPreferredSize(new Dimension(800, 600));
 
 		split.setRightComponent(new JScrollPane(tree));
-		
-		split.setLeftComponent(((ResourceView) root.getUserObject()).getDisplay());
 		
 		
 		JMenuItem reuseable;
@@ -132,17 +135,33 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		help.add(new JMenuItem("About CastleDB"));
 		menu.add(help);
 		
+		split.setLeftComponent(((ResourceView) root.getUserObject()).getDisplay());
+		
+		split.setDividerLocation(0.8);
+		
 		this.setJMenuBar(menu);
 		this.add(split);
 		this.addWindowListener(this);
+		this.addComponentListener(this);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		
+		this.pack();
 	}
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
+		if(e.getOldLeadSelectionPath() != null){
+			ResourceView ro = (ResourceView) ((DefaultMutableTreeNode) e.getOldLeadSelectionPath().getLastPathComponent()).getUserObject();
+			ro.focusLost();
+		}
+		
 		ResourceView rv = (ResourceView) (
 				((DefaultMutableTreeNode) e.getPath().getLastPathComponent()).getUserObject());
 		split.setLeftComponent(rv.getDisplay());
+		split.setDividerLocation(0.8);
+//		split.revalidate();
+//		leftCon.pushComponent(rv.getDisplay());
+		
 		resourceMenu.removeAll();
 		for(JMenuItem menu : rv.getContextMenu()){
 			if(menu.getText().equals("$Sep$")){
@@ -156,20 +175,24 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	@Override
 	public void windowClosing(WindowEvent e) {
 		if(JOptionPane.showConfirmDialog(this, "<html>Unsaved changes will be lost.<br>Are you sure you want to quit?", "Quit program", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+			if(tree.getSelectionPath() != null)
+				((ResourceView )((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent()).getUserObject()).focusLost();
 			this.dispose();
 		}
 	}
 
 	@Override
-	public void windowActivated(WindowEvent e) {}
-	@Override
-	public void windowDeactivated(WindowEvent e) {}
-	@Override
-	public void windowDeiconified(WindowEvent e) {}
-	@Override
-	public void windowIconified(WindowEvent e) {}
-	@Override
-	public void windowOpened(WindowEvent e) {}
-	@Override
-	public void windowClosed(WindowEvent e) {}
+	public void componentResized(ComponentEvent e) {
+		split.setDividerLocation(0.8);
+	}
+	
+	@Override public void windowActivated(WindowEvent e) {}
+	@Override public void windowDeactivated(WindowEvent e) {}
+	@Override public void windowDeiconified(WindowEvent e) {}
+	@Override public void windowIconified(WindowEvent e) {}
+	@Override public void windowOpened(WindowEvent e) {}
+	@Override public void windowClosed(WindowEvent e) {}
+	@Override public void componentHidden(ComponentEvent e) {}
+	@Override public void componentMoved(ComponentEvent e) {}
+	@Override public void componentShown(ComponentEvent e) {}
 }

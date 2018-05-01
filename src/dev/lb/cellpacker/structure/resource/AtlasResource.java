@@ -53,7 +53,7 @@ public class AtlasResource extends Resource implements TreeSelectionListener{
 		return con;
 	}
 	
-	@Override
+
 	public void init() {
 		if(1 == 1) return;
 		animations = new ArrayList<>();

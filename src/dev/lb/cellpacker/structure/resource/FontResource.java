@@ -12,7 +12,6 @@ public class FontResource extends Resource{
 		this.data = data;
 	}
 
-	@Override
 	public void init() {
 		// TODO Auto-generated method stub
 		

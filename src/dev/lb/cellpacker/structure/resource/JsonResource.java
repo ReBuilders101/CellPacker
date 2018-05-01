@@ -21,7 +21,6 @@ public class JsonResource extends Resource{
 		this.name = name;
 	}
 
-	@Override
 	public void init() {
 		if(isInitialized)
 			return;

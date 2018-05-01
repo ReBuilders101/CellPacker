@@ -60,6 +60,11 @@ public abstract class ResourceView {
 	 */
 	public abstract void init();
 	
+	/**
+	 * Can be overridden to stop sounds or animations.
+	 */
+	public void focusLost(){}
+	
 	@Override
 	public String toString() {
 		return getName();
