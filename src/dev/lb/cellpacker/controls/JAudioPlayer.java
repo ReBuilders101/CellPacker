@@ -56,10 +56,6 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 		
 		progress = new JSlider();
 		progress.setPreferredSize(new Dimension(200,progress.getPreferredSize().height));
-//		progress.addChangeListener((e) -> {
-//			if(sound != null && progress.getValue() != sound.getFramePosition())
-//				sound.setFramePosition(progress.getValue());
-//		));
 		progress.addMouseListener(this);
 		progress.setSnapToTicks(false);
 		
@@ -155,7 +151,6 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 		barUpdater.stop();
 		sound.stop();
 		sound.flush();
-//		sound.close();
 		sound = null;
 		playing = false;
 		progress.setValue(0);
@@ -181,11 +176,6 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 			sound.setFramePosition(progress.getValue());
 		pressing = false;
 	}
-
-//	@Override
-//	public Dimension getPreferredSize() {
-//		return new Dimension(510, 30);
-//	}
 
 	@Override
 	public void setPreferredSize(Dimension preferredSize) {}

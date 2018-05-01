@@ -13,7 +13,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
@@ -159,9 +158,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				((DefaultMutableTreeNode) e.getPath().getLastPathComponent()).getUserObject());
 		split.setLeftComponent(rv.getDisplay());
 		split.setDividerLocation(0.8);
-//		split.revalidate();
-//		leftCon.pushComponent(rv.getDisplay());
-		
+
 		resourceMenu.removeAll();
 		for(JMenuItem menu : rv.getContextMenu()){
 			if(menu.getText().equals("$Sep$")){

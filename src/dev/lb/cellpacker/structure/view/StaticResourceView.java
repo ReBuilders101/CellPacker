@@ -1,6 +1,7 @@
 package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -38,9 +40,11 @@ public class StaticResourceView extends ResourceView{
 	public static Resource staticTextResource(String name2, String text){
 		return new Resource() {
 			
-			JLabel textA = new JLabel(text);
+			JPanel textA;
 			
 			{
+				textA = new JPanel(new FlowLayout());
+				textA.add(new JLabel(text));
 				this.name = name2;
 				this.data = text.getBytes();
 				this.isInitialized = true;

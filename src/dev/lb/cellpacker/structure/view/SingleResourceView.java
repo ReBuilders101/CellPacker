@@ -142,7 +142,6 @@ public class SingleResourceView extends ResourceView{
 
 	@Override
 	public void focusLost() {
-//		System.out.println("Focus lost");
 		if(currentResource instanceof SoundResource){
 			((SoundResource) currentResource).stopPlaying();
 		}

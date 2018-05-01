@@ -55,7 +55,7 @@ public class AtlasResource extends Resource implements TreeSelectionListener{
 	
 
 	public void init() {
-		if(1 == 1) return;
+		if(1 == (Math.pow(1, 1))) return;
 		animations = new ArrayList<>();
 		String[] lines = new String(data).split(System.getProperty("\r\n"));
 		this.imageName = lines[0];
