@@ -53,7 +53,7 @@ public class SoundResource extends Resource{
 
 	public void stopPlaying(){
 		if(current != null)
-			current.stop();
+			current.stop(true);
 	}
 	
 	@Override
@@ -65,7 +65,7 @@ public class SoundResource extends Resource{
 				return current;
 			}, 300);
 		}else{
-			if(current != null) current.stop();
+			if(current != null) current.stop(true);
 			current = new JAudioPlayer(content);
 			return current;
 		}

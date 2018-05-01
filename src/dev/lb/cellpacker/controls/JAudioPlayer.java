@@ -50,7 +50,7 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 		playpause.setPreferredSize(new Dimension(100, playpause.getPreferredSize().height));
 		stop = new JButton("Stop");
 		stop.addActionListener((e) -> {
-			stop();
+			stop(true);
 		});
 		stop.setPreferredSize(new Dimension(100, stop.getPreferredSize().height));
 		
@@ -95,7 +95,6 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 	}
 	
 	public void pause(){
-		System.out.println("pause");
 		if(sound == null || !playing)
 			return;
 		barUpdater.stop();
@@ -105,9 +104,9 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 		updateSlider();
 	}
 	
-	public void stop(){
+	public void stop(boolean force){
 		playpause.setText("Play");
-		if(sound == null)
+		if(sound == null || (!playing && !force))
 			return;
 		barUpdater.stop();
 		sound.stop();
@@ -124,7 +123,7 @@ public class JAudioPlayer extends JPanel implements MouseListener{
 		sound.addLineListener(new LineListener(){
 		    public void update(LineEvent e){
 		        if(e.getType() == LineEvent.Type.STOP){
-		            stop();
+		            stop(false);
 		        }
 		    }
 		});
