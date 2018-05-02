@@ -1,11 +1,13 @@
 package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -80,6 +82,17 @@ public abstract class ResourceView {
 			}
 		}
 		return pop;
+	}
+	
+	public static void attachPopup(JPopupMenu menu, Container comp){
+		for (final Component c : comp.getComponents()) {
+	        if (c instanceof JComponent) {
+	            ((JComponent) c).setComponentPopupMenu(menu);
+	        }
+	        if (c instanceof Container) {
+	            attachPopup(menu, (Container) c);
+	        }
+	    }
 	}
 	
 	public static void exportResourceToFile(Component dialogParent, Resource resource){

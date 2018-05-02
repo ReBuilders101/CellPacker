@@ -134,7 +134,7 @@ public class StaticResourceView extends ResourceView{
 			JTabbedPane tabs = new JTabbedPane();
 			tabs.add("Static", resource.getComponent());
 			display = tabs;
-			tabs.setComponentPopupMenu(ResourceView.createPopup(menu));
+			//tabs.setComponentPopupMenu(ResourceView.createPopup(menu));
 		}
 	}
 

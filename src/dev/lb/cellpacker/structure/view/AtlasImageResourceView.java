@@ -2,7 +2,6 @@ package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
 import java.io.File;
-
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -237,7 +236,7 @@ public class AtlasImageResourceView extends ResourceView{
 			if(filter != null) ResourceView.exportResourceToFile(dialogParent, filter, new File(file, filter.getName()));
 		}
 	}
-
+	
 	@Override
 	public void init() {
 		if(menu == null){
@@ -304,7 +303,10 @@ public class AtlasImageResourceView extends ResourceView{
 			
 		}
 		//First the currents
-		display = new JTabbedPane();
+		if(display == null){
+			display = new JTabbedPane();
+		}
+		display.removeAll();
 		display.add("Main Image", main.getComponent());
 		if(atlas != null){
 			display.add("Atlas file", atlas.getComponent());
@@ -314,10 +316,10 @@ public class AtlasImageResourceView extends ResourceView{
 		if(filter != null){
 			display.add("Filter Image", filter.getComponent());
 		}
-		display.setComponentPopupMenu(ResourceView.createPopup(menu));
-		
+		//display.setComponentPopupMenu(ResourceView.createPopup(menu));
 		//Then originals
-		displayOriginal = new JTabbedPane();
+		if(displayOriginal == null) displayOriginal = new JTabbedPane();
+		displayOriginal.removeAll();
 		if(mainModified){
 			displayOriginal.add("Main Image", mainOriginal.getComponent());
 		}else{
@@ -335,7 +337,7 @@ public class AtlasImageResourceView extends ResourceView{
 		}else if(filter != null){
 			displayOriginal.add("Filter Image", filter.getComponent());
 		}
-		displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
+		//displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
 	}
 	
 }

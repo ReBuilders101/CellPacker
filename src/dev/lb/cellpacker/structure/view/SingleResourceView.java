@@ -117,14 +117,16 @@ public class SingleResourceView extends ResourceView{
 			});
 		}
 		if(currentResource != null){
-			display = new JTabbedPane();
+			if(display == null) display = new JTabbedPane();
+			display.removeAll();
 			display.add("Resource", currentResource.getComponent());
-			display.setComponentPopupMenu(ResourceView.createPopup(menu));
+			//display.setComponentPopupMenu(ResourceView.createPopup(menu));
 		}
 		if(originalResource != null){
-			displayOriginal = new JTabbedPane();
+			if(displayOriginal == null)	displayOriginal = new JTabbedPane();
+			displayOriginal.removeAll();
 			displayOriginal.add("Resource", originalResource.getComponent());
-			displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
+			//displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
 		}
 	}
 

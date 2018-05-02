@@ -7,7 +7,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -73,7 +72,6 @@ public class ImageResource extends Resource{
 				init();
 				jim = new JImageViewer(content);
 				jim.setOverlay(overlay);
-				System.out.println(jim.getPreferredSize());
 				return new JScrollPane(jim);//new JScrollPane(new JLabel(getIcon()));
 			}, 300);
 		}else{
