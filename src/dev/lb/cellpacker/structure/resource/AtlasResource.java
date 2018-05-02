@@ -55,68 +55,17 @@ public class AtlasResource extends Resource implements TreeSelectionListener{
 	
 
 	public void init() {
-		if(1 == (Math.pow(1, 1))) return;
-		animations = new ArrayList<>();
-		String[] lines = new String(data).split(System.getProperty("\r\n"));
-		this.imageName = lines[0];
-		this.size = Frame.parseDimension(lines[1]);
-		this.format = lines[2];
-		this.filter = lines[3];
-		this.repeat = lines[4];
-		if((lines.length - 5) % 7 != 0)
-			Logger.throwFatal(new Exception("Invalid atlas size: " + lines.length).fillInStackTrace());
-		Animation current = null;
-		for(int i = 5; i < lines.length; i += 7){
-			String frameName = lines[i];
-			if(frameName.contains("_"))
-				frameName = frameName.substring(0, frameName.lastIndexOf('_'));
-			if(current == null || !current.getName().equals(frameName)){
-				current = new Animation(frameName);
-				animations.add(current);
-			}
-			current.addFrame(new Frame(Arrays.copyOfRange(lines, i + 1, i + 7)));
-		}
-		//Now make a tree
-		//UserObjects can be: String(Root), Frame, Animation
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(imageName);
-		for(Animation a : animations){
-			if(a.isSprite()){
-				root.add(new DefaultMutableTreeNode(a.getFrame(0)));
-			}else{
-				DefaultMutableTreeNode anim = new DefaultMutableTreeNode(a);
-				for(Frame f : a){
-					anim.add(new DefaultMutableTreeNode(f));
-				}
-				root.add(anim);
-			}
-		}
-		animTree = new JTree(root);
-		animTree.addTreeSelectionListener(this);
-		//Now the controls
-		con = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		con.setLeftComponent(animTree);
-		JPanel right = new JPanel(new GridLayout(3, 0, 10, 10));
-		con.setRightComponent(right);
-		JLabel details = new JLabel("<html><b>" + imageName + "</b><table><tr><td>Size:</td><td>width: " + size.width + 
-				", height: " + size.height + "</td></tr><tr><td>Format:</td><td>" + format + "</td></tr><tr><td>Filter:</td><td>" + 
-				filter + "</td></tr><tr><td>Repeat:</td><td>" + repeat + "</td></tr></table></html>");
-		frameDetails = new JLabel("Frame Details");
-		right.add(ControlUtils.pack(details,frameDetails));
-		JPanel buttons = ControlUtils.createGroupBox("Options");
-		buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
-		//Make the buttons
-		right.add(buttons);
-		right.add(preview);
 		isInitialized = true;
 	}
 
 	@Override
 	public Component getComponent() {
 		if(isInitialized){
-			return con;
+			//return con;
 		}else{
-			return ControlUtils.asyncFill(() -> {init(); return con;}, 300);
+			//return ControlUtils.asyncFill(() -> {init(); return con;}, 300);
 		}
+		return new JLabel("this is not implemented yet");
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package dev.lb.cellpacker.controls;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -75,6 +76,7 @@ public final class ControlUtils {
 		new Thread(() -> {
 			Component com = content.get();
 			con.remove(wait);
+			con.setLayout(new BorderLayout());
 			con.add(com);
 			con.revalidate();
 		}).start();

@@ -17,8 +17,8 @@ public class SingleResourceView extends ResourceView{
 	private String viewName;
 	private boolean showOriginal;
 	
-	private Component display;
-	private Component displayOriginal;
+	private JTabbedPane display;
+	private JTabbedPane displayOriginal;
 	private JMenuItem[] menu;
 	
 	public SingleResourceView(String name, Resource resource) {
@@ -117,16 +117,14 @@ public class SingleResourceView extends ResourceView{
 			});
 		}
 		if(currentResource != null){
-			JTabbedPane tabs = new JTabbedPane();
-			tabs.add("Resource", currentResource.getComponent());
-			display = tabs;
-			tabs.setComponentPopupMenu(ResourceView.createPopup(menu));
+			display = new JTabbedPane();
+			display.add("Resource", currentResource.getComponent());
+			display.setComponentPopupMenu(ResourceView.createPopup(menu));
 		}
 		if(originalResource != null){
-			JTabbedPane tabs = new JTabbedPane();
-			tabs.add("Resource", originalResource.getComponent());
-			displayOriginal = tabs;
-			tabs.setComponentPopupMenu(ResourceView.createPopup(menu));
+			displayOriginal = new JTabbedPane();
+			displayOriginal.add("Resource", originalResource.getComponent());
+			displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
 		}
 	}
 

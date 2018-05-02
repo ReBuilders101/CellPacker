@@ -147,6 +147,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		this.pack();
 	}
 
+	public void setResourceFileOnStart(ResourceFile file){
+		view = new ResourceViewManager(file);
+		view.setTree(tree);
+	}
+	
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		if(e.getOldLeadSelectionPath() != null){
