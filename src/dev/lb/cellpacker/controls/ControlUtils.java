@@ -90,6 +90,7 @@ public final class ControlUtils {
 		new Thread(() -> {
 			Component com = content.get();
 			con.remove(wait);
+			con.setLayout(new BorderLayout());
 			con.add(com, constraints);
 			con.revalidate();
 		}).start();
