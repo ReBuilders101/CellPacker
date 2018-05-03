@@ -1,21 +1,27 @@
 package dev.lb.cellpacker.controls;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -35,6 +41,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private JTree tree;
 	private ResourceViewManager view;
 	private JMenu resourceMenu;
+	private JPanel searchCon;
+	private JTextField searchField;
 	
 	public MainWindow(){
 		super("Cellpacker alpha");
@@ -46,7 +54,19 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		tree.addTreeSelectionListener(this);
 		this.setPreferredSize(new Dimension(800, 600));
 
-		split.setRightComponent(new JScrollPane(tree));
+		searchCon = new JPanel();
+		searchCon.setLayout(new BoxLayout(searchCon, BoxLayout.X_AXIS));
+		searchCon.setBorder(new EmptyBorder(3, 5, 5, 2));
+		JLabel fixedDesc = new JLabel("Search: ");
+		searchField = new JTextField();
+		fixedDesc.setMaximumSize(fixedDesc.getPreferredSize());
+		searchCon.add(fixedDesc);
+		searchCon.add(searchField);
+		
+		JPanel rightCon = new JPanel(new BorderLayout());
+		rightCon.add(new JScrollPane(tree), BorderLayout.CENTER);
+		rightCon.add(searchCon, BorderLayout.SOUTH);
+		split.setRightComponent(rightCon);
 		
 		
 		JMenuItem reuseable;

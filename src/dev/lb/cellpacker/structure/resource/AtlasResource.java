@@ -1,6 +1,14 @@
 package dev.lb.cellpacker.structure.resource;
 
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -8,15 +16,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.bind.DatatypeConverter;
 
 import dev.lb.cellpacker.annotation.Async;
+import dev.lb.cellpacker.annotation.Unmodifiable;
 import dev.lb.cellpacker.controls.ControlUtils;
 
 public class AtlasResource extends Resource{
 
-	String hexString;
-	JTextArea textDisplay;
+	private String hexString;
+	private JTextArea textDisplay;
+	@SuppressWarnings("unused")
+	private JPanel controlContainer;
+	private AtlasData atlasData;
 	
 	public AtlasResource(String name, byte[] data) {
 		this.name = name;
@@ -40,6 +51,7 @@ public class AtlasResource extends Resource{
 		if(isInitialized)
 			return;
 		hexString = bytesToString(data);
+		atlasData = new AtlasData(data);
 		isInitialized = true;
 	}
 	
@@ -85,6 +97,133 @@ public class AtlasResource extends Resource{
 		JPanel con = new JPanel();
 		con.add(new JLabel("Coming soon, I promise"));
 		return con;
+	}
+	
+	@Async
+	public AtlasData getAtlasData(){
+		if(!isInitialized)
+			init();
+		return atlasData;
+	}
+	
+	public static class AtlasData{
+		private List<Sprite> sprites;
+		
+		public AtlasData(byte[] data){
+			sprites = new ArrayList<>();
+			int pointer = 4;
+			int filenamelen = data[4] & 0xFF;
+			String filename = new String(Arrays.copyOfRange(data, pointer + 1, pointer + filenamelen + 1));
+			pointer = pointer + filenamelen + 1;
+			
+			do{
+				//Beginning sprite
+				int strlen = data[pointer] & 0xFF;
+				String name = new String(Arrays.copyOfRange(data, pointer + 1, pointer + strlen + 1));
+				pointer = pointer + strlen + 3; //First data byte
+				byte[] spriteData = Arrays.copyOfRange(data, pointer, pointer + 16);
+				Sprite current = new Sprite(name, decodeByte2(spriteData, 0), decodeByte2(spriteData, 2), decodeByte2(spriteData, 4),
+						decodeByte2(spriteData, 6), decodeByte2(spriteData, 8), decodeByte2(spriteData, 10),
+						decodeByte2(spriteData, 12), decodeByte2(spriteData, 14));
+				sprites.add(current);
+				pointer += 16;
+			}while(pointer < data.length - 2); //The -2 is important
+			System.out.println("Read " + sprites.size() + " Sprites for file " + filename);
+		}
+		
+		public static int decodeByte2(byte[] data, int off1){
+			return (data[off1] & 0xFF) + ((data[off1 + 1] & 0xFF) << 8); 
+		}
+		
+		@Unmodifiable
+		public List<Sprite> getSprites(){
+			return Collections.unmodifiableList(sprites);
+		}
+		
+	}
+	
+	
+	public static class Sprite{
+		private String name;
+		private int x;
+		private int y;
+		private int width;
+		private int height;
+		private int offsetX;
+		private int offsetY;
+		private int origX;
+		private int origY;
+		
+		private Sprite(String name, int x, int y, int width, int height, int offsetX, int offsetY, int origX, int origY) {
+			this.name = name;
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+			this.offsetX = offsetX;
+			this.offsetY = offsetY;
+			this.origX = origX;
+			this.origY = origY;
+		}
+		
+		public Point getPosition(){
+			return new Point(x, y);
+		}
+		
+		public Dimension getSize(){
+			return new Dimension(width, height);
+		}
+		
+		public Rectangle getArea(){
+			return new Rectangle(x, y, width, height);
+		}
+		
+		public BufferedImage getImageSection(BufferedImage main){
+			return main.getSubimage(x, y, width, height);
+		}
+
+		public String getName(){
+			return name;
+		}
+		
+		public int getX() {
+			return x;
+		}
+
+		public int getY() {
+			return y;
+		}
+
+		public int getWidth() {
+			return width;
+		}
+
+		public int getHeight() {
+			return height;
+		}
+
+		public int getOffsetX() {
+			return offsetX;
+		}
+
+		public int getOffsetY() {
+			return offsetY;
+		}
+
+		public int getOrigX() {
+			return origX;
+		}
+
+		public int getOrigY() {
+			return origY;
+		}
+
+		@Override
+		public String toString() {
+			return "Sprite [name=" + name + ", x=" + x + ", y=" + y + ", width=" + width + ", height=" + height
+					+ ", offsetX=" + offsetX + ", offsetY=" + offsetY + ", origX=" + origX + ", origY=" + origY + "]";
+		}
+		
 	}
 
 }

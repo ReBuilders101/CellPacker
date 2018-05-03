@@ -3,11 +3,13 @@ package dev.lb.cellpacker.controls;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-public class JImageViewer extends JPanel{
+public class JImageViewer extends JPanel implements MouseWheelListener{
 	private static final long serialVersionUID = -4208234595443517732L;
 
 	private Image image;
@@ -15,6 +17,7 @@ public class JImageViewer extends JPanel{
 	
 	public JImageViewer(Image mainImage) {
 		image = mainImage;
+		this.addMouseWheelListener(this);
 	}
 	
 	public void preDraw(){
@@ -49,6 +52,11 @@ public class JImageViewer extends JPanel{
 	public void setOverlay(BufferedImage overlay2) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		//Do nothing
 	}
 
 }
