@@ -26,7 +26,7 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 	public boolean setSearchString(String searchString) {
 		String old = this.searchString;
 		this.searchString = searchString;
-		return !old.equals(searchString);
+		return old == null ? true : !old.equals(searchString);
 	}
 	
 	public void setSearchString(String searchString, JTree toUpdate){

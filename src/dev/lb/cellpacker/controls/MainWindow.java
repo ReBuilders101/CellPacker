@@ -22,6 +22,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -29,19 +31,18 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import dev.lb.cellpacker.structure.ResourceFile;
-import dev.lb.cellpacker.structure.ResourceViewManager;
+import dev.lb.cellpacker.structure.SearchableResourceViewManager;
 import dev.lb.cellpacker.structure.view.ResourceView;
 import dev.lb.cellpacker.structure.view.StaticResourceView;
 
-public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, ComponentListener{
+public class MainWindow extends JFrame implements TreeSelectionListener, WindowListener, ComponentListener, DocumentListener{
 	private static final long serialVersionUID = 3681709759315746587L;
 	
 	private JSplitPane split;
 	
 	private JTree tree;
-	private ResourceViewManager view;
+	private SearchableResourceViewManager view;
 	private JMenu resourceMenu;
-	private JPanel searchCon;
 	private JTextField searchField;
 	
 	public MainWindow(){
@@ -54,11 +55,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		tree.addTreeSelectionListener(this);
 		this.setPreferredSize(new Dimension(800, 600));
 
-		searchCon = new JPanel();
+		JPanel searchCon = new JPanel();
 		searchCon.setLayout(new BoxLayout(searchCon, BoxLayout.X_AXIS));
 		searchCon.setBorder(new EmptyBorder(3, 5, 5, 2));
 		JLabel fixedDesc = new JLabel("Search: ");
 		searchField = new JTextField();
+		searchField.getDocument().addDocumentListener(this);
 		fixedDesc.setMaximumSize(fixedDesc.getPreferredSize());
 		searchCon.add(fixedDesc);
 		searchCon.add(searchField);
@@ -85,7 +87,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			jfc.setFileFilter(new FileNameExtensionFilter("Dead Cells Resource File", "*.pak", "pak", ".pak"));
 			int result = jfc.showOpenDialog(this);
 			if(result == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
-				view = new ResourceViewManager(ResourceFile.fromFile(jfc.getSelectedFile()));
+				view = new SearchableResourceViewManager(ResourceFile.fromFile(jfc.getSelectedFile()));
 				view.setTree(tree);
 			}
 		});
@@ -168,7 +170,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 
 	public void setResourceFileOnStart(ResourceFile file){
-		view = new ResourceViewManager(file);
+		view = new SearchableResourceViewManager(file);
 		view.setTree(tree);
 	}
 	
@@ -206,6 +208,21 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	@Override
 	public void componentResized(ComponentEvent e) {
 		split.setDividerLocation(0.8);
+	}
+	
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		if(view != null) view.setSearchString(searchField.getText(), tree);
+	}
+	
+	@Override 
+	public void insertUpdate(DocumentEvent e) {
+		changedUpdate(e);
+	}
+	
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		changedUpdate(e);
 	}
 	
 	@Override public void windowActivated(WindowEvent e) {}
