@@ -94,9 +94,10 @@ public class AtlasResource extends Resource{
 	}
 
 	public Component createSpriteView(ImageResource main, ImageResource filter) {
-		JPanel con = new JPanel();
-		con.add(new JLabel("Coming soon, I promise"));
-		return con;
+		return ControlUtils.asyncFill(() -> {
+			init();
+			return atlasData.createView(main.getImage(), filter.getImage());
+		}, 300);
 	}
 	
 	@Async
@@ -108,6 +109,12 @@ public class AtlasResource extends Resource{
 	
 	public static class AtlasData{
 		private List<Sprite> sprites;
+		
+		public Component createView(BufferedImage main, BufferedImage filter){
+			JPanel con = new JPanel();
+			con.add(new JLabel("Work in progress, really!"));
+			return con;
+		}
 		
 		public AtlasData(byte[] data){
 			sprites = new ArrayList<>();

@@ -89,6 +89,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			if(result == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
 				view = new SearchableResourceViewManager(ResourceFile.fromFile(jfc.getSelectedFile()));
 				view.setTree(tree);
+				view.setSearchString("", tree);
 			}
 		});
 		reuseable.setToolTipText("Open a Dead Cells resource file to view its contents (usually called res.pak)");
@@ -172,6 +173,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	public void setResourceFileOnStart(ResourceFile file){
 		view = new SearchableResourceViewManager(file);
 		view.setTree(tree);
+		view.setSearchString("", tree);
 	}
 	
 	@Override
@@ -212,6 +214,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	
 	@Override
 	public void changedUpdate(DocumentEvent e) {
+		if(tree.getSelectionPath() != null){
+			ResourceView ro = (ResourceView) ((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent()).getUserObject();
+			ro.focusLost();
+			System.out.println("Lost: " + ro);
+		}
 		if(view != null) view.setSearchString(searchField.getText(), tree);
 	}
 	
