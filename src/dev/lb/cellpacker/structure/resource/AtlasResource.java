@@ -1,5 +1,6 @@
 package dev.lb.cellpacker.structure.resource;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -10,16 +11,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dev.lb.cellpacker.annotation.Async;
 import dev.lb.cellpacker.annotation.Unmodifiable;
 import dev.lb.cellpacker.controls.ControlUtils;
+import dev.lb.cellpacker.controls.JSpriteViewer;
 
 public class AtlasResource extends Resource{
 
@@ -111,8 +117,19 @@ public class AtlasResource extends Resource{
 		private List<Sprite> sprites;
 		
 		public Component createView(BufferedImage main, BufferedImage filter){
-			JPanel con = new JPanel();
-			con.add(new JLabel("Work in progress, really!"));
+			JPanel con = new JPanel(new BorderLayout());
+			JList<Sprite> list = new JList<>(new DefaultListModel<>());
+			sprites.forEach((s) -> ((DefaultListModel<Sprite>) list.getModel()).addElement(s));
+			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			JScrollPane listScroll = new JScrollPane(list);
+			con.add(listScroll, BorderLayout.WEST);
+			
+			JPanel centerCon = new JPanel(new BorderLayout());
+			JSpriteViewer spr = new JSpriteViewer(main.getSubimage(0, 0, 256, 256));
+			centerCon.add(ControlUtils.pack(ControlUtils.setPrefSize(new JLabel("Control section"), 0, 200)), BorderLayout.SOUTH);
+			centerCon.add(spr, BorderLayout.CENTER);
+			
+			con.add(centerCon, BorderLayout.CENTER);
 			return con;
 		}
 		
@@ -227,8 +244,7 @@ public class AtlasResource extends Resource{
 
 		@Override
 		public String toString() {
-			return "Sprite [name=" + name + ", x=" + x + ", y=" + y + ", width=" + width + ", height=" + height
-					+ ", offsetX=" + offsetX + ", offsetY=" + offsetY + ", origX=" + origX + ", origY=" + origY + "]";
+			return name;
 		}
 		
 	}

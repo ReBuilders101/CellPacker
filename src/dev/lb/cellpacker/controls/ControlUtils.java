@@ -33,7 +33,7 @@ public final class ControlUtils {
 		return control;
 	}
 	
-	public static <T extends JComponent> T setSize(T control, int width, int height){
+	public static <T extends JComponent> T setPrefSize(T control, int width, int height){
 		control.setPreferredSize(new Dimension(width, height));
 		return control;
 	}

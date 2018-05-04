@@ -34,6 +34,14 @@ public class JImageViewer extends JPanel implements MouseWheelListener{
 		}
 	}
 	
+	protected Image getMainImage(){
+		return image;
+	}
+	
+	protected Image getOverlayImage(){
+		return overlay;
+	}
+	
 	@Override
 	public Dimension getPreferredSize(){
 		return new Dimension(image.getWidth(this), image.getHeight(this));
