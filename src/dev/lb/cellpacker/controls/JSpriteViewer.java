@@ -12,10 +12,6 @@ public class JSpriteViewer extends JImageViewer{
 		super(mainImage);
 	}
 
-	private double imageRatio(){
-		return ((double) getMainImage().getHeight(this) / (double) getMainImage().getWidth(this));
-	}
-	
 	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(0, 0);
@@ -28,9 +24,10 @@ public class JSpriteViewer extends JImageViewer{
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		double ratio = imageRatio();
+		double ratio = ((double) getMainImage().getHeight(this) / (double) getMainImage().getWidth(this));
+		double thisRatio = ((double) getHeight() / (double) getWidth());
 		int scaleWidth, scaleHeight, startX, startY;
-		if(ratio > 1){//Wide
+		if(ratio < thisRatio){//Wide
 			scaleWidth = getWidth();
 			scaleHeight = (int) (getWidth() *  ratio);
 			startX = 0;
