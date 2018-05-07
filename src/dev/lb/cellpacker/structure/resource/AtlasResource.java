@@ -137,7 +137,10 @@ public class AtlasResource extends Resource{
 			con.add(westCon, BorderLayout.WEST);
 			JPanel centerCon = new JPanel(new BorderLayout());
 			JSpriteViewer currentSprite = new JSpriteViewer(main, filter);
-			centerCon.add(ControlUtils.setPrefSize(new JLabel("Control section"), 0, 200), BorderLayout.SOUTH);
+			JTextArea details = new JTextArea();
+			details.setBorder(new EmptyBorder(10, 20, 10, 20));
+			currentList.setDetailsArea(details);
+			centerCon.add(details, BorderLayout.SOUTH);
 			JPanel jspBorder = new JPanel(new BorderLayout());
 			jspBorder.setBorder(new EmptyBorder(20, 20, 20, 20));
 			jspBorder.add(currentSprite, BorderLayout.CENTER);

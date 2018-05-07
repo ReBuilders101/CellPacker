@@ -3,6 +3,7 @@ package dev.lb.cellpacker.controls;
 import java.util.Vector;
 
 import javax.swing.JList;
+import javax.swing.JTextArea;
 import javax.swing.ListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -13,7 +14,7 @@ public class SpriteSavingList extends JList<Sprite> implements ListSelectionList
 	private static final long serialVersionUID = 4434097800055693891L;
 
 	private JSpriteViewer connectedJSP;
-	
+	private JTextArea connectedDetails;
 	
 	public SpriteSavingList() {
 		super();
@@ -36,6 +37,18 @@ public class SpriteSavingList extends JList<Sprite> implements ListSelectionList
 		connectedJSP = jsp;
 	}
 	
+	public JTextArea getDetailsArea(){
+		return connectedDetails;
+	}
+	
+	public void setDetailsArea(JTextArea area){
+		connectedDetails = area;
+	}
+	
+	public boolean hasDetailsArea(){
+		return connectedDetails != null;
+	}
+	
 	public JSpriteViewer getJSP(){
 		return connectedJSP;
 	}
@@ -47,7 +60,17 @@ public class SpriteSavingList extends JList<Sprite> implements ListSelectionList
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		Sprite sp = getSelectedValue();
-		getJSP().setSprite(sp.getX(), sp.getY(), sp.getWidth(), sp.getHeight());
+		if(hasJSP()){
+			getJSP().setSprite(sp.getX(), sp.getY(), sp.getWidth(), sp.getHeight());
+		}
+		if(hasDetailsArea()){
+			connectedDetails.setText("");
+			connectedDetails.append("Sprite name: " + sp.getName() + "\n");
+			connectedDetails.append("Sprite size: " + sp.getWidth() + "x" + sp.getHeight() + "\n");
+			connectedDetails.append("Sprite position: " + sp.getX() + "|" + sp.getY() + "\n");
+			connectedDetails.append("Sprite offset: " + sp.getOffsetX() + "|" + sp.getOffsetY() + "\n");
+			connectedDetails.append("Sprite origin: " + sp.getOrigX() + "|" + sp.getOrigY() + "\n");
+		}
 	}
 	
 
