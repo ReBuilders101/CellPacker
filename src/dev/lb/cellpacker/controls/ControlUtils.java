@@ -6,6 +6,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
@@ -26,6 +27,11 @@ public final class ControlUtils {
 	public static <T extends JComponent> T setMaxWidth(T control){
 		control.setMaximumSize(new Dimension(Integer.MAX_VALUE, control.getMaximumSize().height));
 		return control;
+	}
+	
+	public static <T extends JComponent> T call(T object, Consumer<T> action){
+		action.accept(object);
+		return object;
 	}
 	
 	public static <T extends JComponent> T setHeight(T control, int height){

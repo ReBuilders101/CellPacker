@@ -20,11 +20,6 @@ public class JImageViewer extends JPanel implements MouseWheelListener{
 		this.addMouseWheelListener(this);
 	}
 	
-	public void preDraw(){
-		new BufferedImage(image.getWidth(this), image.getHeight(this), BufferedImage.TYPE_4BYTE_ABGR)
-			.createGraphics().drawImage(image, 0, 0, this);
-	}
-	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -38,9 +33,14 @@ public class JImageViewer extends JPanel implements MouseWheelListener{
 		return image;
 	}
 	
-	protected Image getOverlayImage(){
+	public Image getOverlay() {
 		return overlay;
 	}
+
+	public void setOverlay(Image overlay) {
+		this.overlay = overlay;
+	}
+
 	
 	@Override
 	public Dimension getPreferredSize(){

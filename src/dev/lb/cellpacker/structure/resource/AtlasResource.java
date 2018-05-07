@@ -13,12 +13,15 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -26,13 +29,12 @@ import dev.lb.cellpacker.annotation.Async;
 import dev.lb.cellpacker.annotation.Unmodifiable;
 import dev.lb.cellpacker.controls.ControlUtils;
 import dev.lb.cellpacker.controls.JSpriteViewer;
+import dev.lb.cellpacker.controls.SpriteSavingList;
 
 public class AtlasResource extends Resource{
 
 	private String hexString;
 	private JTextArea textDisplay;
-	@SuppressWarnings("unused")
-	private JPanel controlContainer;
 	private AtlasData atlasData;
 	
 	public AtlasResource(String name, byte[] data) {
@@ -113,23 +115,38 @@ public class AtlasResource extends Resource{
 		return atlasData;
 	}
 	
-	public static class AtlasData{
+	public static class AtlasData implements ListSelectionListener{
 		private List<Sprite> sprites;
+		//private JSpriteViewer currentSprite;
+		//private SpriteSavingList currentList;
 		
 		public Component createView(BufferedImage main, BufferedImage filter){
 			JPanel con = new JPanel(new BorderLayout());
-			JList<Sprite> list = new JList<>(new DefaultListModel<>());
-			sprites.forEach((s) -> ((DefaultListModel<Sprite>) list.getModel()).addElement(s));
-			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			JScrollPane listScroll = new JScrollPane(list);
-			con.add(listScroll, BorderLayout.WEST);
-			
+			SpriteSavingList currentList = new SpriteSavingList(new DefaultListModel<>());
+			sprites.forEach((s) -> ((DefaultListModel<Sprite>) currentList.getModel()).addElement(s));
+			currentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			JScrollPane listScroll = new JScrollPane(currentList);
+			listScroll.setBorder(new CompoundBorder(new EmptyBorder(10, 10, 10, 10), listScroll.getBorder()));
+			JPanel westCon = new JPanel(new BorderLayout());
+			westCon.add(ControlUtils.call(new JLabel("Select sprite:"), (c) -> c.setBorder(new EmptyBorder(10, 10, 0, 10))), BorderLayout.NORTH); //Overly complicated, but fun
+			westCon.add(listScroll, BorderLayout.CENTER);
+			JPanel searchCon = new JPanel(new BorderLayout());
+			searchCon.add(new JLabel("Search: "), BorderLayout.WEST);
+			JTextField searchField = new JTextField();
+			searchCon.add(searchField, BorderLayout.CENTER);
+			searchCon.setBorder(new EmptyBorder(0, 10, 5, 10));
+			westCon.add(searchCon, BorderLayout.SOUTH);
+			con.add(westCon, BorderLayout.WEST);
 			JPanel centerCon = new JPanel(new BorderLayout());
-			JSpriteViewer spr = new JSpriteViewer(main.getSubimage(0, 0, 256, 256));
-			centerCon.add(ControlUtils.pack(ControlUtils.setPrefSize(new JLabel("Control section"), 0, 200)), BorderLayout.SOUTH);
-			centerCon.add(spr, BorderLayout.CENTER);
-			
+			JSpriteViewer currentSprite = new JSpriteViewer(main, filter);
+			centerCon.add(ControlUtils.setPrefSize(new JLabel("Control section"), 0, 200), BorderLayout.SOUTH);
+			centerCon.add(currentSprite, BorderLayout.CENTER);
 			con.add(centerCon, BorderLayout.CENTER);
+			
+			currentList.setJSP(currentSprite);
+			currentList.addListSelectionListener(this);
+			if(currentList.getModel().getSize() > 0) currentList.setSelectedIndex(0);
+			
 			return con;
 		}
 		
@@ -162,6 +179,13 @@ public class AtlasResource extends Resource{
 		@Unmodifiable
 		public List<Sprite> getSprites(){
 			return Collections.unmodifiableList(sprites);
+		}
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			SpriteSavingList ssl = (SpriteSavingList) e.getSource();
+			Sprite sp = ssl.getSelectedValue();
+			ssl.getJSP().setSprite(sp.getX(), sp.getY(), sp.getWidth(), sp.getHeight());
 		}
 		
 	}
