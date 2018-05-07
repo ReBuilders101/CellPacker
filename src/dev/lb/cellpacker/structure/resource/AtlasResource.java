@@ -20,8 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -115,7 +113,7 @@ public class AtlasResource extends Resource{
 		return atlasData;
 	}
 	
-	public static class AtlasData implements ListSelectionListener{
+	public static class AtlasData{
 		private List<Sprite> sprites;
 		//private JSpriteViewer currentSprite;
 		//private SpriteSavingList currentList;
@@ -140,11 +138,13 @@ public class AtlasResource extends Resource{
 			JPanel centerCon = new JPanel(new BorderLayout());
 			JSpriteViewer currentSprite = new JSpriteViewer(main, filter);
 			centerCon.add(ControlUtils.setPrefSize(new JLabel("Control section"), 0, 200), BorderLayout.SOUTH);
-			centerCon.add(currentSprite, BorderLayout.CENTER);
+			JPanel jspBorder = new JPanel(new BorderLayout());
+			jspBorder.setBorder(new EmptyBorder(20, 20, 20, 20));
+			jspBorder.add(currentSprite, BorderLayout.CENTER);
+			centerCon.add(jspBorder, BorderLayout.CENTER);
 			con.add(centerCon, BorderLayout.CENTER);
 			
 			currentList.setJSP(currentSprite);
-			currentList.addListSelectionListener(this);
 			if(currentList.getModel().getSize() > 0) currentList.setSelectedIndex(0);
 			
 			return con;
@@ -180,14 +180,6 @@ public class AtlasResource extends Resource{
 		public List<Sprite> getSprites(){
 			return Collections.unmodifiableList(sprites);
 		}
-
-		@Override
-		public void valueChanged(ListSelectionEvent e) {
-			SpriteSavingList ssl = (SpriteSavingList) e.getSource();
-			Sprite sp = ssl.getSelectedValue();
-			ssl.getJSP().setSprite(sp.getX(), sp.getY(), sp.getWidth(), sp.getHeight());
-		}
-		
 	}
 	
 	
