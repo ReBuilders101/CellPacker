@@ -15,8 +15,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -99,11 +99,15 @@ public class AtlasResource extends Resource{
 		return new FileNameExtensionFilter("Atlas File", "*.atlas", ".atlas", "atlas");
 	}
 
-	public Component createSpriteView(ImageResource main, ImageResource filter) {
-		return ControlUtils.asyncFill(() -> {
-			init();
-			return atlasData.createView(main.getImage(), filter.getImage());
-		}, 300);
+	public Component createSpriteView(ImageResource main, ImageResource filter, JTabbedPane tabs) {
+		if(!isInitialized){
+			return ControlUtils.asyncFill(() -> {
+				init();
+				return atlasData.createView(main.getImage(), filter.getImage(), tabs);
+			}, 300);
+		}else{
+			return atlasData.createView(main.getImage(), filter.getImage(), tabs);
+		}
 	}
 	
 	@Async
@@ -118,7 +122,7 @@ public class AtlasResource extends Resource{
 		//private JSpriteViewer currentSprite;
 		//private SpriteSavingList currentList;
 		
-		public Component createView(BufferedImage main, BufferedImage filter){
+		public Component createView(BufferedImage main, BufferedImage filter, JTabbedPane tabs){
 			JPanel con = new JPanel(new BorderLayout());
 			SpriteSavingList currentList = new SpriteSavingList(new DefaultListModel<>());
 			sprites.forEach((s) -> ((DefaultListModel<Sprite>) currentList.getModel()).addElement(s));
@@ -128,12 +132,6 @@ public class AtlasResource extends Resource{
 			JPanel westCon = new JPanel(new BorderLayout());
 			westCon.add(ControlUtils.call(new JLabel("Select sprite:"), (c) -> c.setBorder(new EmptyBorder(10, 10, 0, 10))), BorderLayout.NORTH); //Overly complicated, but fun
 			westCon.add(listScroll, BorderLayout.CENTER);
-			JPanel searchCon = new JPanel(new BorderLayout());
-			searchCon.add(new JLabel("Search: "), BorderLayout.WEST);
-			JTextField searchField = new JTextField();
-			searchCon.add(searchField, BorderLayout.CENTER);
-			searchCon.setBorder(new EmptyBorder(0, 10, 5, 10));
-			westCon.add(searchCon, BorderLayout.SOUTH);
 			con.add(westCon, BorderLayout.WEST);
 			JPanel centerCon = new JPanel(new BorderLayout());
 			JSpriteViewer currentSprite = new JSpriteViewer(main, filter);
@@ -146,6 +144,7 @@ public class AtlasResource extends Resource{
 			jspBorder.add(currentSprite, BorderLayout.CENTER);
 			centerCon.add(jspBorder, BorderLayout.CENTER);
 			con.add(centerCon, BorderLayout.CENTER);
+			
 			
 			currentList.setJSP(currentSprite);
 			if(currentList.getModel().getSize() > 0) currentList.setSelectedIndex(0);

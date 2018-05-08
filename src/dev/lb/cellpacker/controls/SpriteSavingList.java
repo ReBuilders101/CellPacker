@@ -69,7 +69,7 @@ public class SpriteSavingList extends JList<Sprite> implements ListSelectionList
 			connectedDetails.append("Sprite size: " + sp.getWidth() + "x" + sp.getHeight() + "\n");
 			connectedDetails.append("Sprite position: " + sp.getX() + "|" + sp.getY() + "\n");
 			connectedDetails.append("Sprite offset: " + sp.getOffsetX() + "|" + sp.getOffsetY() + "\n");
-			connectedDetails.append("Sprite origin: " + sp.getOrigX() + "|" + sp.getOrigY() + "\n");
+			connectedDetails.append("Sprite origin: " + sp.getOrigX() + "|" + sp.getOrigY());
 		}
 	}
 	

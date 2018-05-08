@@ -310,7 +310,7 @@ public class AtlasImageResourceView extends ResourceView{
 		display.add("Main Image", main.getComponent());
 		if(atlas != null){
 			display.add("Atlas file", atlas.getComponent());
-			display.add("Sprite/Animation view", atlas.createSpriteView(main, filter));
+			display.add("Sprite/Animation view", atlas.createSpriteView(main, filter, display));
 			//Sprite view
 		}
 		if(filter != null){
@@ -327,10 +327,10 @@ public class AtlasImageResourceView extends ResourceView{
 		}
 		if(atlas != null && atlasModified){
 			displayOriginal.add("Atlas file", atlasOriginal.getComponent());
-			displayOriginal.add("Sprite/Animation view", atlasOriginal.createSpriteView(mainModified ? mainOriginal : main, filterModified ? filterOriginal : filter));
+			displayOriginal.add("Sprite/Animation view", atlasOriginal.createSpriteView(mainModified ? mainOriginal : main, filterModified ? filterOriginal : filter, displayOriginal));
 		}else if(atlas != null){
 			displayOriginal.add("Atlas file", atlas.getComponent());
-			displayOriginal.add("Sprite/Animation view", atlas.createSpriteView(mainModified ? mainOriginal : main, filterModified ? filterOriginal : filter));
+			displayOriginal.add("Sprite/Animation view", atlas.createSpriteView(mainModified ? mainOriginal : main, filterModified ? filterOriginal : filter, displayOriginal));
 		}
 		if(filter != null && filterModified){
 			displayOriginal.add("Filter Image", filterOriginal.getComponent());

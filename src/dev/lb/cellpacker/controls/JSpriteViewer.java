@@ -33,6 +33,11 @@ public class JSpriteViewer extends JImageViewer{
 		currentSprite = ((BufferedImage) getMainImage()).getSubimage(x, y, width, height);
 		this.repaint();
 	}
+	
+	public void setNoSprite(){
+		currentSprite = EMPTY_SPRITE;
+		this.repaint();
+	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
