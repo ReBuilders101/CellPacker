@@ -67,11 +67,9 @@ public class JImageViewer extends JPanel implements MouseWheelListener{
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		int clicks = e.getWheelRotation();
 		if(clicks < 0 && scrollFactor < 5){ //ZOOM IN
-			scrollFactor *= Math.pow(1.5, clicks);
-			System.out.println("HIn");
+			scrollFactor *= 1.5;
 		}else if(clicks > 0 && scrollFactor > 0.2){ //ZOOM OUT
-			System.out.println("HI");
-			scrollFactor *= Math.pow(2D/3D, clicks);
+			scrollFactor /= 1.25D;
 		}
 		this.revalidate();
 	}

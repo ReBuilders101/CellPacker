@@ -7,7 +7,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -15,6 +14,7 @@ import dev.lb.cellpacker.Logger;
 import dev.lb.cellpacker.annotation.Async;
 import dev.lb.cellpacker.annotation.Calculated;
 import dev.lb.cellpacker.controls.ControlUtils;
+import dev.lb.cellpacker.controls.JDraggableScrollPane;
 import dev.lb.cellpacker.controls.JImageViewer;
 
 public class ImageResource extends Resource{
@@ -72,12 +72,12 @@ public class ImageResource extends Resource{
 				init();
 				jim = new JImageViewer(content);
 				jim.setOverlay(overlay);
-				return new JScrollPane(jim);//new JScrollPane(new JLabel(getIcon()));
+				return new JDraggableScrollPane(jim);//new JScrollPane(new JLabel(getIcon()));
 			}, 300);
 		}else{
 			jim = new JImageViewer(content);
 			jim.setOverlay(overlay);
-			return new JScrollPane(jim);//new JScrollPane(new JLabel(getIcon()));
+			return new JDraggableScrollPane(jim);//new JScrollPane(new JLabel(getIcon()));
 		}
 	}
 
