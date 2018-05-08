@@ -15,6 +15,9 @@ import dev.lb.cellpacker.structure.resource.Resource;
 
 public class AtlasImageResourceView extends ResourceView{
 
+	public static final int MAIN_IMAGE_TAB_INDEX = 0;
+	public static final int FILTER_IMAGE_TAB_INDEX = 3;
+	
 	private String name;
 	
 	private ImageResource main;

@@ -14,10 +14,9 @@ public class JSpriteViewer extends JImageViewer{
 	}
 	
 	private BufferedImage currentSprite = EMPTY_SPRITE;
-	
-	public JSpriteViewer(BufferedImage mainImage) {
-		super(mainImage);
-	}
+	private BufferedImage currentSpriteF = EMPTY_SPRITE;
+	private boolean filter;
+	private int cx, cy, cw, ch;
 	
 	public JSpriteViewer(BufferedImage mainImage, BufferedImage filterImage) {
 		super(mainImage);
@@ -31,14 +30,28 @@ public class JSpriteViewer extends JImageViewer{
 	
 	public void setSprite(int x, int y, int width, int height){
 		currentSprite = ((BufferedImage) getMainImage()).getSubimage(x, y, width, height);
+		currentSpriteF = ((BufferedImage) getOverlay()).getSubimage(x, y, width, height);
+		cx = x;
+		cy = y;
+		cw = width;
+		ch = height;
 		this.repaint();
 	}
 	
 	public void setNoSprite(){
 		currentSprite = EMPTY_SPRITE;
+		cx = 0;
+		cy = 0;
+		cw = 0;
+		ch = 0;
 		this.repaint();
 	}
 
+	public void setUseFilter(boolean useFilter){
+		filter = useFilter;
+		repaint();
+	}
+	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		//No scrolling allowed
@@ -61,6 +74,22 @@ public class JSpriteViewer extends JImageViewer{
 			startY = 0;
 		}
 		g.clearRect(0, 0, getWidth(), getHeight());
-		g.drawImage(currentSprite, startX, startY, scaleWidth, scaleHeight, this);
+		g.drawImage(filter ? currentSpriteF : currentSprite, startX, startY, scaleWidth, scaleHeight, this);
+	}
+
+	public int getCx() {
+		return cx;
+	}
+
+	public int getCy() {
+		return cy;
+	}
+
+	public int getCw() {
+		return cw;
+	}
+
+	public int getCh() {
+		return ch;
 	}
 }

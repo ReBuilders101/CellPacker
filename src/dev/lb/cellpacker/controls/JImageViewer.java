@@ -15,6 +15,8 @@ public class JImageViewer extends JPanel implements MouseWheelListener{
 	private Image image;
 	private Image overlay;
 	
+	private double scrollFactor = 1.0D;
+	
 	public JImageViewer(Image mainImage) {
 		image = mainImage;
 		this.addMouseWheelListener(this);
@@ -23,9 +25,9 @@ public class JImageViewer extends JPanel implements MouseWheelListener{
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(image, 0, 0, getPreferredSize().width, getPreferredSize().height, getBackground(), this);
+		g.drawImage(image, 0, 0, (int) (getPreferredSize().width * scrollFactor), (int) (getPreferredSize().height * scrollFactor), getBackground(), this);
 		if(overlay != null){
-			g.drawImage(overlay, 0, 0, getPreferredSize().width, getPreferredSize().height, getBackground(), this);
+			g.drawImage(overlay, 0, 0, (int) (getPreferredSize().width * scrollFactor), (int) (getPreferredSize().height * scrollFactor), getBackground(), this);
 		}
 	}
 	
@@ -44,7 +46,7 @@ public class JImageViewer extends JPanel implements MouseWheelListener{
 	
 	@Override
 	public Dimension getPreferredSize(){
-		return new Dimension(image.getWidth(this), image.getHeight(this));
+		return new Dimension((int) (image.getWidth(this) * scrollFactor), (int) (image.getHeight(this) * scrollFactor));
 	}
 
 	@Override
@@ -58,13 +60,20 @@ public class JImageViewer extends JPanel implements MouseWheelListener{
 	}
 	
 	public void setOverlay(BufferedImage overlay2) {
-		// TODO Auto-generated method stub
-		
+		overlay = overlay2;
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		//Do nothing
+		int clicks = e.getWheelRotation();
+		if(clicks < 0 && scrollFactor < 5){ //ZOOM IN
+			scrollFactor *= Math.pow(1.5, clicks);
+			System.out.println("HIn");
+		}else if(clicks > 0 && scrollFactor > 0.2){ //ZOOM OUT
+			System.out.println("HI");
+			scrollFactor *= Math.pow(2D/3D, clicks);
+		}
+		this.revalidate();
 	}
 
 }

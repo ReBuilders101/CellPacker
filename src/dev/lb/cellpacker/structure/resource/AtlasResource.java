@@ -3,6 +3,7 @@ package dev.lb.cellpacker.structure.resource;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -11,9 +12,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -138,13 +143,33 @@ public class AtlasResource extends Resource{
 			JTextArea details = new JTextArea();
 			details.setBorder(new EmptyBorder(10, 20, 10, 20));
 			currentList.setDetailsArea(details);
-			centerCon.add(details, BorderLayout.SOUTH);
+			JPanel southCon = new JPanel(new BorderLayout());
+			southCon.add(details, BorderLayout.CENTER);
+			JPanel options = new JPanel(new GridLayout(2, 2));
+			// OPTIONS
+			JRadioButton jrbMain = new JRadioButton("Show main image", true);
+			JRadioButton jrbFilt = new JRadioButton("Show Filter image", false);
+			ButtonGroup group = new ButtonGroup();
+			group.add(jrbMain);
+			group.add(jrbFilt);
+			currentList.setRadioButtons(jrbMain, jrbFilt);
+			
+			JCheckBox highlight = new JCheckBox("Highlight in image", false);
+			JButton animation = new JButton("Animations");
+			currentList.setHighlightButton(highlight, animation);
+			options.add(jrbMain);
+			options.add(jrbFilt);
+			options.add(highlight);
+			options.add(animation);
+			options.setBorder(new EmptyBorder(10, 10, 10, 10));
+			// /OPTIONS
+			southCon.add(options, BorderLayout.EAST);
+			centerCon.add(southCon, BorderLayout.SOUTH);
 			JPanel jspBorder = new JPanel(new BorderLayout());
 			jspBorder.setBorder(new EmptyBorder(20, 20, 20, 20));
 			jspBorder.add(currentSprite, BorderLayout.CENTER);
 			centerCon.add(jspBorder, BorderLayout.CENTER);
 			con.add(centerCon, BorderLayout.CENTER);
-			
 			
 			currentList.setJSP(currentSprite);
 			if(currentList.getModel().getSize() > 0) currentList.setSelectedIndex(0);
