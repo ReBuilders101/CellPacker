@@ -87,9 +87,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			jfc.setFileFilter(new FileNameExtensionFilter("Dead Cells Resource File", "*.pak", "pak", ".pak"));
 			int result = jfc.showOpenDialog(this);
 			if(result == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
-				view = new SearchableResourceViewManager(ResourceFile.fromFile(jfc.getSelectedFile()));
-				view.setTree(tree);
-				view.setSearchString("", tree);
+				setResourceFileOnStart(ResourceFile.fromFile(jfc.getSelectedFile()));
 			}
 		});
 		reuseable.setToolTipText("Open a Dead Cells resource file to view its contents (usually called res.pak)");
@@ -217,8 +215,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		if(tree.getSelectionPath() != null){
 			ResourceView ro = (ResourceView) ((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent()).getUserObject();
 			ro.focusLost();
+			System.out.println(tree.getSelectionPath());
 			System.out.println("Lost: " + ro);
 		}
+
+		tree.setSelectionPath(new TreePath(tree.getModel().getRoot()));
 		if(view != null) view.setSearchString(searchField.getText(), tree);
 	}
 	

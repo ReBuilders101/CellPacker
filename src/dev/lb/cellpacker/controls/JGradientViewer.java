@@ -6,6 +6,7 @@ import java.awt.Image;
 
 import javax.swing.JComponent;
 
+@Deprecated
 public class JGradientViewer extends JComponent{
 	private static final long serialVersionUID = -5240831319472620771L;
 	private Image image;

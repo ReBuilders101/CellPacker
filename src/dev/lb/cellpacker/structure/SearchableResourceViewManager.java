@@ -22,6 +22,8 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 	public String getSearchString() {
 		return searchString;
 	}
+	
+	
 
 	public boolean setSearchString(String searchString) {
 		String old = this.searchString;
@@ -31,7 +33,7 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 	
 	public void setSearchString(String searchString, JTree toUpdate){
 		if(setSearchString(searchString)){
-			this.setTree(toUpdate);
+			setTree(toUpdate);
 		}
 	}
 
@@ -50,6 +52,4 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 		}
 		return root;
 	}
-	
-
 }
