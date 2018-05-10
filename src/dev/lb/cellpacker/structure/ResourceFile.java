@@ -1,10 +1,12 @@
 package dev.lb.cellpacker.structure;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -152,8 +154,8 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 				int offset = decodeInt(Arrays.copyOfRange(bytes, pointer + 1, pointer + 5));
 				int length = decodeInt(Arrays.copyOfRange(bytes, pointer + 5, pointer + 9));
 //				System.err.println(offset + " | " + length);
-				head.put(current.getName() + "/" + name, pointer + 1);
 				Resource newRes = Resource.createFromExtension(name, Arrays.copyOfRange(bytes, datatag + offset, datatag + offset + length));
+				head.put(current.getName() + "/" + newRes.getName(), pointer + 1);
 				current.addResource(newRes);
 				pointer += 13;
 				System.out.println("Added " + name + " to " + current.getName());
@@ -171,6 +173,103 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 		
 		return new ResourceFile(all, bytes, datatag, head);
 		
+	}
+	
+	public static ResourceFile fromFolder(File headerFile, File folder){
+		//Header file
+		byte[] header = new byte[(int) headerFile.length()];
+		Map<String, Resource> data = new HashMap<>();
+		try(FileInputStream fis = new FileInputStream(headerFile)){
+			fis.read(header);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//Iterate through folders like categories
+		for(File subfolder : folder.listFiles(File::isDirectory)){
+			String categoryName = subfolder.getName();
+			//Iterate through files like resources 
+			for(File resource : subfolder.listFiles(File::isFile)){
+				//Create a resource from the file
+				byte[] resourceData = new byte[(int) resource.length()];
+				try(FileInputStream fis = new FileInputStream(resource)){
+					fis.read(resourceData);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				Resource newRes = Resource.createFromExtension(resource.getName(), resourceData);
+				data.put(categoryName + "/" + newRes.getName(), newRes);
+			}
+		}
+		//Now the header map
+		Map<String, Integer> headerMap = new HashMap<>();
+		
+		int datatag = decodeInt(Arrays.copyOfRange(header, 4, 8));
+		int pointer = 0x12;
+		
+		String currentCategory = "$INVALID$";
+		do{
+			//Read name
+			int stringLength = header[pointer] & 0xFF;
+			String name = new String(Arrays.copyOfRange(header, pointer + 1, pointer + stringLength + 1));
+			pointer += stringLength + 1;
+			//Category or Resource
+			if(header[pointer] == (byte) 0x00){//Resource
+				//The name for sounds has to be corrected:
+				if(name.endsWith(".wav")){
+					name = name.substring(0, name.length() - 4) + ".ogg";
+				}
+				headerMap.put(currentCategory + "/" + name, pointer + 1);
+				pointer += 13;
+			}else{//new Category, change name string
+				currentCategory = name;
+				pointer += 5;
+			}
+		}while(pointer + 5 < datatag);
+		
+		
+		
+		//And parse again
+		return ResourceFile.fromTemplate(header, headerMap, data);
+	}
+	
+	public static ResourceFile fromTemplate(ResourceFile template, Map<String, Resource> data){
+		return ResourceFile.fromTemplate(template.getHeader(), template.header, data);
+	}
+	
+	public static ResourceFile fromTemplate(byte[] headerTemplate, Map<String, Integer> headerMap, Map<String, Resource> data){
+		//The data part has to be re-built
+		int dataPointer = 0;
+		byte[] headerPart = Arrays.copyOf(headerTemplate, headerTemplate.length);
+		ByteArrayOutputStream dataPart = new ByteArrayOutputStream();
+		//Iterate over the header keys, look up resource and change offsets
+		for(String resName : headerMap.keySet()){
+			Resource toPut = data.get(resName);
+			//Read all values that have to be rewritten
+			int headerPointer = headerMap.get(resName);
+			byte[] offset = encodeInt(dataPointer);
+			byte[] size   = encodeInt(toPut.getLength());
+			//Write them to the new header
+			System.arraycopy(offset, 0, headerPart, headerPointer, 4);
+			System.arraycopy(size  , 0, headerPart, headerPointer + 4, 4);
+			//Also write the data
+			try {
+				dataPart.write(toPut.getData());
+			} catch (IOException e) { //Why would this ever happen to a ByteArrayOutputStream ?
+				e.printStackTrace();
+			}
+			dataPointer += toPut.getLength();
+		}
+		//So the changed byte data has to be re-parsed
+		byte[] dataPart2 = dataPart.toByteArray();
+		
+		return ResourceFile.fromBytes(concat(headerPart, dataPart2));
+	}
+	
+	public static byte[] concat(byte[] a, byte[] b){
+		byte[] c = new byte[a.length + b.length];
+		System.arraycopy(a, 0, c, 0, a.length);
+	    System.arraycopy(b, 0, c, a.length, b.length);
+	    return c;
 	}
 	
 	public static byte[] encodeInt(int num){

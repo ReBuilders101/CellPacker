@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -61,6 +62,13 @@ public abstract class ResourceView {
 	 * Does all lazy-load initialization
 	 */
 	public abstract void init();
+	
+	public abstract List<Resource> getAllResources();
+	
+	/**
+	 * returns the name without file extension
+	 */
+	public abstract String getMainName();
 	
 	/**
 	 * Can be overridden to stop sounds or animations.

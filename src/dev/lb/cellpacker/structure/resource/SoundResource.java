@@ -7,8 +7,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.annotation.Async;
-import dev.lb.cellpacker.controls.ControlUtils;
 import dev.lb.cellpacker.controls.JAudioPlayer;
 import dev.lb.sound.ogg.JOrbisDecoder;
 
@@ -59,7 +59,7 @@ public class SoundResource extends Resource{
 	@Override
 	public Component getComponent() {
 		if(!isInitialized){
-			return ControlUtils.asyncFill(() -> {
+			return Utils.asyncFill(() -> {
 				init();
 				current = new JAudioPlayer(content);
 				return current;

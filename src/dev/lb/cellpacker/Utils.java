@@ -1,4 +1,4 @@
-package dev.lb.cellpacker.controls;
+package dev.lb.cellpacker;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -16,8 +16,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 
-public final class ControlUtils {
-	private ControlUtils(){}
+public final class Utils {
+	private Utils(){}
 	
 	public static <T extends JComponent> T setWidth(T control, int width){
 		control.setPreferredSize(new Dimension(width, control.getPreferredSize().height));
@@ -29,7 +29,7 @@ public final class ControlUtils {
 		return control;
 	}
 	
-	public static <T extends JComponent> T call(T object, Consumer<T> action){
+	public static <T> T call(T object, Consumer<T> action){
 		action.accept(object);
 		return object;
 	}

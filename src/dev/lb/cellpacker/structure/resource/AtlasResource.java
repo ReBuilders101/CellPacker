@@ -28,9 +28,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.annotation.Async;
 import dev.lb.cellpacker.annotation.Unmodifiable;
-import dev.lb.cellpacker.controls.ControlUtils;
 import dev.lb.cellpacker.controls.JSpriteViewer;
 import dev.lb.cellpacker.controls.SpriteSavingList;
 
@@ -69,7 +69,7 @@ public class AtlasResource extends Resource{
 	@Override
 	public Component getComponent() {
 		if(!isInitialized){
-			return ControlUtils.asyncFill(() -> {
+			return Utils.asyncFill(() -> {
 				init();
 				textDisplay = new JTextArea(hexString);
 				textDisplay.setLineWrap(true);
@@ -106,7 +106,7 @@ public class AtlasResource extends Resource{
 
 	public Component createSpriteView(ImageResource main, ImageResource filter, JTabbedPane tabs) {
 		if(!isInitialized){
-			return ControlUtils.asyncFill(() -> {
+			return Utils.asyncFill(() -> {
 				init();
 				return atlasData.createView(main.getImage(), filter.getImage(), tabs);
 			}, 300);
@@ -135,7 +135,7 @@ public class AtlasResource extends Resource{
 			JScrollPane listScroll = new JScrollPane(currentList);
 			listScroll.setBorder(new CompoundBorder(new EmptyBorder(10, 10, 10, 10), listScroll.getBorder()));
 			JPanel westCon = new JPanel(new BorderLayout());
-			westCon.add(ControlUtils.call(new JLabel("Select sprite:"), (c) -> c.setBorder(new EmptyBorder(10, 10, 0, 10))), BorderLayout.NORTH); //Overly complicated, but fun
+			westCon.add(Utils.call(new JLabel("Select sprite:"), (c) -> c.setBorder(new EmptyBorder(10, 10, 0, 10))), BorderLayout.NORTH); //Overly complicated, but fun
 			westCon.add(listScroll, BorderLayout.CENTER);
 			con.add(westCon, BorderLayout.WEST);
 			JPanel centerCon = new JPanel(new BorderLayout());

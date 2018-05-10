@@ -1,11 +1,15 @@
 package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.structure.resource.Resource;
 import dev.lb.cellpacker.structure.resource.SoundResource;
 
@@ -17,7 +21,6 @@ public class SingleResourceView extends ResourceView{
 	private String viewName;
 	private boolean showOriginal;
 	private boolean isInitialized;
-	
 	private JTabbedPane display;
 	private JTabbedPane displayOriginal;
 	private JMenuItem[] menu;
@@ -157,6 +160,16 @@ public class SingleResourceView extends ResourceView{
 		if(originalResource instanceof SoundResource){
 			((SoundResource) originalResource).stopPlaying();
 		}
+	}
+
+	@Override
+	public String getMainName() {
+		return currentResource.getMainName();
+	}
+
+	@Override
+	public List<Resource> getAllResources() {
+		return Utils.call(new ArrayList<>(), (l) -> l.add(currentResource));
 	}
 	
 	

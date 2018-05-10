@@ -2,6 +2,9 @@ package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -9,6 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.structure.resource.AtlasResource;
 import dev.lb.cellpacker.structure.resource.ImageResource;
 import dev.lb.cellpacker.structure.resource.Resource;
@@ -350,6 +354,16 @@ public class AtlasImageResourceView extends ResourceView{
 			displayOriginal.add("Filter Image", filter.getComponent());
 		}
 		//displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
+	}
+
+	@Override
+	public String getMainName() {
+		return main.getMainName();
+	}
+
+	@Override
+	public List<Resource> getAllResources() {
+		return Utils.call(new ArrayList<>(), (l) -> { l.add(main); l.add(atlas); l.add(filter); });
 	}
 	
 }

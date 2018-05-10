@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
@@ -16,6 +18,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dev.lb.cellpacker.Logger;
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.structure.resource.ImageResource;
 import dev.lb.cellpacker.structure.resource.Resource;
 
@@ -146,5 +149,15 @@ public class StaticResourceView extends ResourceView{
 	@Override
 	public void exportResourceView(Component dialogParent) {
 		JOptionPane.showMessageDialog(dialogParent, "This resource can not be modified and can not be written to a file", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	@Override
+	public String getMainName() {
+		return "$STATIC$";
+	}
+
+	@Override
+	public List<Resource> getAllResources() {
+		return Utils.call(new ArrayList<>(), (l) -> l.add(resource));
 	}
 }

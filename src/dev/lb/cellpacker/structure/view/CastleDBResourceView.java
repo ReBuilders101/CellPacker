@@ -1,8 +1,11 @@
 package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
+import java.util.List;
 
 import javax.swing.JMenuItem;
+
+import dev.lb.cellpacker.structure.resource.Resource;
 
 public class CastleDBResourceView extends ResourceView{
 
@@ -64,6 +67,19 @@ public class CastleDBResourceView extends ResourceView{
 	public void init() {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public String getMainName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Resource> getAllResources() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

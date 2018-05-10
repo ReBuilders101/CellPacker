@@ -107,14 +107,9 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		//EXPORTALL
 		reuseable = new JMenuItem("Export all");
 		reuseable.setToolTipText("Export all resources to a folder. (and create a header template file for future imports)");
-		file.add(reuseable);
-		//EXPORTTHIS
-		reuseable = new JMenuItem("Export current resource");
-		reuseable.setToolTipText("Export the currently selected resource as a file. (Only the resource on the selected tab)");
-		file.add(reuseable);
-		//EXPORTVIEW
-		reuseable = new JMenuItem("Export current view");
-		reuseable.setToolTipText("Export the currently selected resource view. (This might be more than one file)");
+		reuseable.addActionListener((e) -> {
+			
+		});
 		file.add(reuseable);
 		file.addSeparator();
 		//QUIT

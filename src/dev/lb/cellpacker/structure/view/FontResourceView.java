@@ -2,6 +2,8 @@ package dev.lb.cellpacker.structure.view;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -10,6 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.structure.resource.FontResource;
 import dev.lb.cellpacker.structure.resource.ImageResource;
 import dev.lb.cellpacker.structure.resource.Resource;
@@ -246,6 +249,16 @@ public class FontResourceView extends ResourceView {
 		displayOriginal.addTab("Character View", (fontModified ? fontOriginal : font).getCharView(imageModified ? imageOriginal : image));
 		displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
 		isInitialized = true;
+	}
+
+	@Override
+	public String getMainName() {
+		return font.getMainName();
+	}
+
+	@Override
+	public List<Resource> getAllResources() {
+		return Utils.call(new ArrayList<>(), (l) -> { l.add(image); l.add(font); });
 	}
 
 }

@@ -9,7 +9,7 @@ import javax.swing.JTextArea;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import dev.lb.cellpacker.controls.ControlUtils;
+import dev.lb.cellpacker.Utils;
 
 public class FontResource extends Resource{
 	
@@ -31,7 +31,7 @@ public class FontResource extends Resource{
 	@Override
 	public Component getComponent() {
 		if(!isInitialized){
-			return ControlUtils.asyncFill(() -> {
+			return Utils.asyncFill(() -> {
 				init();
 				textDisplay = new JTextArea(hexString);
 				textDisplay.setLineWrap(true);

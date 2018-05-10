@@ -11,9 +11,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dev.lb.cellpacker.Logger;
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.annotation.Async;
 import dev.lb.cellpacker.annotation.Calculated;
-import dev.lb.cellpacker.controls.ControlUtils;
 import dev.lb.cellpacker.controls.JDraggableScrollPane;
 import dev.lb.cellpacker.controls.JImageViewer;
 
@@ -68,7 +68,7 @@ public class ImageResource extends Resource{
 	@Override
 	public Component getComponent() {
 		if(!isInitialized){
-			return ControlUtils.asyncFill(() -> {
+			return Utils.asyncFill(() -> {
 				init();
 				jim = new JImageViewer(content);
 				jim.setOverlay(overlay);

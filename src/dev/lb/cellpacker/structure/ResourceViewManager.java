@@ -32,10 +32,8 @@ public class ResourceViewManager {
 		views = new HashMap<>();
 		file = res;
 		for(ResourceFile.Category cat : res.getCategories()){
-//			System.out.println(cat.getName() + ": " + cat.getResources().size());
 			for(Resource r : cat.getResources()){
 				//Find the type of the resource
-//				System.out.println(r.getName() + cat.getName());
 				if(r.getName().endsWith(".ogg") ||
 				   r.getName().endsWith(".json") ||
 				   r.getName().endsWith(".cdb")){
@@ -134,6 +132,20 @@ public class ResourceViewManager {
 		return root;
 	}
 	
+	public ResourceFile processChanges(){
+		//Iterate over all resources and create a new map:
+		Map<String, Resource> map = new HashMap<>();
+		for(String name : views.keySet()){
+			for(ResourceView rv : views.get(name)){
+				for(Resource res : rv.getAllResources()){
+					map.put(name + "/" + res.getName(), res);
+				}
+			}
+		}
+		return ResourceFile.fromTemplate(file, map);
+	}
+	
+	@Deprecated
 	public void buildAll(){
 		for(Map.Entry<String, List<ResourceView>> cat : views.entrySet()){
 			for(ResourceView rv : cat.getValue()){
