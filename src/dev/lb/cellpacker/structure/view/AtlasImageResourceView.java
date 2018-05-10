@@ -101,7 +101,7 @@ public class AtlasImageResourceView extends ResourceView{
 					main = (ImageResource) newRes0;
 					mainModified = true;
 				}
-				init();
+				forceInit();
 			}
 			break;
 		case 1:
@@ -114,7 +114,7 @@ public class AtlasImageResourceView extends ResourceView{
 					atlas = (AtlasResource) newRes1;
 					atlasModified = true;
 				}
-				init();
+				forceInit();
 			}
 			break;
 		case 2:
@@ -308,7 +308,7 @@ public class AtlasImageResourceView extends ResourceView{
 			});
 			menu[6] = new JMenuItem("$Sep$");
 			menu[7] = new JCheckBoxMenuItem("Show Original");
-			menu[7].setToolTipText("Replace the currently visible resource with a file");
+			menu[7].setToolTipText("Shows how this resource looked before making changes to it");
 			((JCheckBoxMenuItem) menu[7]).addChangeListener((e) -> {
 				((JCheckBoxMenuItem) menu[7]).setSelected(setShowOriginals(((JCheckBoxMenuItem) menu[7]).isSelected()));
 			});

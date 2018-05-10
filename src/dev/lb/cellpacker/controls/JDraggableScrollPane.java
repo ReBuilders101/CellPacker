@@ -24,8 +24,10 @@ public class JDraggableScrollPane extends JScrollPane implements MouseMotionList
 
 	public JDraggableScrollPane(Component view) {
 		super(view);
-		this.getViewport().getView().addMouseMotionListener(this);
-		this.getViewport().getView().addMouseListener(this);
+		if(this.getViewport().getView() != null){
+			this.getViewport().getView().addMouseMotionListener(this);
+			this.getViewport().getView().addMouseListener(this);
+		}
 	}
 
 	@Override
