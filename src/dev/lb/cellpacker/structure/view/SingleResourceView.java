@@ -16,6 +16,7 @@ public class SingleResourceView extends ResourceView{
 	private boolean changesMade;
 	private String viewName;
 	private boolean showOriginal;
+	private boolean isInitialized;
 	
 	private JTabbedPane display;
 	private JTabbedPane displayOriginal;
@@ -27,6 +28,7 @@ public class SingleResourceView extends ResourceView{
 		changesMade = false;
 		showOriginal = false;
 		viewName = name;
+		isInitialized = false;
 	}
 	
 	@Override
@@ -58,7 +60,7 @@ public class SingleResourceView extends ResourceView{
 				currentResource = newRes;
 				changesMade = true;
 			}
-			init();
+			forceInit();
 		}
 	}
 
@@ -68,7 +70,7 @@ public class SingleResourceView extends ResourceView{
 			currentResource = originalResource;
 			originalResource = null;
 			changesMade = false;
-			init();
+			forceInit();
 		}else if(!changesMade){
 			JOptionPane.showMessageDialog(dialogParent, "This resource is still unmodified and can not be restored.", "Info", JOptionPane.INFORMATION_MESSAGE);
 		}
@@ -80,7 +82,7 @@ public class SingleResourceView extends ResourceView{
 			currentResource = originalResource;
 			originalResource = null;
 			changesMade = false;
-			init();
+			forceInit();
 		}
 	}
 
@@ -92,6 +94,7 @@ public class SingleResourceView extends ResourceView{
 
 	@Override
 	public void init() {
+		if(isInitialized) return;
 		if(menu == null){
 			menu = new JMenuItem[5];
 			menu[0] = new JMenuItem("Export this resource");
@@ -128,6 +131,12 @@ public class SingleResourceView extends ResourceView{
 			displayOriginal.add("Resource", originalResource.getComponent());
 			//displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
 		}
+		isInitialized = true;
+	}
+	
+	private void forceInit(){
+		isInitialized = false;
+		init();
 	}
 
 	@Override

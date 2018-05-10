@@ -215,8 +215,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		if(tree.getSelectionPath() != null){
 			ResourceView ro = (ResourceView) ((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent()).getUserObject();
 			ro.focusLost();
-			System.out.println(tree.getSelectionPath());
-			System.out.println("Lost: " + ro);
 		}
 
 		tree.setSelectionPath(new TreePath(tree.getModel().getRoot()));

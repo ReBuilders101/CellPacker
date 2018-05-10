@@ -33,6 +33,8 @@ public class AtlasImageResourceView extends ResourceView{
 	
 	private boolean showOriginal;
 	
+	private boolean isInitialized;
+	
 	private JTabbedPane display;
 	private JTabbedPane displayOriginal;
 	private JMenuItem[] menu;
@@ -47,8 +49,14 @@ public class AtlasImageResourceView extends ResourceView{
 		atlasModified = false;
 		filterModified = false;
 		showOriginal = false;
+		isInitialized = false;
 	}
 
+	private void forceInit(){
+		isInitialized = false;
+		init();
+	}
+	
 	@Override
 	public String getName() {
 		return name;
@@ -119,7 +127,7 @@ public class AtlasImageResourceView extends ResourceView{
 					filter = (ImageResource) newRes2;
 					filterModified = true;
 				}
-				init();
+				forceInit();
 			}
 			break;
 		}
@@ -176,7 +184,7 @@ public class AtlasImageResourceView extends ResourceView{
 				filterModified = false;
 				break;
 			}
-			init();
+			forceInit();
 		}
 	}
 
@@ -197,7 +205,7 @@ public class AtlasImageResourceView extends ResourceView{
 			filterOriginal = null;
 			filterModified = false;
 		}
-		init();
+		forceInit();
 	}
 
 	@Override
@@ -242,6 +250,7 @@ public class AtlasImageResourceView extends ResourceView{
 	
 	@Override
 	public void init() {
+		if(isInitialized) return;
 		if(menu == null){
 			menu = new JMenuItem[8];
 			JMenu views = new JMenu("Show view");
@@ -303,7 +312,7 @@ public class AtlasImageResourceView extends ResourceView{
 			((JCheckBoxMenuItem) menu[7]).addChangeListener((e) -> {
 				((JCheckBoxMenuItem) menu[7]).setSelected(setShowOriginals(((JCheckBoxMenuItem) menu[7]).isSelected()));
 			});
-			
+			isInitialized = true;
 		}
 		//First the currents
 		if(display == null){

@@ -26,12 +26,15 @@ public class FontResourceView extends ResourceView {
 	private boolean fontModified;
 	private boolean imageModified;
 	
+	private boolean isInitialized;
+	
 	private JMenuItem[] menu;
 	
 	public FontResourceView(String resName, ImageResource png, FontResource fnt) {
 		name = resName;
 		font = fnt;
 		image = png;
+		isInitialized = false;
 	}
 
 	@Override
@@ -67,7 +70,7 @@ public class FontResourceView extends ResourceView {
 					font = (FontResource) res;
 					fontModified = true;
 				}
-				init();
+				forceInit();
 			}
 		}else if(response == 1){
 			Resource res = ResourceView.selectReplaceResource(dialogParent, image);
@@ -79,7 +82,7 @@ public class FontResourceView extends ResourceView {
 					image = (ImageResource) res;
 					imageModified = true;
 				}
-				init();
+				forceInit();
 			}
 		}
 	}
@@ -93,12 +96,12 @@ public class FontResourceView extends ResourceView {
 				font = fontOriginal;
 				fontOriginal = null;
 				fontModified = false;
-				init();
+				forceInit();
 			}else if(response == 1){
 				image = imageOriginal;
 				imageOriginal = null;
 				imageModified = false;
-				init();
+				forceInit();
 			}
 		}else if(imageModified){
 			if(JOptionPane.showConfirmDialog(dialogParent, "<html>Changes made to this resource will be lost.<br>Are you sure you want to restore this resource?",
@@ -106,7 +109,7 @@ public class FontResourceView extends ResourceView {
 				image = imageOriginal;
 				imageOriginal = null;
 				imageModified = false;
-				init();
+				forceInit();
 			}
 		}else if(fontModified){
 			if(JOptionPane.showConfirmDialog(dialogParent, "<html>Changes made to this resource will be lost.<br>Are you sure you want to restore this resource?",
@@ -114,7 +117,7 @@ public class FontResourceView extends ResourceView {
 				font = fontOriginal;
 				fontOriginal = null;
 				fontModified = false;
-				init();
+				forceInit();
 			}
 		}else{
 			JOptionPane.showMessageDialog(dialogParent, "This resource is still unmodified and can not be restored.", "Info", JOptionPane.INFORMATION_MESSAGE);
@@ -127,14 +130,13 @@ public class FontResourceView extends ResourceView {
 			font = fontOriginal;
 			fontOriginal = null;
 			fontModified = false;
-			init();
 		}
 		if(imageModified){
 			image = imageOriginal;
 			imageOriginal = null;
 			imageModified = false;
-			init();
 		}
+		forceInit();
 	}
 
 	@Override
@@ -165,24 +167,33 @@ public class FontResourceView extends ResourceView {
 		}
 	}
 
+	private void forceInit(){
+		isInitialized = true;
+		init();
+	}
+	
 	@Override
 	public void init() {
+		if(isInitialized) return;
 		if(menu == null){
 			//make a menu
 			menu = new JMenuItem[1];
 			menu[0] = new JMenuItem("$TEMP");
 		}
-		display = new JTabbedPane();
+		if(display == null) display = new JTabbedPane();
+		display.removeAll();
 		display.add("Character Image", image.getComponent());
 		display.add("Font description file", font.getComponent());
 		display.addTab("Character View", font.getCharView(image));
 		display.setComponentPopupMenu(ResourceView.createPopup(menu));
 		
-		displayOriginal = new JTabbedPane();
+		if(displayOriginal == null) displayOriginal = new JTabbedPane();
+		display.removeAll();
 		display.add("Character Image", (imageModified ? imageOriginal : image).getComponent());
 		display.add("Font description file",(fontModified ? fontOriginal : font).getComponent());
 		display.addTab("Character View", (fontModified ? fontOriginal : font).getCharView(imageModified ? imageOriginal : image));
 		displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
+		isInitialized = true;
 	}
 
 }

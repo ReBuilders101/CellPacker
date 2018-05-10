@@ -8,8 +8,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import dev.lb.cellpacker.Logger;
 import dev.lb.cellpacker.annotation.Shortcut;
@@ -20,10 +22,11 @@ import dev.lb.cellpacker.structure.resource.Resource;
 public class ResourceFile implements Iterable<Category>,ByteData{
 	
 	private List<Category> cat;
+	private Map<String, Integer> header;
 	private byte[] data;
 	private int dataStartPointer;
 	
-	private ResourceFile(List<Category> cat, byte[] data, int ptr) {
+	private ResourceFile(List<Category> cat, byte[] data, int ptr, Map<String, Integer> header) {
 		this.cat = cat;
 		this.data = data;
 		this.dataStartPointer = ptr;
@@ -47,6 +50,11 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 	
 	public byte[] getHeader(){
 		return Arrays.copyOf(getData(), dataStartPointer);
+	}
+	
+	@Unmodifiable
+	public Map<String, Integer> getHeaderMap(){
+		return Collections.unmodifiableMap(header);
 	}
 	
 	public byte[] getBody(){
@@ -131,6 +139,7 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 		//2. Read header
 		Category current = null;
 		List<Category> all = new ArrayList<>();
+		Map<String, Integer> head = new HashMap<>();
 		
 		do{
 			//Read identifier
@@ -143,6 +152,7 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 				int offset = decodeInt(Arrays.copyOfRange(bytes, pointer + 1, pointer + 5));
 				int length = decodeInt(Arrays.copyOfRange(bytes, pointer + 5, pointer + 9));
 //				System.err.println(offset + " | " + length);
+				head.put(current.getName() + "/" + name, pointer + 1);
 				Resource newRes = Resource.createFromExtension(name, Arrays.copyOfRange(bytes, datatag + offset, datatag + offset + length));
 				current.addResource(newRes);
 				pointer += 13;
@@ -159,7 +169,7 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 			//System.out.println(pointer + " | " + datatag);
 		}while(pointer + 5 < datatag);
 		
-		return new ResourceFile(all, bytes, datatag);
+		return new ResourceFile(all, bytes, datatag, head);
 		
 	}
 	
