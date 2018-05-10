@@ -4,9 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,6 +61,31 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 	
 	public byte[] getBody(){
 		return Arrays.copyOfRange(getData(), dataStartPointer, getLength());
+	}
+	
+	public void writeAllResources(File targetFolder){
+		//Iterate over categories and create folders
+		targetFolder.mkdirs();
+		for(Category cat : getCategories()){
+			File subFolder = new File(targetFolder.getAbsolutePath() + File.separator + cat.getName());
+			subFolder.mkdir();
+			for(Resource res : cat.getResources()){
+				//Write resource
+				File resFile = new File(subFolder.getAbsolutePath() + File.separator + res.getName());
+				try(FileOutputStream fos = new FileOutputStream(resFile)){
+					fos.write(res.getData());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		//Also write the header
+		File header = new File(targetFolder.getAbsolutePath() + File.separator + "res.pak.header");
+		try(FileOutputStream fos = new FileOutputStream(header)){
+			fos.write(getHeader());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static class Category implements Iterable<Resource>{
