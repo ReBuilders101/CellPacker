@@ -203,6 +203,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				JOptionPane.showMessageDialog(this, "No resource is selected", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			rv.focusLost();
 			rv.forceInit();
 		});
 		edit.add(reuseable);
