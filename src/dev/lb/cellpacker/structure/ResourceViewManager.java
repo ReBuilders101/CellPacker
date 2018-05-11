@@ -1,8 +1,11 @@
 package dev.lb.cellpacker.structure;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +158,7 @@ public class ResourceViewManager {
 			newData[0] = 0x42;
 			newData[1] = 0x41;
 			newData[2] = 0x54;
-			newData[4] = 0x4C;
+			newData[3] = 0x4C;
 			System.arraycopy(data, nr.getStart(), newData, 4, nr.getSize());
 			ret.put(nr.getName(), new CompoundAtlasResource(nr.getName(), newData, ar.getName(), i));
 		}
@@ -223,13 +226,45 @@ public class ResourceViewManager {
 	public ResourceFile buildFile(){
 		//Iterate over all resources and create a new map:
 		Map<String, Resource> map = new HashMap<>();
+		Map<String, List<CompoundAtlasResource>> compRes = new HashMap<>();
 		for(String name : views.keySet()){
 			for(ResourceView rv : views.get(name)){
 				for(Resource res : rv.getAllResources()){
 					if(res == null) continue;
-					map.put(name + "/" + res.getName(), res);
+					//Pay attention to compound resources
+					if(res instanceof CompoundAtlasResource){
+						String compName = name + "/" + ((CompoundAtlasResource) res).getCompoundFileName();
+						List<CompoundAtlasResource> rlist = compRes.get(compName);
+						if(rlist == null){ //Create list if necessary
+							rlist = new ArrayList<>();
+							compRes.put(compName, rlist);
+						}
+						rlist.add((CompoundAtlasResource) res);
+					}else{
+						map.put(name + "/" + res.getName(), res);
+					}
 				}
 			}
+		}
+		//The also process compounds
+		for(Map.Entry<String, List<CompoundAtlasResource>> e : compRes.entrySet()){
+			Collections.sort(e.getValue(), CompoundAtlasResource::compare);
+			ByteArrayOutputStream data = new ByteArrayOutputStream();
+			try{
+				data.write(new byte[]{0x42, 0x41, 0x54, 0x4C});
+				for(int i = 0; i < e.getValue().size(); i++){
+					CompoundAtlasResource current = e.getValue().get(i);
+					//Everything except the first four bytes
+					data.write(Arrays.copyOfRange(current.getData(), 4, current.getLength()));
+					if(i != e.getValue().size() - 1) {
+						data.write(0);
+					}
+				}
+			}catch(IOException ex){ //How would a BAOS throw an IOExecption - Last words before the fatal crash
+				ex.printStackTrace();
+			}
+			AtlasResource newRes = new AtlasResource(e.getValue().get(0).getCompoundFileName(), data.toByteArray());
+			map.put(e.getKey(), newRes);
 		}
 		return ResourceFile.fromTemplate(file, map);
 	}

@@ -18,4 +18,15 @@ public class CompoundAtlasResource extends AtlasResource{
 	public int getIndex() {
 		return index;
 	}
+	
+	public static int compare(CompoundAtlasResource o1, CompoundAtlasResource o2) {
+		if(o1.index < o2.index){
+			return -1;
+		}else if(o1.index > o2.index){
+			return 1;
+		}else{ //Equal
+			return 0;
+		}
+	}
+
 }

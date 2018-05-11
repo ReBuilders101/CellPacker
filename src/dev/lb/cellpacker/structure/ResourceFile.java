@@ -291,7 +291,6 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 			
 //			System.out.println(toPut.getName());
 			if(!headerMap.containsKey(resName)) continue; //Something not right, just skip
-			System.err.println(resName + " " + toPut);
 			//Read all values that have to be rewritten
 			int headerPointer = headerMap.get(resName);
 			byte[] offset = encodeInt(dataPointer);

@@ -173,9 +173,11 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	}
 
 	public void setResourceFileOnStart(ResourceFile file){
+		view = null;
 		view = new SearchableResourceViewManager(file);
 		view.setTree(tree);
 		view.setSearchString("", tree);
+		tree.setSelectionPath(new TreePath(tree.getModel().getRoot()));
 	}
 	
 	@Override
