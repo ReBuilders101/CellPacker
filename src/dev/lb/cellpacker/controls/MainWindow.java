@@ -151,7 +151,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				JOptionPane.showMessageDialog(this, "No resource is opened", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if(JOptionPane.showConfirmDialog(this, "<html>Unsaved changes will be lost.<br>Are you sure you want to close the file?", "Quit program", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+			if(JOptionPane.showConfirmDialog(this, "<html>Unsaved changes will be lost.<br>Are you sure you want to close the file?", "Close file", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 				view = null;
 				DefaultMutableTreeNode root2 = new DefaultMutableTreeNode(new StaticResourceView("No Files", "No files loaded", new byte[0]));
 				((DefaultTreeModel) tree.getModel()).setRoot(root2);
@@ -177,9 +177,43 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		resourceMenu.add("<No options available>");
 		edit.add(resourceMenu);
 		edit.addSeparator();
-		edit.add(new JMenuItem("Restore all resources"));
-		edit.add(new JMenuItem("Reload current resource"));
-		edit.add(new JMenuItem("Seach for resource"));
+		//RESTORE
+		reuseable = new JMenuItem("Restore all resources");
+		reuseable.setToolTipText("Restore all resources to their original state");
+		reuseable.addActionListener((e) -> {
+			if(view == null){
+				JOptionPane.showMessageDialog(this, "No resource is opened", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if(JOptionPane.showConfirmDialog(this, "<html>Unsaved changes will be lost.<br>Are you sure you want to restore all resources?", "Restore resources", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+				view.getViewsUnsorted().forEach((v) -> v.restoreAllResources(this));
+			}
+		});
+		edit.add(reuseable);
+		//RELOAD
+		reuseable = new JMenuItem("Reload current resource");
+		reuseable.setToolTipText("Reloads this component and the display elements.");
+		reuseable.addActionListener((e) -> {
+			if(view == null){
+				JOptionPane.showMessageDialog(this, "No resource is opened", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			ResourceView rv = view.getResourceView(tree.getSelectionPath());
+			if(rv == null){
+				JOptionPane.showMessageDialog(this, "No resource is selected", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			rv.forceInit();
+		});
+		edit.add(reuseable);
+		//SEARCH
+		reuseable = new JMenuItem("Seach for resource");
+		reuseable.setToolTipText("Search for a resource view");
+		reuseable.addActionListener((e) -> {
+			String term = JOptionPane.showInputDialog(this, "Search:", "Search for resource view", JOptionPane.QUESTION_MESSAGE);
+			searchField.setText(term);
+		});
+		edit.add(reuseable);
 		menu.add(edit);
 		JMenu data = new JMenu("Game Data");
 		data.add(new JMenuItem("Open data.cdb"));

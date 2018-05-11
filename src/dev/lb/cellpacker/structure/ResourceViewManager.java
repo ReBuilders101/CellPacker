@@ -18,6 +18,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import dev.lb.cellpacker.NamedRange;
+import dev.lb.cellpacker.annotation.Unmodifiable;
 import dev.lb.cellpacker.structure.resource.AtlasResource;
 import dev.lb.cellpacker.structure.resource.CompoundAtlasResource;
 import dev.lb.cellpacker.structure.resource.FontResource;
@@ -117,6 +118,20 @@ public class ResourceViewManager {
 				this.addResourceView(cat.getName(), new StaticResourceView("$NULL", "<html>This category is empty.<br>" + (cat.getName().equals("scroller") ? "The scroller category will always show up as empty,<br>because it actually contains subcategories (the ones named after level names),<br>but the program currently does not support nested categories.<br>Sorry." : "I don't know why."), new byte[0]));
 			}
 		}
+	}
+	
+	@Unmodifiable
+	public Map<String, List<ResourceView>> getViews(){
+		return Collections.unmodifiableMap(views);
+	}
+	
+	@Unmodifiable
+	public List<ResourceView> getViewsUnsorted(){
+		ArrayList<ResourceView> ret = new ArrayList<>();
+		for(String name : views.keySet()){
+			ret.addAll(views.get(name));
+		}
+		return Collections.unmodifiableList(ret);
 	}
 	
 	private static Map<String, AtlasResource> parseCompoundAtlas(AtlasResource ar){
@@ -274,10 +289,10 @@ public class ResourceViewManager {
 	}
 	
 	public static String getCategoryName(TreePath selection){
-		return ((SingleResourceView) selection.getPathComponent(selection.getPathCount() - 2)).getName();
+		return ((ResourceView) ((DefaultMutableTreeNode) selection.getPathComponent(selection.getPathCount() - 2)).getUserObject()).getName();
 	}
 	public static String getViewName(TreePath selection){
-		return ((SingleResourceView) selection.getLastPathComponent()).getName();
+		return ((ResourceView) ((DefaultMutableTreeNode) selection.getLastPathComponent()).getUserObject()).getName();
 	}
 	
 }

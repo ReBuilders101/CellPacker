@@ -141,7 +141,7 @@ public class FontResourceView extends ResourceView {
 			imageOriginal = null;
 			imageModified = false;
 		}
-		forceInit();
+		if(fontModified || imageModified) forceInit();
 	}
 
 	@Override

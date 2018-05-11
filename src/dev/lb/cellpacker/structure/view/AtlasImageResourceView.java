@@ -224,7 +224,7 @@ public class AtlasImageResourceView extends ResourceView{
 			filterOriginal = null;
 			filterModified = false;
 		}
-		forceInit();
+		if(mainModified || atlasModified || filterModified) forceInit();
 	}
 
 	@Override
