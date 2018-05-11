@@ -75,6 +75,8 @@ public abstract class ResourceView {
 	 */
 	public void focusLost(){}
 	
+	public abstract void forceInit();
+	
 	@Override
 	public String toString() {
 		return getName();

@@ -172,7 +172,7 @@ public class FontResourceView extends ResourceView {
 		}
 	}
 
-	private void forceInit(){
+	public void forceInit(){
 		isInitialized = true;
 		init();
 	}

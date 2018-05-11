@@ -160,4 +160,7 @@ public class StaticResourceView extends ResourceView{
 	public List<Resource> getAllResources() {
 		return Utils.call(new ArrayList<>(), (l) -> l.add(resource));
 	}
+
+	@Override
+	public void forceInit() {}
 }

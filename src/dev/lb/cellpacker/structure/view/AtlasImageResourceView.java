@@ -56,7 +56,7 @@ public class AtlasImageResourceView extends ResourceView{
 		isInitialized = false;
 	}
 
-	private void forceInit(){
+	public void forceInit(){
 		isInitialized = false;
 		init();
 	}

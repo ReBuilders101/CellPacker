@@ -28,6 +28,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import dev.lb.cellpacker.structure.ResourceFile;
@@ -112,14 +113,53 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		//IMPORT
 		reuseable = new JMenuItem("Import");
 		reuseable.setToolTipText("Import files as resources by selecting a header template file. (The template is created when using the Export all action)");
+		reuseable.addActionListener((e) -> {
+			if(view != null){
+				if(JOptionPane.showConfirmDialog(this, "A resource file is already opened. Unsaved changes will be lost. Do you want to continue?", "Open Resource",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION){
+					return;
+				}
+			}
+			JFileChooser jfc = new JFileChooser();
+			jfc.setFileFilter(new FileNameExtensionFilter("CellPacker Header File", "*.header", "header", ".header"));
+			if(jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
+				setResourceFileOnStart(ResourceFile.fromFolder(jfc.getSelectedFile(), jfc.getSelectedFile().getParentFile()));
+			}
+		});
 		file.add(reuseable);
 		//EXPORTALL
 		reuseable = new JMenuItem("Export all");
 		reuseable.setToolTipText("Export all resources to a folder. (and create a header template file for future imports)");
 		reuseable.addActionListener((e) -> {
-			
+			if(view == null){
+				JOptionPane.showMessageDialog(this, "No resource is opened", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			JFileChooser jfc = new JFileChooser();
+			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if(jfc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
+				ResourceFile withChanges = view.buildFile();
+				withChanges.writeAllResources(jfc.getSelectedFile());
+			}
 		});
 		file.add(reuseable);
+		//CLOSE
+		reuseable = new JMenuItem("Close");
+		reuseable.setToolTipText("Closes the currently opened resource file");
+		reuseable.addActionListener((e) -> {
+			if(view == null){
+				JOptionPane.showMessageDialog(this, "No resource is opened", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if(JOptionPane.showConfirmDialog(this, "<html>Unsaved changes will be lost.<br>Are you sure you want to close the file?", "Quit program", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+				view = null;
+				DefaultMutableTreeNode root2 = new DefaultMutableTreeNode(new StaticResourceView("No Files", "No files loaded", new byte[0]));
+				((DefaultTreeModel) tree.getModel()).setRoot(root2);
+				tree.setSelectionPath(new TreePath(root));
+			}
+		});
+		file.add(reuseable);
+
 		file.addSeparator();
 		//QUIT
 		reuseable = new JMenuItem("Quit");
@@ -138,6 +178,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		edit.add(resourceMenu);
 		edit.addSeparator();
 		edit.add(new JMenuItem("Restore all resources"));
+		edit.add(new JMenuItem("Reload current resource"));
 		edit.add(new JMenuItem("Seach for resource"));
 		menu.add(edit);
 		JMenu data = new JMenu("Game Data");

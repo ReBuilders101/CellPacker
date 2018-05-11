@@ -82,4 +82,10 @@ public class CastleDBResourceView extends ResourceView{
 		return null;
 	}
 
+	@Override
+	public void forceInit() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -137,7 +137,7 @@ public class SingleResourceView extends ResourceView{
 		isInitialized = true;
 	}
 	
-	private void forceInit(){
+	public void forceInit(){
 		isInitialized = false;
 		init();
 	}
