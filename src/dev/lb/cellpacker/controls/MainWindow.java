@@ -96,6 +96,10 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		reuseable = new JMenuItem("Save");
 		reuseable.setToolTipText("Save the currently opened resource file with all modifications. (To use in-game, simply replace the original res.pak with this one)");
 		reuseable.addActionListener((e) -> {
+			if(view == null){
+				JOptionPane.showMessageDialog(this, "No resource is opened", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			JFileChooser jfc = new JFileChooser();
 			jfc.setFileFilter(new FileNameExtensionFilter("Dead Cells Resource File", "*.pak", "pak", ".pak"));
 			if(jfc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){

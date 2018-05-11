@@ -1,11 +1,11 @@
 package dev.lb.cellpacker.structure;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 import javax.swing.JTree;
@@ -14,7 +14,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import dev.lb.cellpacker.NamedRange;
 import dev.lb.cellpacker.structure.resource.AtlasResource;
+import dev.lb.cellpacker.structure.resource.CompoundAtlasResource;
 import dev.lb.cellpacker.structure.resource.FontResource;
 import dev.lb.cellpacker.structure.resource.ImageResource;
 import dev.lb.cellpacker.structure.resource.Resource;
@@ -91,7 +93,7 @@ public class ResourceViewManager {
 					//Allocate atlas by it's internally saved image name, others: SingleResourceView
 					if(r instanceof AtlasResource){
 						//If the file name does not match, this might be a compound atlas (why does this exist??)
-						for(Entry<String, AtlasResource> e : parseCompoundAtlas((AtlasResource) r).entrySet()){
+						for(Map.Entry<String, AtlasResource> e : parseCompoundAtlas((AtlasResource) r).entrySet()){
 							ResourceView rv = getResourceView(cat.getName(), e.getKey()); //Find the view
 							if(rv instanceof AtlasImageResourceView){ //Add to view
 								if(!((AtlasImageResourceView) rv).setAtlasPostInit(e.getValue())){ //If setting atlas failed
@@ -115,7 +117,49 @@ public class ResourceViewManager {
 	}
 	
 	private static Map<String, AtlasResource> parseCompoundAtlas(AtlasResource ar){
+		byte[] data = ar.getData();
+		int pointer = 4;
+		Map<String, AtlasResource> ret = new HashMap<>();
+		List<NamedRange> name2start = new ArrayList<>();
+		int filenamelen = data[4] & 0xFF;
+		String filename = new String(Arrays.copyOfRange(data, pointer + 1, pointer + filenamelen + 1));
+		pointer = pointer + filenamelen + 1;
+		name2start.add(new NamedRange(filename, pointer - filenamelen - 1));
 		
+		do{
+			//Beginning sprite
+			int strlen = data[pointer] & 0xFF;
+			//New compound part?
+			if(strlen == 0){
+				//Finish last range
+				name2start.get(name2start.size() - 1).setEnd(pointer);
+				pointer++; //Move to string length byte
+				int fnamelen = data[pointer] & 0xFF;
+				String fname = new String(Arrays.copyOfRange(data, pointer + 1, pointer + filenamelen + 1));
+				pointer = pointer + fnamelen + 1;
+				name2start.add(new NamedRange(fname, pointer - fnamelen - 1));
+			}else{
+				//The data does not have to be read, just pass over
+				pointer = pointer + 19 + strlen;
+			}
+		}while(pointer < data.length - 2); //The -2 is important
+		//Finish last:
+		name2start.get(name2start.size() - 1).setEnd(data.length);
+		
+		System.out.println("Read compound atlas: " + ar.getName() + ", found resources: " + name2start);
+		//Now create separate resources
+		for(int i = 0; i < name2start.size(); i++){
+			NamedRange nr = name2start.get(i);
+			byte[] newData = new byte[nr.getSize() + 4]; //4 bytes for BATL
+			//Also put BATL
+			newData[0] = 0x42;
+			newData[1] = 0x41;
+			newData[2] = 0x54;
+			newData[4] = 0x4C;
+			System.arraycopy(data, nr.getStart(), newData, 4, nr.getSize());
+			ret.put(nr.getName(), new CompoundAtlasResource(nr.getName(), newData, ar.getName(), i));
+		}
+		return ret;
 	}
 	
 	public static <T> boolean contains(Iterable<T> l, Predicate<T> test){
