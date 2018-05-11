@@ -49,7 +49,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		super("Cellpacker alpha");
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new StaticResourceView("No Files", "No files loaded"));
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new StaticResourceView("No Files", "No files loaded", new byte[0]));
 		tree =  new JTree(root);
 		tree.setSelectionPath(new TreePath(root));
 		tree.addTreeSelectionListener(this);
@@ -96,7 +96,12 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		reuseable = new JMenuItem("Save");
 		reuseable.setToolTipText("Save the currently opened resource file with all modifications. (To use in-game, simply replace the original res.pak with this one)");
 		reuseable.addActionListener((e) -> {
-			
+			JFileChooser jfc = new JFileChooser();
+			jfc.setFileFilter(new FileNameExtensionFilter("Dead Cells Resource File", "*.pak", "pak", ".pak"));
+			if(jfc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
+				ResourceFile withChanges = view.buildFile();
+				withChanges.writeToFile(jfc.getSelectedFile());
+			}
 		});
 		file.add(reuseable);
 		file.addSeparator();

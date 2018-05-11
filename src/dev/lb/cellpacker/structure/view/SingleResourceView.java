@@ -169,7 +169,7 @@ public class SingleResourceView extends ResourceView{
 
 	@Override
 	public List<Resource> getAllResources() {
-		return Utils.call(new ArrayList<>(), (l) -> l.add(currentResource));
+		return Utils.call(new ArrayList<>(), (l) -> { if(currentResource != null) l.add(currentResource); });
 	}
 	
 	

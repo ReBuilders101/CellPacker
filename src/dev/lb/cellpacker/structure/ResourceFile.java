@@ -32,6 +32,7 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 		this.cat = cat;
 		this.data = data;
 		this.dataStartPointer = ptr;
+		this.header = header;
 	}
 	
 	@Shortcut("getCategories().iterator()")
@@ -83,6 +84,14 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 		File header = new File(targetFolder.getAbsolutePath() + File.separator + "res.pak.header");
 		try(FileOutputStream fos = new FileOutputStream(header)){
 			fos.write(getHeader());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void writeToFile(File file){
+		try(FileOutputStream fos = new FileOutputStream(file)){
+			fos.write(getData());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -168,6 +177,9 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 		List<Category> all = new ArrayList<>();
 		Map<String, Integer> head = new HashMap<>();
 		
+		System.out.println("\nData: " + datatag + " length: " + bytes.length);
+		int resources = 0;
+		
 		do{
 			//Read identifier
 			int stringLength = bytes[pointer] & 0xFF;
@@ -179,11 +191,15 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 				int offset = decodeInt(Arrays.copyOfRange(bytes, pointer + 1, pointer + 5));
 				int length = decodeInt(Arrays.copyOfRange(bytes, pointer + 5, pointer + 9));
 //				System.err.println(offset + " | " + length);
+				
+//				System.out.println("len: " + bytes.length + " | begin " + (datatag + offset) + " end " + (datatag + offset + length));
+				
 				Resource newRes = Resource.createFromExtension(name, Arrays.copyOfRange(bytes, datatag + offset, datatag + offset + length));
 				head.put(current.getName() + "/" + newRes.getName(), pointer + 1);
 				current.addResource(newRes);
 				pointer += 13;
-				System.out.println("Added " + name + " to " + current.getName());
+				resources++;
+//				System.out.println("Added " + name + " to " + current.getName());
 			}else{//new Category
 				if(current != null){
 					all.add(current);
@@ -195,9 +211,11 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 			}
 			//System.out.println(pointer + " | " + datatag);
 		}while(pointer + 5 < datatag);
+		all.add(current);
+		System.out.println("Finished Category: " + current.getName() + "; Items: " + current.resources.size());
 		
+		System.out.println("Parse: " + resources + " resources");
 		return new ResourceFile(all, bytes, datatag, head);
-		
 	}
 	
 	public static ResourceFile fromFolder(File headerFile, File folder){
@@ -264,11 +282,16 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 	public static ResourceFile fromTemplate(byte[] headerTemplate, Map<String, Integer> headerMap, Map<String, Resource> data){
 		//The data part has to be re-built
 		int dataPointer = 0;
+		int resources = 0;
 		byte[] headerPart = Arrays.copyOf(headerTemplate, headerTemplate.length);
 		ByteArrayOutputStream dataPart = new ByteArrayOutputStream();
-		//Iterate over the header keys, look up resource and change offsets
+		//Iterate over the resources and look up and change offsets
 		for(String resName : headerMap.keySet()){
 			Resource toPut = data.get(resName);
+			
+//			System.out.println(toPut.getName());
+			if(!headerMap.containsKey(resName)) continue; //Something not right, just skip
+			System.err.println(resName + " " + toPut);
 			//Read all values that have to be rewritten
 			int headerPointer = headerMap.get(resName);
 			byte[] offset = encodeInt(dataPointer);
@@ -283,9 +306,13 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 				e.printStackTrace();
 			}
 			dataPointer += toPut.getLength();
+			resources++;
 		}
 		//So the changed byte data has to be re-parsed
 		byte[] dataPart2 = dataPart.toByteArray();
+		
+		System.out.println("\nBuild: " + resources + " resources");
+		System.out.println("Bulid: head: " + headerPart.length + " (" + headerTemplate.length + ") data: " + dataPart2.length + "(" + dataPart.size() + ") sum: " + (dataPart2.length + headerPart.length) );
 		
 		return ResourceFile.fromBytes(concat(headerPart, dataPart2));
 	}

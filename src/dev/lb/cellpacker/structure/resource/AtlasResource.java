@@ -189,6 +189,7 @@ public class AtlasResource extends Resource{
 				int strlen = data[pointer] & 0xFF;
 				String name = new String(Arrays.copyOfRange(data, pointer + 1, pointer + strlen + 1));
 				pointer = pointer + strlen + 3; //First data byte
+				System.out.println("Name: " + name + " pointer: " + Integer.toHexString(pointer));
 				byte[] spriteData = Arrays.copyOfRange(data, pointer, pointer + 16);
 				Sprite current = new Sprite(name, decodeByte2(spriteData, 0), decodeByte2(spriteData, 2), decodeByte2(spriteData, 4),
 						decodeByte2(spriteData, 6), decodeByte2(spriteData, 8), decodeByte2(spriteData, 10),

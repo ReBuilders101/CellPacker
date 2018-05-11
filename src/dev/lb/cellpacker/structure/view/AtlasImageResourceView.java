@@ -78,6 +78,21 @@ public class AtlasImageResourceView extends ResourceView{
 		if(!(mainModified || atlasModified || filterModified)) showOriginal = false;
 		return showOriginal;
 	}
+	
+	/**
+	 * Allows you to set a new atlas resource for this view directly after calling the constructor,
+	 * that is before the first tree is built with this view and the init() method is called. 
+	 * Use with caution.
+	 * @return if the replacement was successful
+	 */
+	public boolean setAtlasPostInit(AtlasResource r){
+		if(atlas == null){
+			atlas = r;
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	@Override
 	public void replaceCurrentResource(Component dialogParent) {
@@ -363,7 +378,11 @@ public class AtlasImageResourceView extends ResourceView{
 
 	@Override
 	public List<Resource> getAllResources() {
-		return Utils.call(new ArrayList<>(), (l) -> { l.add(main); l.add(atlas); l.add(filter); });
+		return Utils.call(new ArrayList<>(), (l) -> {
+			if(main != null) l.add(main);
+			if(atlas != null) l.add(atlas);
+			if(filter != null) l.add(filter);
+		});
 	}
 	
 }

@@ -32,7 +32,7 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 			case ".atlas": return new AtlasResource(name, data);
 			case ".json": return new JsonResource(name, data);
 			case ".fnt": return new FontResource(name, data);
-			default: return StaticResourceView.staticTextResource(name, "Could not read resource");
+			default: return StaticResourceView.staticTextResource(name, "Unknown resource format", data);
 		}
 	}
 	
@@ -48,7 +48,7 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 		}else if(type == JsonResource.class){
 			return new JsonResource(name, data);
 		}else{
-			return StaticResourceView.staticTextResource(name, "Ooops. Something went wrong while creating a resource: Resource:createFromType()");
+			return StaticResourceView.staticTextResource(name, "Ooops. Something went wrong while creating a resource: Resource:createFromType()", data);
 		}
 	}
 	

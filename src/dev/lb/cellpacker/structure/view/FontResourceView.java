@@ -258,7 +258,10 @@ public class FontResourceView extends ResourceView {
 
 	@Override
 	public List<Resource> getAllResources() {
-		return Utils.call(new ArrayList<>(), (l) -> { l.add(image); l.add(font); });
+		return Utils.call(new ArrayList<>(), (l) -> {
+			if(image != null) l.add(image);
+			if(font != null) l.add(font);
+		});
 	}
 
 }

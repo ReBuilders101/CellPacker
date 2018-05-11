@@ -35,12 +35,12 @@ public class StaticResourceView extends ResourceView{
 		this.resource = resource;
 	}
 	
-	public StaticResourceView(String name, String text){
+	public StaticResourceView(String name, String text, byte[] data){
 		this.name = name;
-		this.resource = staticTextResource(name, text);
+		this.resource = staticTextResource(name, text, data);
 	}
 	
-	public static Resource staticTextResource(String name2, String text){
+	public static Resource staticTextResource(String name2, String text, byte[] data2){
 		return new Resource() {
 			
 			JPanel textA;
@@ -49,7 +49,7 @@ public class StaticResourceView extends ResourceView{
 				textA = new JPanel(new FlowLayout());
 				textA.add(new JLabel(text));
 				this.name = name2;
-				this.data = text.getBytes();
+				this.data = data2;
 				this.isInitialized = true;
 			}
 			
