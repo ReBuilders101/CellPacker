@@ -6,6 +6,9 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -14,6 +17,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
+
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.MalformedJsonException;
 
 
 public final class Utils {
@@ -109,5 +116,57 @@ public final class Utils {
 			container.add(c);
 		}
 		return container;
+	}
+	
+	
+	//Validation methods from SO
+	public static boolean isJsonValid(final String json) {
+	    return isJsonValid(new StringReader(json));
+	}
+
+	private static boolean isJsonValid(final Reader reader) {
+	    return isJsonValid(new JsonReader(reader));
+	}
+
+	private static boolean isJsonValid(final JsonReader jsonReader) {
+	    try {
+	        JsonToken token;
+	        loop:
+	        while ( (token = jsonReader.peek()) != JsonToken.END_DOCUMENT && token != null ) {
+	            switch ( token ) {
+	            case BEGIN_ARRAY:
+	                jsonReader.beginArray();
+	                break;
+	            case END_ARRAY:
+	                jsonReader.endArray();
+	                break;
+	            case BEGIN_OBJECT:
+	                jsonReader.beginObject();
+	                break;
+	            case END_OBJECT:
+	                jsonReader.endObject();
+	                break;
+	            case NAME:
+	                jsonReader.nextName();
+	                break;
+	            case STRING:
+	            case NUMBER:
+	            case BOOLEAN:
+	            case NULL:
+	                jsonReader.skipValue();
+	                break;
+	            case END_DOCUMENT:
+	                break loop;
+	            default:
+	                throw new AssertionError(token);
+	            }
+	        }
+	        return true;
+	    } catch ( final MalformedJsonException ignored ) {
+	        return false;
+	    } catch (IOException | AssertionError e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

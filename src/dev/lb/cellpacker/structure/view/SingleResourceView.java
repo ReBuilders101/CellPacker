@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
@@ -15,15 +14,15 @@ import dev.lb.cellpacker.structure.resource.SoundResource;
 
 public class SingleResourceView extends ResourceView{
 
-	private Resource currentResource;
-	private Resource originalResource;
-	private boolean changesMade;
+	protected Resource currentResource;
+	protected Resource originalResource;
+	protected boolean changesMade;
 	private String viewName;
 	private boolean showOriginal;
-	private boolean isInitialized;
-	private JTabbedPane display;
-	private JTabbedPane displayOriginal;
-	private JMenuItem[] menu;
+	protected boolean isInitialized;
+	protected JTabbedPane display;
+	protected JTabbedPane displayOriginal;
+	protected JMenuItem[] menu;
 	
 	public SingleResourceView(String name, Resource resource) {
 		currentResource = resource;
@@ -99,7 +98,7 @@ public class SingleResourceView extends ResourceView{
 	public void init() {
 		if(isInitialized) return;
 		if(menu == null){
-			menu = new JMenuItem[5];
+			menu = new JMenuItem[3];
 			menu[0] = new JMenuItem("Export this resource");
 			menu[0].setToolTipText("Export the currently visible resource to a file");
 			menu[0].addActionListener((e) -> {
@@ -114,12 +113,6 @@ public class SingleResourceView extends ResourceView{
 			menu[2].setToolTipText("Restore the currently visible resource to its original state");
 			menu[2].addActionListener((e) -> {
 				restoreCurrentResource(menu[2]);
-			});
-			menu[3] = new JMenuItem("$Sep$");
-			menu[4] = new JCheckBoxMenuItem("Show Original");
-			menu[4].setToolTipText("Replace the currently visible resource with a file");
-			((JCheckBoxMenuItem) menu[4]).addChangeListener((e) -> {
-				((JCheckBoxMenuItem) menu[4]).setSelected(setShowOriginals(((JCheckBoxMenuItem) menu[4]).isSelected()));
 			});
 		}
 		if(currentResource != null){

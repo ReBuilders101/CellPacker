@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -181,7 +180,7 @@ public class FontResourceView extends ResourceView {
 	public void init() {
 		if(isInitialized) return;
 		if(menu == null){
-			menu = new JMenuItem[8];
+			menu = new JMenuItem[6];
 			JMenu views = new JMenu("Show view");
 			JMenuItem reuseable = new JMenuItem("Character Image");
 			reuseable.addActionListener((e) -> {
@@ -224,12 +223,6 @@ public class FontResourceView extends ResourceView {
 			menu[5].setToolTipText("Restore the currently visible resource to its original state");
 			menu[5].addActionListener((e) -> {
 				restoreCurrentResource(menu[5]);
-			});
-			menu[6] = new JMenuItem("$Sep$");
-			menu[7] = new JCheckBoxMenuItem("Show Original");
-			menu[7].setToolTipText("Shows how this resource looked before making changes to it");
-			((JCheckBoxMenuItem) menu[7]).addChangeListener((e) -> {
-				((JCheckBoxMenuItem) menu[7]).setSelected(setShowOriginals(((JCheckBoxMenuItem) menu[7]).isSelected()));
 			});
 			isInitialized = true;
 		}

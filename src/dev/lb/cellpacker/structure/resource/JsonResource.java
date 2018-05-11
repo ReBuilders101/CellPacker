@@ -7,13 +7,12 @@ import javax.swing.JTextArea;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 public class JsonResource extends Resource{
 
-	private JsonElement content;
+	private String content;
 	
 	public JsonResource(String name, byte[] data) {
 		isInitialized = false;
@@ -24,13 +23,13 @@ public class JsonResource extends Resource{
 	public void init() {
 		if(isInitialized)
 			return;
-		content = new JsonParser().parse(new String(data));
+		content = new String(data);
 	}
 	
 	public JsonElement getJsonElement(){
 		if(!isInitialized)
 			init();
-		return content;
+		return new JsonParser().parse(content);
 	}
 	
 	@Override
@@ -40,8 +39,11 @@ public class JsonResource extends Resource{
 
 	@Override
 	public Component getComponent() {
+		if(!isInitialized)
+			init();
 		JTextArea display = new JTextArea();
-		display.setText(new Gson().toJson(getJsonElement()));
+		display.setText(content);
+		display.setEditable(false);
 		return new JScrollPane(display);
 	}
 

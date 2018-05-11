@@ -23,9 +23,11 @@ import dev.lb.cellpacker.structure.resource.AtlasResource;
 import dev.lb.cellpacker.structure.resource.CompoundAtlasResource;
 import dev.lb.cellpacker.structure.resource.FontResource;
 import dev.lb.cellpacker.structure.resource.ImageResource;
+import dev.lb.cellpacker.structure.resource.JsonResource;
 import dev.lb.cellpacker.structure.resource.Resource;
 import dev.lb.cellpacker.structure.view.AtlasImageResourceView;
 import dev.lb.cellpacker.structure.view.FontResourceView;
+import dev.lb.cellpacker.structure.view.JsonResourceView;
 import dev.lb.cellpacker.structure.view.ResourceView;
 import dev.lb.cellpacker.structure.view.SingleResourceView;
 import dev.lb.cellpacker.structure.view.StaticResourceView;
@@ -44,7 +46,10 @@ public class ResourceViewManager {
 			for(Resource r : cat.getResources()){
 				//Copy of list
 				//Find the type of the resource
-				if(r.getName().endsWith(".ogg") ||
+				if(r instanceof JsonResource){
+					this.addResourceView(cat.getName(), new JsonResourceView(r.getName(),(JsonResource) r));
+					resources.remove(r);
+				}else if(r.getName().endsWith(".ogg") ||
 				   r.getName().endsWith(".json") ||
 				   r.getName().endsWith(".cdb")){
 				   //Always single
