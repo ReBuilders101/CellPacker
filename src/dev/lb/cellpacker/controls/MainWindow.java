@@ -31,6 +31,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.structure.ResourceFile;
 import dev.lb.cellpacker.structure.SearchableResourceViewManager;
 import dev.lb.cellpacker.structure.view.ResourceView;
@@ -48,7 +49,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private boolean fixCDB;
 	
 	public MainWindow(){
-		super("Cellpacker alpha");
+		super("Cellpacker 2.0 pre");
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new StaticResourceView("No Files", "No files loaded", new byte[0]));
@@ -85,7 +86,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 					return;
 				}
 			}
-			JFileChooser jfc =  new JFileChooser();
+			JFileChooser jfc =  new JFileChooser(".");
 			jfc.setFileFilter(new FileNameExtensionFilter("Dead Cells Resource File", "*.pak", "pak", ".pak"));
 			int result = jfc.showOpenDialog(this);
 			if(result == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
@@ -226,13 +227,30 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		edit.setBorder(new EmptyBorder(0, 5, 0, 5));
 		menu.add(edit);
 		JMenu help = new JMenu("Help");
-		help.add(new JMenuItem("Show tutorial"));
-		help.add(new JMenuItem("Show console tutorial"));
+		reuseable = new JMenuItem("Show tutorial"); 
+		help.add(reuseable);
+		reuseable = new JMenuItem("Show console tutorial");
+		help.add(reuseable);
 		help.addSeparator();
-		help.add(new JMenuItem("Show source code"));
+		reuseable = new JMenuItem("Show source code");
+		reuseable.setToolTipText("The source code of this project is available on GitHub");
+		reuseable.addActionListener((e) -> {
+			Utils.showAboutDialog("<html>The source code of this project is available on GitHub:<br>https://github.com/ReBuilders101/CellPacker", "Source code", "https://github.com/ReBuilders101/CellPacker");
+		});
+		help.add(reuseable);
 		help.addSeparator();
-		help.add(new JMenuItem("About"));
-		help.add(new JMenuItem("About CastleDB"));
+		reuseable = new JMenuItem("About");
+		reuseable.setToolTipText("Show the projects readme-file");
+		reuseable.addActionListener((e) -> {
+			Utils.showAboutDialog("<html>Open the projects readme-file:<br>https://github.com/ReBuilders101/CellPacker/blob/master/README.md", "Source code", "https://github.com/ReBuilders101/CellPacker/blob/master/README.md");
+		});
+		help.add(reuseable);
+		reuseable = new JMenuItem("About CastleDB");
+		reuseable.setToolTipText("Information about CastleDB, the database used by Dead Cells");
+		reuseable.addActionListener((e) -> {
+			Utils.showAboutDialog("<html>CastleDB is used by Dead Cells to store information about levels, monsters, items and more.<br>CastleDB can be used to open and edit the file data.exported.cdb more easily:<br>http://castledb.org/", "Source code", "http://castledb.org/");
+		});
+		help.add(reuseable);
 		help.setBorder(new EmptyBorder(0, 5, 0, 5));
 		menu.add(help);
 		

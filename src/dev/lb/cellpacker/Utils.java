@@ -3,17 +3,21 @@ package dev.lb.cellpacker;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
@@ -167,6 +171,17 @@ public final class Utils {
 	    } catch (IOException | AssertionError e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public static void showAboutDialog(String text, String title, String url){
+		int result = JOptionPane.showOptionDialog(CellPackerMain.getMainFrame(), text, title, JOptionPane.DEFAULT_OPTION,
+				JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Go to website", "Close"}, 0);
+		if(result == 1) return;
+		try {
+			Desktop.getDesktop().browse(new URI(url));
+		} catch (IOException | URISyntaxException e) {
+			e.printStackTrace();
 		}
 	}
 }
