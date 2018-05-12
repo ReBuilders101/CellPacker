@@ -31,6 +31,7 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 			case ".wav": return new SoundResource(name, data);
 			case ".atlas": return new AtlasResource(name, data);
 			case ".json": return new JsonResource(name, data);
+			case ".cdb" : return new JsonResource(name, data);
 			case ".fnt": return new FontResource(name, data);
 			default: return StaticResourceView.staticTextResource(name, "Unknown resource format", data);
 		}

@@ -17,6 +17,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import dev.lb.cellpacker.CellPackerMain;
 import dev.lb.cellpacker.NamedRange;
 import dev.lb.cellpacker.annotation.Unmodifiable;
 import dev.lb.cellpacker.structure.resource.AtlasResource;
@@ -26,6 +27,7 @@ import dev.lb.cellpacker.structure.resource.ImageResource;
 import dev.lb.cellpacker.structure.resource.JsonResource;
 import dev.lb.cellpacker.structure.resource.Resource;
 import dev.lb.cellpacker.structure.view.AtlasImageResourceView;
+import dev.lb.cellpacker.structure.view.CastleDBResourceView;
 import dev.lb.cellpacker.structure.view.FontResourceView;
 import dev.lb.cellpacker.structure.view.JsonResourceView;
 import dev.lb.cellpacker.structure.view.ResourceView;
@@ -47,7 +49,11 @@ public class ResourceViewManager {
 				//Copy of list
 				//Find the type of the resource
 				if(r instanceof JsonResource){
-					this.addResourceView(cat.getName(), new JsonResourceView(r.getName(),(JsonResource) r));
+					if(r.getName().equals("data.cdb")){
+						this.addResourceView(cat.getName(), new CastleDBResourceView(r.getName(),(JsonResource) r));
+					}else{
+						this.addResourceView(cat.getName(), new JsonResourceView(r.getName(),(JsonResource) r));
+					}
 					resources.remove(r);
 				}else if(r.getName().endsWith(".ogg") ||
 				   r.getName().endsWith(".json") ||
@@ -65,7 +71,7 @@ public class ResourceViewManager {
 					boolean f = contains(resources, (s) -> s.getName().equals(r.getMainName() + ".fnt"));
 					if(f){
 						Resource fnt = getFirst(resources, (s) -> s.getName().equals(r.getMainName() + ".fnt"));
-						this.addResourceView(cat.getName(), new FontResourceView(r.getName(), (ImageResource) r, (FontResource) fnt));
+						this.addResourceView(cat.getName(), new FontResourceView(fnt.getName(), (ImageResource) r, (FontResource) fnt));
 						resources.remove(r);
 						resources.remove(fnt);
 					}else{
@@ -285,6 +291,11 @@ public class ResourceViewManager {
 			}
 			AtlasResource newRes = new AtlasResource(e.getValue().get(0).getCompoundFileName(), data.toByteArray());
 			map.put(e.getKey(), newRes);
+		}
+		//If necessary, make a fixed cdb version
+		if(CellPackerMain.getMainFrame().fixCDB()){
+			JsonResource jr = (JsonResource) map.get("atlas/data.cdb");
+			map.put("atlas/data.exported.cdb", CastleDBResourceView.fixResource(jr));
 		}
 		return ResourceFile.fromTemplate(file, map);
 	}

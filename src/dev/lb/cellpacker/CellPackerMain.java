@@ -3,7 +3,6 @@ package dev.lb.cellpacker;
 import java.io.File;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -16,7 +15,7 @@ public class CellPackerMain {
 	public static boolean ASK_RESOURCE_RESTORE = true;
 	public static File CHOOSE_ROOT_FILE = new File(".");
 	
-	private static JFrame mainFrame;
+	private static MainWindow mainFrame;
 	
 	public static void main(String[] args) {
 		try {
@@ -52,7 +51,7 @@ public class CellPackerMain {
 		return concat;
 	}
 	
-	public static JFrame getMainFrame(){
+	public static MainWindow getMainFrame(){
 		return mainFrame;
 	}
 	

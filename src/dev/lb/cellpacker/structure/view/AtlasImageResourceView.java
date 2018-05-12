@@ -34,12 +34,9 @@ public class AtlasImageResourceView extends ResourceView{
 	private boolean atlasModified;
 	private boolean filterModified;
 	
-	private boolean showOriginal;
-	
 	private boolean isInitialized;
 	
 	private JTabbedPane display;
-	private JTabbedPane displayOriginal;
 	private JMenuItem[] menu;
 	
 	public AtlasImageResourceView(String resourceName, ImageResource mainImage, AtlasResource atlasRes, ImageResource filterImage) {
@@ -51,7 +48,6 @@ public class AtlasImageResourceView extends ResourceView{
 		mainModified = false;
 		atlasModified = false;
 		filterModified = false;
-		showOriginal = false;
 		isInitialized = false;
 	}
 
@@ -68,14 +64,7 @@ public class AtlasImageResourceView extends ResourceView{
 	@Override
 	public Component getDisplay() {
 		init();
-		return showOriginal ? displayOriginal : display;
-	}
-
-	@Override
-	public boolean setShowOriginals(boolean value) {
-		showOriginal = value;
-		if(!(mainModified || atlasModified || filterModified)) showOriginal = false;
-		return showOriginal;
+		return display;
 	}
 	
 	/**
@@ -275,20 +264,17 @@ public class AtlasImageResourceView extends ResourceView{
 			JMenuItem reuseable = new JMenuItem("Main Image");
 			reuseable.addActionListener((e) -> {
 				display.setSelectedIndex(0);
-				displayOriginal.setSelectedIndex(0);
 			});
 			views.add(reuseable);
 			if(atlas != null){
 				reuseable = new JMenuItem("Atlas file");
 				reuseable.addActionListener((e) -> {
 					display.setSelectedIndex(1);
-					displayOriginal.setSelectedIndex(1);
 				});
 				views.add(reuseable);
 				reuseable = new JMenuItem("Sprite/Animation view");
 				reuseable.addActionListener((e) -> {
 					display.setSelectedIndex(2);
-					displayOriginal.setSelectedIndex(2);
 				});
 				views.add(reuseable);
 			}
@@ -296,7 +282,6 @@ public class AtlasImageResourceView extends ResourceView{
 				reuseable = new JMenuItem("Filter Image");
 				reuseable.addActionListener((e) -> {
 					display.setSelectedIndex(atlas == null ? 1 : 3);
-					displayOriginal.setSelectedIndex(atlas == null ? 1 : 3);
 				});
 				views.add(reuseable);
 			}
@@ -324,7 +309,6 @@ public class AtlasImageResourceView extends ResourceView{
 			menu[5].addActionListener((e) -> {
 				restoreCurrentResource(menu[5]);
 			});
-			isInitialized = true;
 		}
 		//First the currents
 		if(display == null){
@@ -341,27 +325,7 @@ public class AtlasImageResourceView extends ResourceView{
 			display.add("Filter Image", filter.getComponent());
 		}
 		//display.setComponentPopupMenu(ResourceView.createPopup(menu));
-		//Then originals
-		if(displayOriginal == null) displayOriginal = new JTabbedPane();
-		displayOriginal.removeAll();
-		if(mainModified){
-			displayOriginal.add("Main Image", mainOriginal.getComponent());
-		}else{
-			displayOriginal.add("Main Image", main.getComponent());
-		}
-		if(atlas != null && atlasModified){
-			displayOriginal.add("Atlas file", atlasOriginal.getComponent());
-			displayOriginal.add("Sprite/Animation view", atlasOriginal.createSpriteView(mainModified ? mainOriginal : main, filterModified ? filterOriginal : filter, displayOriginal));
-		}else if(atlas != null){
-			displayOriginal.add("Atlas file", atlas.getComponent());
-			displayOriginal.add("Sprite/Animation view", atlas.createSpriteView(mainModified ? mainOriginal : main, filterModified ? filterOriginal : filter, displayOriginal));
-		}
-		if(filter != null && filterModified){
-			displayOriginal.add("Filter Image", filterOriginal.getComponent());
-		}else if(filter != null){
-			displayOriginal.add("Filter Image", filter.getComponent());
-		}
-		//displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
+		isInitialized = true;
 	}
 
 	@Override

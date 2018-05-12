@@ -108,10 +108,10 @@ public class AtlasResource extends Resource{
 		if(!isInitialized){
 			return Utils.asyncFill(() -> {
 				init();
-				return atlasData.createView(main.getImage(), filter.getImage(), tabs);
+				return atlasData.createView(main.getImage(), filter == null ? null : filter.getImage(), tabs);
 			}, 300);
 		}else{
-			return atlasData.createView(main.getImage(), filter.getImage(), tabs);
+			return atlasData.createView(main.getImage(), filter == null ? null : filter.getImage(), tabs);
 		}
 	}
 	
@@ -149,6 +149,7 @@ public class AtlasResource extends Resource{
 			// OPTIONS
 			JRadioButton jrbMain = new JRadioButton("Show main image", true);
 			JRadioButton jrbFilt = new JRadioButton("Show Filter image", false);
+			if(filter == null) jrbFilt.setEnabled(false);
 			ButtonGroup group = new ButtonGroup();
 			group.add(jrbMain);
 			group.add(jrbFilt);

@@ -26,11 +26,7 @@ public abstract class ResourceView {
 	 * Returns a component that should be displayed in the main area when this view is selected
 	 */
 	public abstract Component getDisplay();
-	/**
-	 * Determines if the original version of the current resource should be displayed instead of the current, modified one
-	 * @return the new state
-	 */
-	public abstract boolean setShowOriginals(boolean value);
+
 	/**
 	 * Should show a dialog where the user can select a resource to replace this one with. 
 	 */

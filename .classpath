@@ -4,6 +4,10 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="lib/CodecJOrbis.jar"/>
 	<classpathentry kind="lib" path="lib/JOrbisStandalone.jar"/>
-	<classpathentry kind="lib" path="lib/gson-2.8.2.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.8.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/D:/Lars/Prgm/WorkspaceEclipse/APIS/gson-2.8.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

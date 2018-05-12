@@ -101,11 +101,6 @@ public class StaticResourceView extends ResourceView{
 	}
 
 	@Override
-	public boolean setShowOriginals(boolean value) {
-		return false;
-	}
-
-	@Override
 	public void replaceCurrentResource(Component dialogParent) {
 		JOptionPane.showMessageDialog(dialogParent, "This resource can not be modified.", "Error", JOptionPane.ERROR_MESSAGE);
 	}

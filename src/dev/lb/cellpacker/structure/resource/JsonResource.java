@@ -34,7 +34,9 @@ public class JsonResource extends Resource{
 	
 	@Override
 	public Object getContent() {
-		return getJsonElement();
+		if(!isInitialized)
+			init();
+		return content;
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class JsonResource extends Resource{
 
 	@Override
 	public FileFilter getFileFilter() {
-		return new FileNameExtensionFilter("JSON File", "*.json", ".json", "json");
+		return new FileNameExtensionFilter("JSON File", "*.json", ".json", "json", "*.cdb", ".cdb", "cdb");
 	}
 	
 }

@@ -18,17 +18,14 @@ public class SingleResourceView extends ResourceView{
 	protected Resource originalResource;
 	protected boolean changesMade;
 	private String viewName;
-	private boolean showOriginal;
 	protected boolean isInitialized;
 	protected JTabbedPane display;
-	protected JTabbedPane displayOriginal;
 	protected JMenuItem[] menu;
 	
 	public SingleResourceView(String name, Resource resource) {
 		currentResource = resource;
 		originalResource = null;
 		changesMade = false;
-		showOriginal = false;
 		viewName = name;
 		isInitialized = false;
 	}
@@ -41,14 +38,7 @@ public class SingleResourceView extends ResourceView{
 	@Override
 	public Component getDisplay() {
 		init();
-		return showOriginal ? displayOriginal : display;
-	}
-
-	@Override
-	public boolean setShowOriginals(boolean value) {
-		showOriginal = value;
-		if(!changesMade) showOriginal = false;
-		return showOriginal;
+		return display;
 	}
 
 	@Override
@@ -93,12 +83,10 @@ public class SingleResourceView extends ResourceView{
 		init();
 		return menu;
 	}
-
-	@Override
-	public void init() {
-		if(isInitialized) return;
+	
+	protected void initMenu(int size){
 		if(menu == null){
-			menu = new JMenuItem[3];
+			menu = new JMenuItem[size];
 			menu[0] = new JMenuItem("Export this resource");
 			menu[0].setToolTipText("Export the currently visible resource to a file");
 			menu[0].addActionListener((e) -> {
@@ -115,17 +103,17 @@ public class SingleResourceView extends ResourceView{
 				restoreCurrentResource(menu[2]);
 			});
 		}
+	}
+
+	@Override
+	public void init() {
+		if(isInitialized) return;
+		initMenu(3);
 		if(currentResource != null){
 			if(display == null) display = new JTabbedPane();
 			display.removeAll();
 			display.add("Resource", currentResource.getComponent());
 			//display.setComponentPopupMenu(ResourceView.createPopup(menu));
-		}
-		if(originalResource != null){
-			if(displayOriginal == null)	displayOriginal = new JTabbedPane();
-			displayOriginal.removeAll();
-			displayOriginal.add("Resource", originalResource.getComponent());
-			//displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
 		}
 		isInitialized = true;
 	}

@@ -25,8 +25,6 @@ public class FontResourceView extends ResourceView {
 	private String name;
 	
 	private JTabbedPane display;
-	private JTabbedPane displayOriginal;
-	private boolean showOriginal;
 	private boolean fontModified;
 	private boolean imageModified;
 	
@@ -49,16 +47,9 @@ public class FontResourceView extends ResourceView {
 	@Override
 	public Component getDisplay() {
 		init();
-		return showOriginal ? displayOriginal : display;
+		return display;
 	}
-
-	@Override
-	public boolean setShowOriginals(boolean value) {
-		showOriginal = value;
-		if(!(fontModified || imageModified)) showOriginal = false;
-		return showOriginal;
-	}
-
+	
 	@Override
 	public void replaceCurrentResource(Component dialogParent) {
 		int response = JOptionPane.showOptionDialog(dialogParent, "Which resource do you want to replace?", "Select resource",
@@ -185,19 +176,16 @@ public class FontResourceView extends ResourceView {
 			JMenuItem reuseable = new JMenuItem("Character Image");
 			reuseable.addActionListener((e) -> {
 				display.setSelectedIndex(0);
-				displayOriginal.setSelectedIndex(0);
 			});
 			views.add(reuseable);
 			reuseable = new JMenuItem("Font file");
 			reuseable.addActionListener((e) -> {
 				display.setSelectedIndex(1);
-				displayOriginal.setSelectedIndex(1);
 			});
 			views.add(reuseable);
 			reuseable = new JMenuItem("Character view");
 			reuseable.addActionListener((e) -> {
 				display.setSelectedIndex(2);
-				displayOriginal.setSelectedIndex(2);
 			});
 			views.add(reuseable);
 			
@@ -224,7 +212,6 @@ public class FontResourceView extends ResourceView {
 			menu[5].addActionListener((e) -> {
 				restoreCurrentResource(menu[5]);
 			});
-			isInitialized = true;
 		}
 		//END MENU
 		
@@ -235,12 +222,6 @@ public class FontResourceView extends ResourceView {
 		display.addTab("Character View", font.getCharView(image));
 		display.setComponentPopupMenu(ResourceView.createPopup(menu));
 		
-		if(displayOriginal == null) displayOriginal = new JTabbedPane();
-		displayOriginal.removeAll();
-		displayOriginal.add("Character Image", (imageModified ? imageOriginal : image).getComponent());
-		displayOriginal.add("Font file",(fontModified ? fontOriginal : font).getComponent());
-		displayOriginal.addTab("Character View", (fontModified ? fontOriginal : font).getCharView(imageModified ? imageOriginal : image));
-		displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
 		isInitialized = true;
 	}
 

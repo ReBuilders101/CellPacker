@@ -30,7 +30,7 @@ public class JSpriteViewer extends JImageViewer{
 	
 	public void setSprite(int x, int y, int width, int height){
 		currentSprite = ((BufferedImage) getMainImage()).getSubimage(x, y, width, height);
-		currentSpriteF = ((BufferedImage) getOverlay()).getSubimage(x, y, width, height);
+		currentSpriteF = getOverlay() == null ? null : ((BufferedImage) getOverlay()).getSubimage(x, y, width, height);
 		cx = x;
 		cy = y;
 		cw = width;

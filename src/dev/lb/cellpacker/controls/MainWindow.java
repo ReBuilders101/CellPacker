@@ -45,6 +45,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private SearchableResourceViewManager view;
 	private JMenu resourceMenu;
 	private JTextField searchField;
+	private boolean fixCDB;
 	
 	public MainWindow(){
 		super("Cellpacker alpha");
@@ -143,6 +144,14 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			}
 		});
 		file.add(reuseable);
+		file.addSeparator();
+		JCheckBoxMenuItem reuseable2 = new JCheckBoxMenuItem("Create fixed data.cdb", true);
+		reuseable2.setToolTipText("The version of data.cdb included in res.pak can not be directly read by CastleDB. This will create a fixed version called data.exported.cdb");
+		reuseable2.addChangeListener((e) ->{
+			fixCDB = reuseable2.isSelected();
+		});
+		file.add(reuseable2);
+		file.addSeparator();
 		//CLOSE
 		reuseable = new JMenuItem("Close");
 		reuseable.setToolTipText("Closes the currently opened resource file");
@@ -159,8 +168,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			}
 		});
 		file.add(reuseable);
-
-		file.addSeparator();
 		//QUIT
 		reuseable = new JMenuItem("Quit");
 		reuseable.setToolTipText("Quit the program. Unsaved changes will be lost.");
@@ -170,6 +177,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			}
 		});
 		file.add(reuseable);
+		file.setBorder(new EmptyBorder(0, 5, 0, 5));
 		menu.add(file);
 		
 		JMenu edit = new JMenu("Edit");
@@ -215,16 +223,8 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			searchField.setText(term);
 		});
 		edit.add(reuseable);
+		edit.setBorder(new EmptyBorder(0, 5, 0, 5));
 		menu.add(edit);
-		JMenu data = new JMenu("Game Data");
-		data.add(new JMenuItem("Open data.cdb"));
-		data.add(new JCheckBoxMenuItem("Create fixed version for CastleDB", true));
-		data.addSeparator();
-		data.add(new JMenuItem("Open CastleDB with this file"));
-		data.add(new JMenuItem("Re-import from CastleDB"));
-		data.addSeparator();
-		data.add(new JMenuItem("Edit from console"));
-		menu.add(data);
 		JMenu help = new JMenu("Help");
 		help.add(new JMenuItem("Show tutorial"));
 		help.add(new JMenuItem("Show console tutorial"));
@@ -233,6 +233,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		help.addSeparator();
 		help.add(new JMenuItem("About"));
 		help.add(new JMenuItem("About CastleDB"));
+		help.setBorder(new EmptyBorder(0, 5, 0, 5));
 		menu.add(help);
 		
 		split.setLeftComponent(((ResourceView) root.getUserObject()).getDisplay());
@@ -254,6 +255,10 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		view.setTree(tree);
 		view.setSearchString("", tree);
 		tree.setSelectionPath(new TreePath(tree.getModel().getRoot()));
+	}
+	
+	public boolean fixCDB(){
+		return fixCDB;
 	}
 	
 	@Override

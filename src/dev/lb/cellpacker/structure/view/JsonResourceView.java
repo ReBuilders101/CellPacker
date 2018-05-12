@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,27 +21,7 @@ public class JsonResourceView extends SingleResourceView{
 		
 	}
 
-	@Override
-	public void init() {
-		if(isInitialized) return;
-		if(menu == null){
-			menu = new JMenuItem[3];
-			menu[0] = new JMenuItem("Export this resource");
-			menu[0].setToolTipText("Export the currently visible resource to a file");
-			menu[0].addActionListener((e) -> {
-				exportResource(menu[0]);
-			});
-			menu[1] = new JMenuItem("Replace this resource");
-			menu[1].setToolTipText("Replace the currently visible resource with a file");
-			menu[1].addActionListener((e) -> {
-				replaceCurrentResource(menu[1]);
-			});
-			menu[2] = new JMenuItem("Restore this resource");
-			menu[2].setToolTipText("Restore the currently visible resource to its original state");
-			menu[2].addActionListener((e) -> {
-				restoreCurrentResource(menu[2]);
-			});
-		}
+	protected void initTab0(String title){
 		if(currentResource != null){
 			if(display == null) display = new JTabbedPane();
 			display.removeAll();
@@ -101,15 +80,16 @@ public class JsonResourceView extends SingleResourceView{
 			southCon.add(save);
 			southCon.add(disc);
 			con.add(southCon, BorderLayout.SOUTH);
-			display.add("Resource", con);
+			display.add(title, con);
 			//display.setComponentPopupMenu(ResourceView.createPopup(menu));
 		}
-		if(originalResource != null){
-			if(displayOriginal == null)	displayOriginal = new JTabbedPane();
-			displayOriginal.removeAll();
-			displayOriginal.add("Resource", originalResource.getComponent());
-			//displayOriginal.setComponentPopupMenu(ResourceView.createPopup(menu));
-		}
+	}
+	
+	@Override
+	public void init() {
+		if(isInitialized) return;
+		initMenu(3);
+		initTab0("Resource");
 		isInitialized = true;
 	}
 
