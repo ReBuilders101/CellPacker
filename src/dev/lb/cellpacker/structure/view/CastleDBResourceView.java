@@ -1,5 +1,6 @@
 package dev.lb.cellpacker.structure.view;
 
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,8 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -16,7 +21,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import dev.lb.cellpacker.CellPackerMain;
-import dev.lb.cellpacker.Utils;
+import dev.lb.cellpacker.TextAreaPrintStream;
+import dev.lb.cellpacker.controls.JHistoryTextField;
+import dev.lb.cellpacker.structure.cdb.CDBFile;
+import dev.lb.cellpacker.structure.cdb.Line;
+import dev.lb.cellpacker.structure.cdb.ScriptReader;
 import dev.lb.cellpacker.structure.resource.JsonResource;
 import dev.lb.cellpacker.structure.resource.Resource;
 
@@ -135,7 +144,21 @@ public class CastleDBResourceView extends JsonResourceView{
 			ResourceView.exportResourceToFile(CellPackerMain.getMainFrame(), newRes);
 		});
 		initTab0("JSON");
-		display.add("Console", Utils.pack(new JLabel("WIP")));
+		JPanel console = new JPanel(new BorderLayout());
+		JTextArea out = new JTextArea();
+		out.setEditable(false);
+		JHistoryTextField in = new JHistoryTextField();
+		console.add(new JScrollPane(out), BorderLayout.CENTER);
+		console.add(in, BorderLayout.SOUTH);
+		CDBFile file = new GsonBuilder().registerTypeAdapter(Line.class, Line.LineSerial.instance).create()
+				.fromJson((String) currentResource.getContent(), CDBFile.class);
+		ScriptReader sr = new ScriptReader(file, new TextAreaPrintStream(out));
+		in.addActionListener((e) -> {
+			sr.execute(in.getText());
+			in.addHistory();
+		});
+		//System.out.println(file);
+		display.add("Console", console);
 		isInitialized = true;
 	}
 

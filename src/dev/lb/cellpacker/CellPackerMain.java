@@ -41,6 +41,7 @@ public class CellPackerMain {
 		}
 	}
 
+	
 	private static String concat(String[] array){
 		if(array == null) return null;
 		if(array.length == 0) return null;

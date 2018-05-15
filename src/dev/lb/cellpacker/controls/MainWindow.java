@@ -51,6 +51,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	public MainWindow(){
 		super("Cellpacker 2.0 pre");
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		fixCDB = true;
 		
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new StaticResourceView("No Files", "No files loaded", new byte[0]));
 		tree =  new JTree(root);
