@@ -201,8 +201,25 @@ public final class Utils {
 				if(there instanceof JsonObject && element instanceof JsonObject){ //If both are objects, merge them
 					addJSON((JsonObject) there, (JsonObject) element);
 				}else if(there instanceof JsonArray && element instanceof JsonArray){ //if they are arrays, append the entries of add to base
-					for(JsonElement arrayEntry : (JsonArray) element){ //Iterate over new entries
-						((JsonArray) there).add(arrayEntry); //Add the new entries to base
+					//Iterate over new Array entries
+					for(JsonElement addEntry : (JsonArray) element){
+						if(addEntry instanceof JsonObject){ //If the element to append is an object
+							JsonObject toMerge = (JsonObject) addEntry;
+							if(toMerge.has("CPINDEX")){ //Can replace
+								int cp = toMerge.get("CPINDEX").getAsInt();
+								toMerge.remove("CPINDEX");
+								JsonElement cdbEntry = ((JsonArray) there).get(cp); 
+								if(cdbEntry instanceof JsonObject){
+									addJSON((JsonObject) cdbEntry, toMerge);
+								}else{
+									((JsonArray) there).add(addEntry);
+								}
+							}else{
+								((JsonArray) there).add(addEntry);
+							}
+						}else{
+							((JsonArray) there).add(addEntry);
+						}
 					}
 				}else{ //if they are primitives or different types, replace
 					base.add(s, element);

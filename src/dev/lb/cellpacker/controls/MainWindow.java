@@ -49,7 +49,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private boolean fixCDB;
 	
 	public MainWindow(){
-		super("Cellpacker 2.0 pre");
+		super("Cellpacker Editor 2.0");
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		fixCDB = true;
 		
@@ -228,9 +228,10 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		edit.setBorder(new EmptyBorder(0, 5, 0, 5));
 		menu.add(edit);
 		JMenu help = new JMenu("Help");
-		reuseable = new JMenuItem("Show tutorial"); 
-		help.add(reuseable);
-		reuseable = new JMenuItem("Show scripting tutorial");
+		reuseable = new JMenuItem("Show tutorial");
+		reuseable.addActionListener((e) -> {
+			Utils.showAboutDialog("<html>For more information read the Readme on the github page:<br>https://github.com/ReBuilders101/CellPacker/blob/master/README.md", "About / Help", "https://github.com/ReBuilders101/CellPacker/blob/master/README.md");
+		});
 		help.add(reuseable);
 		help.addSeparator();
 		reuseable = new JMenuItem("Show source code");

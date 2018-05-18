@@ -55,6 +55,13 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 		return Arrays.copyOf(getData(), dataStartPointer);
 	}
 	
+	public Category getCategory(String name){
+		for(Category c : cat){
+			if(c.getName().equals(name)) return c;
+		}
+		return null;
+	}
+	
 	@Unmodifiable
 	public Map<String, Integer> getHeaderMap(){
 		return Collections.unmodifiableMap(header);
@@ -277,6 +284,16 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 	
 	public static ResourceFile fromTemplate(ResourceFile template, Map<String, Resource> data){
 		return ResourceFile.fromTemplate(template.getHeader(), template.header, data);
+	}
+	
+	public Map<String,Resource> createTemplateMap(){
+		Map<String,Resource> map = new HashMap<>();
+		for(Category c : cat){
+			for(Resource r : c.resources){
+				map.put(c.getName() + "/" + r.getName(), r);
+			}
+		}
+		return map;
 	}
 	
 	public static ResourceFile fromTemplate(byte[] headerTemplate, Map<String, Integer> headerMap, Map<String, Resource> data){
