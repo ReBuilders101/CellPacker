@@ -3,6 +3,7 @@ A modding utility for Dead Cells
 
 Version 2.0 of CellPacker: Information and Help
 Please read this file before using the program.
+The compiled file can be found in the release folder.
   
 --------------------------------------------------------------------------------------------------------
 CellPacker is an application to view and modify the resources used by the game Dead Cells.  
