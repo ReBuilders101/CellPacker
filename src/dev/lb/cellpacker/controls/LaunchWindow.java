@@ -41,7 +41,7 @@ public class LaunchWindow extends JFrame{
 	public LaunchWindow(){
 		super("CellPacker Launcher 2.0");
 		
-		isSetup = new File("./deadcells.exe").exists() && new File("./cpscripts").exists() && new File("./res.pak").exists();
+		isSetup = new File("./deadcells.exe").exists() && new File("./cpscripts").exists() && new File("./res.pak").exists() && new File("./res.pak.cpbackup").exists();
 		if(!isSetup){
 			if(!trySetup()){
 				System.err.println("Setup error");
@@ -54,12 +54,15 @@ public class LaunchWindow extends JFrame{
 		CheckBoxList chl = new CheckBoxList();
 		content.add(new JScrollPane(chl), BorderLayout.CENTER);
 		JButton launch = new JButton("Start Dead Cells");
+		JButton launchgl = new JButton("Start Dead Cells (OpenGL - Legacy)");
 		JButton pack = new JButton("Start CellPacker");
 		JButton help = new JButton("Help / About");
 		launch.setBorder(new EmptyBorder(5, 10, 5, 10));
+		launchgl.setBorder(new EmptyBorder(5, 10, 5, 10));
 		pack.setBorder(new EmptyBorder(5, 10, 5, 10));
 		help.setBorder(new EmptyBorder(5, 10, 5, 10));
 		launch.setPreferredSize(new Dimension(150, 50));
+		launchgl.setPreferredSize(new Dimension(150, 50));
 		pack.setPreferredSize(new Dimension(150, 50));
 		help.setPreferredSize(new Dimension(150, 50));
 		help.addActionListener((e) -> {
@@ -72,88 +75,15 @@ public class LaunchWindow extends JFrame{
 			this.dispose();
 		});
 		launch.addActionListener((e) -> {
-			//Patch resource
-			ResourceFile rf = ResourceFile.fromFile(new File("./res.pak.cpbackup"));
-			JsonResource datacdb = (JsonResource) rf.getCategory("atlas").getByName("data.cdb");
-			JsonObject cdbJson = (JsonObject) new JsonParser().parse((String) datacdb.getContent());
-			Map<String,Resource> template = rf.createTemplateMap();
-			
-			for(String scriptname : name2json.keySet()){
-				//Test if active
-				ListModel<JCheckBox> model = chl.getModel();
-				boolean exec = false;
-				for(int i = 0; i < model.getSize(); i++){//Is this script's box selected
-					if(model.getElementAt(i).getText().equals(scriptname)){
-						exec = model.getElementAt(i).isSelected();
-						break;
-					}
-				}
-				
-				if(!exec) continue;
-				
-				String json = name2json.get(scriptname);
-				JsonElement element = new JsonParser().parse(json);
-				if(element instanceof JsonObject){
-					JsonObject script = (JsonObject) element;
-					if(script.has("add") && script.get("add") instanceof JsonObject){
-						System.out.println("Add tag");
-						
-						Utils.addJSON(cdbJson, (JsonObject) script.get("add"));
-						
-					}
-					if(script.has("remove") && script.get("remove") instanceof JsonObject){
-						System.out.println("Remove tag");
-						
-						Utils.removeJSON(cdbJson, (JsonObject) script.get("remove"));
-						
-					}
-					if(script.has("replace") && script.get("replace") instanceof JsonArray){
-						System.out.println("Replace tag");
-						JsonArray arr = (JsonArray) script.get("replace");
-						for(JsonElement el : arr){
-							if(el instanceof JsonObject){
-								JsonObject jo = (JsonObject) el;
-								if(jo.has("old") && jo.has("new")){
-									if(template.containsKey(jo.get("old").getAsString()) &&
-											new File("./cpscripts/" + jo.get("new").getAsString()).exists()){
-										Resource no = template.get(jo.get("old").getAsString());
-										File fn = new File("./cpscripts/" + jo.get("new").getAsString());
-										byte[] data = new byte[(int) fn.length()];
-										try(FileInputStream fis = new FileInputStream(fn)){
-											fis.read(data);
-										} catch (IOException e1) {
-											e1.printStackTrace();
-										}
-										Resource nr = Resource.createFromType(no.getName(), data, no.getClass());
-										template.put(jo.get("old").getAsString(), nr);
-									}
-								}
-							}
-						}
-					}
-				}else{
-					System.err.println("Not an object");
-				}
-			}
-			
-			datacdb = new JsonResource(datacdb.getName(), new Gson().toJson(cdbJson).getBytes());
-			
-			template.put("atlas/data.cdb", datacdb);
-			ResourceFile patched = ResourceFile.fromTemplate(rf, template);
-			patched.writeToFile(new File("./res.pak"));
-			
-			//Then launch
-			File deadCellsExe = new File("./deadcells.exe");
-			try {
-				new ProcessBuilder(deadCellsExe.getAbsolutePath()).start();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Error while launching: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			}
-			//this.dispose();
+			launch(false, chl);
+		});
+		launchgl.addActionListener((e) -> {
+			launch(true, chl);
 		});
 		launch.setEnabled(isSetup);
+		launchgl.setEnabled(isSetup);
 		buttons.add(launch);
+		buttons.add(launchgl);
 		buttons.add(pack);
 		buttons.add(help);
 		content.add(buttons, BorderLayout.SOUTH);
@@ -179,10 +109,92 @@ public class LaunchWindow extends JFrame{
 		
 		
 		this.add(content);
-		this.setPreferredSize(new Dimension(600, 300));
-		this.setMinimumSize(new Dimension(520, 200));
+		this.setPreferredSize(new Dimension(700, 300));
+		this.setMinimumSize(new Dimension(700, 200));
 		this.pack();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	private void launch(boolean gl, CheckBoxList chl){
+		//Patch resource
+		ResourceFile rf = ResourceFile.fromFile(new File("./res.pak.cpbackup"));
+		JsonResource datacdb = (JsonResource) rf.getCategory("atlas").getByName("data.cdb");
+		JsonObject cdbJson = (JsonObject) new JsonParser().parse((String) datacdb.getContent());
+		Map<String,Resource> template = rf.createTemplateMap();
+		
+		for(String scriptname : name2json.keySet()){
+			//Test if active
+			ListModel<JCheckBox> model = chl.getModel();
+			boolean exec = false;
+			for(int i = 0; i < model.getSize(); i++){//Is this script's box selected
+				if(model.getElementAt(i).getText().equals(scriptname)){
+					exec = model.getElementAt(i).isSelected();
+					break;
+				}
+			}
+			
+			if(!exec) continue;
+			
+			String json = name2json.get(scriptname);
+			JsonElement element = new JsonParser().parse(json);
+			if(element instanceof JsonObject){
+				JsonObject script = (JsonObject) element;
+				if(script.has("add") && script.get("add") instanceof JsonObject){
+					System.out.println("Add tag");
+					
+					Utils.addJSON(cdbJson, (JsonObject) script.get("add"));
+					
+				}
+				if(script.has("remove") && script.get("remove") instanceof JsonObject){
+					System.out.println("Remove tag");
+					
+					Utils.removeJSON(cdbJson, (JsonObject) script.get("remove"));
+					
+				}
+				if(script.has("replace") && script.get("replace") instanceof JsonArray){
+					System.out.println("Replace tag");
+					JsonArray arr = (JsonArray) script.get("replace");
+					for(JsonElement el : arr){
+						if(el instanceof JsonObject){
+							JsonObject jo = (JsonObject) el;
+							if(jo.has("old") && jo.has("new")){
+								if(template.containsKey(jo.get("old").getAsString()) &&
+										new File("./cpscripts/" + jo.get("new").getAsString()).exists()){
+									Resource no = template.get(jo.get("old").getAsString());
+									File fn = new File("./cpscripts/" + jo.get("new").getAsString());
+									byte[] data = new byte[(int) fn.length()];
+									try(FileInputStream fis = new FileInputStream(fn)){
+										fis.read(data);
+									} catch (IOException e1) {
+										e1.printStackTrace();
+									}
+									Resource nr = Resource.createFromType(no.getName(), data, no.getClass());
+									template.put(jo.get("old").getAsString(), nr);
+								}
+							}
+						}
+					}
+				}
+			}else{
+				System.err.println("Not an object");
+			}
+		}
+		
+		datacdb = new JsonResource(datacdb.getName(), new Gson().toJson(cdbJson).getBytes());
+		
+		template.put("atlas/data.cdb", datacdb);
+		ResourceFile patched = ResourceFile.fromTemplate(rf, template);
+		patched.writeToFile(new File("./res.pak"));
+		
+		//Then launch
+		File deadCellsExe = gl ? new File("./deadcells_gl.exe") : new File("./deadcells.exe");
+		try {
+			new ProcessBuilder(deadCellsExe.getAbsolutePath()).start();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error while launching: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		//this.dispose();
 	}
 	
 	private boolean trySetup(){
