@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import dev.lb.cellpacker.controls.LaunchWindow;
 import dev.lb.cellpacker.controls.MainWindow;
 import dev.lb.cellpacker.structure.ResourceFile;
 
@@ -15,7 +16,7 @@ public class CellPackerMain {
 	public static boolean ASK_RESOURCE_RESTORE = true;
 	public static File CHOOSE_ROOT_FILE = new File(".");
 	
-	private static MainWindow mainFrame;
+	public static MainWindow mainFrame;
 	
 	public static void main(String[] args) {
 		try {
@@ -25,9 +26,11 @@ public class CellPackerMain {
 			Logger.printWarning("CellPackerMain.main()", "Could not set L&F for this platform");
 		}
 		
-		mainFrame = new MainWindow();
-		mainFrame.setVisible(true);
-		mainFrame.setIconImage(new ImageIcon(CellPackerMain.class.getResource("/resources/ico.png")).getImage());
+		LaunchWindow lw = new LaunchWindow();
+		lw.setVisible(true);
+		
+		
+		lw.setIconImage(new ImageIcon(CellPackerMain.class.getResource("/resources/ico.png")).getImage());
 		
 		String cc = concat(args);
 		if(cc != null){ //Load file
