@@ -47,6 +47,11 @@ public class Column {
 		public String toString(){
 			return name;
 		}
+		
+		public static boolean isNumeric(ColumnType c){
+			return c == FLOAT || c == ColumnType.INTEGER;
+		}
+		
 		public static ColumnType getType(String typeStr){
 			if(typeStr.contains(":")) typeStr = typeStr.substring(0, typeStr.indexOf(':'));
 			switch(typeStr){

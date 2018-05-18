@@ -6,10 +6,34 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.structure.ResourceFile;
+import dev.lb.cellpacker.structure.cdb.Column.ColumnType;
+import dev.lb.cellpacker.structure.resource.JsonResource;
 
 public class ScriptReader {
-
+	
+	public static JsonResource patchJsonResource(JsonResource json, JsonObject scriptAdd, JsonObject scriptRemove){
+		JsonElement resource = new JsonParser().parse((String) json.getContent());
+		if(!(resource instanceof JsonObject)){
+			System.out.println("Error: not an object");
+			return json;
+		}else{
+			JsonObject res2 = (JsonObject) resource;
+			Utils.removeJSON(res2, scriptRemove);
+			Utils.addJSON(res2, scriptAdd);
+			String newJson = new Gson().toJson(res2);
+			return new JsonResource(json.getName(), newJson.getBytes());
+		}
+	}
+	
+	//This part of the file is the discontiniued script parser
+	
 	private CDBFile file;
 	private PrintStream out;
 	private ResourceFile rfile;
@@ -18,7 +42,7 @@ public class ScriptReader {
 		this.file = file;
 		this.out = out;
 		rfile = null;
-		out.println("Output:");
+		out.println("WARNING: ScriptReader is not fully implemented.");
 		out.flush();
 	}
 	
@@ -109,7 +133,20 @@ public class ScriptReader {
 			}else if(sheetName == null){
 				out.println("ParseError: you have to select a table/sheet before selecting a line/entry");
 			}else{
-				out.println("TODO Operation: " + command);
+				String operator = command.substring(0, command.indexOf(' '));
+				@SuppressWarnings("unused")
+				String value = command.substring(0, command.indexOf(' '));
+				switch (operator) {
+				case "add":
+					if(ColumnType.isNumeric(colName.getType())){
+						lineNames.forEach((l) -> {
+							
+						});
+					}
+					break;
+				default:
+					out.println("Unknown operator " + operator);
+				}
 			}
 			return false;
 		}
@@ -140,7 +177,7 @@ public class ScriptReader {
 					}else{
 						String col = sp[0];
 						String value = sp[1];
-						Predicate<Line> p = (l) -> !(l.getValue(col).equals(value));
+						Predicate<Line> p = (l) -> !(l.getValue(col, sheetName).equals(value));
 						available.removeIf(p);
 					}
 				}
@@ -258,11 +295,11 @@ public class ScriptReader {
 				for(Line l : lines){
 					if(colName == null){
 						for(Column c : sheetName.getColumns()){
-							out.print(c.getName() + "=" + l.getValue(c.getName()) + " ");
+							out.print(c.getName() + "=" + l.getValue(c.getName(), sheetName) + " ");
 						}
 						out.println();
 					}else{
-						out.println(colName.getName() + "=" + l.getValue(colName.getName()));
+						out.println(colName.getName() + "=" + l.getValue(colName.getName(), sheetName));
 					}
 				}
 			}

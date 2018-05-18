@@ -230,7 +230,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		JMenu help = new JMenu("Help");
 		reuseable = new JMenuItem("Show tutorial"); 
 		help.add(reuseable);
-		reuseable = new JMenuItem("Show console tutorial");
+		reuseable = new JMenuItem("Show scripting tutorial");
 		help.add(reuseable);
 		help.addSeparator();
 		reuseable = new JMenuItem("Show source code");

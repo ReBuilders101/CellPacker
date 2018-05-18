@@ -12,6 +12,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -22,6 +24,9 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
@@ -182,6 +187,53 @@ public final class Utils {
 			Desktop.getDesktop().browse(new URI(url));
 		} catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static void addJSON(JsonObject base, JsonObject add){
+		for(String s : add.keySet()){
+			JsonElement element = add.get(s);
+			//If base does not have this tag, just add it
+			if(!base.has(s)){
+				base.add(s, element);
+			}else{ //If it is already there, replace or merge
+				JsonElement there = base.get(s);
+				if(there instanceof JsonObject && element instanceof JsonObject){ //If both are objects, merge them
+					addJSON((JsonObject) there, (JsonObject) element);
+				}else if(there instanceof JsonArray && element instanceof JsonArray){ //if they are arrays, append the entries of add to base
+					for(JsonElement arrayEntry : (JsonArray) element){ //Iterate over new entries
+						((JsonArray) there).add(arrayEntry); //Add the new entries to base
+					}
+				}else{ //if they are primitives or different types, replace
+					base.add(s, element);
+				}
+			}
+		}
+	}
+	
+	public static void removeJSON(JsonObject base, JsonObject remove){
+		for(String s : remove.keySet()){
+			JsonElement element = remove.get(s);
+			//If base does not have this tag, just ignore
+			if(!base.has(s)){
+				//Ignore
+			}else{ //If it is already there, remove or recursive remove 
+				JsonElement there = base.get(s);
+				if(there instanceof JsonObject && element instanceof JsonObject){ //If both are objects, recurse
+					removeJSON((JsonObject) there, (JsonObject) element);
+				}else if(there instanceof JsonArray && element instanceof JsonArray){ //if they are arrays, get Entries and remove them
+					List<JsonElement> entriesThere = new ArrayList<>();
+					List<JsonElement> entriesRemove = new ArrayList<>();
+					((JsonArray) there).forEach((e) -> entriesThere.add(e));
+					((JsonArray) element).forEach((e) -> entriesRemove.add(e));
+					entriesThere.removeIf((e) -> entriesRemove.contains(e));
+					JsonArray newArray = new JsonArray(entriesThere.size());
+					entriesThere.forEach((e) -> newArray.add(e));
+					base.add(s, newArray);
+				}else{ //if they are primitives or different types, remove
+					base.remove(s);
+				}
+			}
 		}
 	}
 }

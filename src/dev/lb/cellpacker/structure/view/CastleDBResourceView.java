@@ -12,8 +12,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -21,11 +19,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import dev.lb.cellpacker.CellPackerMain;
-import dev.lb.cellpacker.TextAreaPrintStream;
 import dev.lb.cellpacker.controls.JHistoryTextField;
-import dev.lb.cellpacker.structure.cdb.CDBFile;
-import dev.lb.cellpacker.structure.cdb.Line;
-import dev.lb.cellpacker.structure.cdb.ScriptReader;
 import dev.lb.cellpacker.structure.resource.JsonResource;
 import dev.lb.cellpacker.structure.resource.Resource;
 
@@ -34,7 +28,6 @@ public class CastleDBResourceView extends JsonResourceView{
 	public CastleDBResourceView(String name, JsonResource resource) {
 		super(name, resource);
 	}
-	
 	
 	public static JsonResource fixResource(Resource unfixed){
 		StringBuilder cdb = fixCDBType(fixCDBTables((String) unfixed.getContent()));
@@ -150,6 +143,7 @@ public class CastleDBResourceView extends JsonResourceView{
 		JHistoryTextField in = new JHistoryTextField();
 		console.add(new JScrollPane(out), BorderLayout.CENTER);
 		console.add(in, BorderLayout.SOUTH);
+		/* Console currently discontiniued, use JSON merge instead
 		CDBFile file = new GsonBuilder().registerTypeAdapter(Line.class, Line.LineSerial.instance).create()
 				.fromJson((String) currentResource.getContent(), CDBFile.class);
 		ScriptReader sr = new ScriptReader(file, new TextAreaPrintStream(out));
@@ -159,6 +153,7 @@ public class CastleDBResourceView extends JsonResourceView{
 		});
 		//System.out.println(file);
 		display.add("Console", console);
+		*/
 		isInitialized = true;
 	}
 

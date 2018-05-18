@@ -11,6 +11,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import dev.lb.cellpacker.structure.cdb.Column.ColumnType;
+
 public class Line {
 	
 	JsonElement data;
@@ -22,14 +24,21 @@ public class Line {
 		return data.getAsJsonObject();
 	}
 	
-	public String getValue(String colName){
+	public String getValue(String colName, Sheet sheet){
 		JsonElement value = data.getAsJsonObject().get(colName);
+		ColumnType ct = sheet.getColumn(colName).getType();
 		if(value == null){
 			return null;
 		}else if(value.isJsonPrimitive()){
 			return value.getAsString();
 		}else if(value instanceof JsonObject){
-			return "<JsonObject/Subsheet>";
+			if(ct == ColumnType.ICON){
+				return "<Icon>";
+			}else if(ct == ColumnType.SUBSHEET){
+				return "<SubSheet: " + sheet.getName() + "@" + colName + ">";
+			}else{
+				return "<JsonObject/Data>";
+			}
 		}else if(value instanceof JsonArray){
 			boolean all = true; //Are all values primitives?
 			for(JsonElement e : value.getAsJsonArray()){
