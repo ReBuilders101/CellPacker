@@ -21,6 +21,7 @@ import javax.swing.ListModel;
 import javax.swing.border.EmptyBorder;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -75,6 +76,7 @@ public class LaunchWindow extends JFrame{
 			ResourceFile rf = ResourceFile.fromFile(new File("./res.pak.cpbackup"));
 			JsonResource datacdb = (JsonResource) rf.getCategory("atlas").getByName("data.cdb");
 			JsonObject cdbJson = (JsonObject) new JsonParser().parse((String) datacdb.getContent());
+			Map<String,Resource> template = rf.createTemplateMap();
 			
 			for(String scriptname : name2json.keySet()){
 				//Test if active
@@ -105,8 +107,29 @@ public class LaunchWindow extends JFrame{
 						Utils.removeJSON(cdbJson, (JsonObject) script.get("remove"));
 						
 					}
-					if(script.has("replace") && script.get("replace") instanceof JsonObject){
-						
+					if(script.has("replace") && script.get("replace") instanceof JsonArray){
+						System.out.println("Replace tag");
+						JsonArray arr = (JsonArray) script.get("replace");
+						for(JsonElement el : arr){
+							if(el instanceof JsonObject){
+								JsonObject jo = (JsonObject) el;
+								if(jo.has("old") && jo.has("new")){
+									if(template.containsKey(jo.get("old").getAsString()) &&
+											new File("./cpscripts/" + jo.get("new").getAsString()).exists()){
+										Resource no = template.get(jo.get("old").getAsString());
+										File fn = new File("./cpscripts/" + jo.get("new").getAsString());
+										byte[] data = new byte[(int) fn.length()];
+										try(FileInputStream fis = new FileInputStream(fn)){
+											fis.read(data);
+										} catch (IOException e1) {
+											e1.printStackTrace();
+										}
+										Resource nr = Resource.createFromType(no.getName(), data, no.getClass());
+										template.put(jo.get("old").getAsString(), nr);
+									}
+								}
+							}
+						}
 					}
 				}else{
 					System.err.println("Not an object");
@@ -115,7 +138,6 @@ public class LaunchWindow extends JFrame{
 			
 			datacdb = new JsonResource(datacdb.getName(), new Gson().toJson(cdbJson).getBytes());
 			
-			Map<String,Resource> template = rf.createTemplateMap();
 			template.put("atlas/data.cdb", datacdb);
 			ResourceFile patched = ResourceFile.fromTemplate(rf, template);
 			patched.writeToFile(new File("./res.pak"));
