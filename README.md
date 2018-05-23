@@ -34,7 +34,7 @@ CellPacker is an application to view and modify the resources used by the game D
 
 1. Place the file CellPacker.jar in your Dead Cells folder (usually found at <Steam folder>/steamapps/common/Dead Cells/)
 2. Double-click the jar file to execute it.
-3. A window with three buttons will appear. The first start may take some time because CellPacker is creating a backup of your resource file.
+3. A window should open. The first start may take some time because CellPacker is creating a backup of your resource file.
 4. CellPacker will create the folder `cpscripts` and the file `res.pak.cpbackup`. Do not delete these, they are important for CellPacker.
 5. If you have any scripts (file extension `.patch`), you can drop them into the `cpscripts` folder. They should the show up as a checkbox at the top of the window after restarting CellPacker.
 6. Start Dead Cells with the left button.
