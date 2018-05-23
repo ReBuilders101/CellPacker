@@ -1,0 +1,908 @@
+{
+	"add": {
+		"sheets":[
+			{
+				"CPWHERE": {
+					"id": "name",
+					"value": "level"
+				},
+				"lines": [
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonStart"
+						},
+						"flags": 64
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonCourtyard"
+						},
+						"flags": 65
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonDepths"
+						},
+						"flags": 64
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "SewerShort"
+						},
+						"flags": 72
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonStart"
+						},
+						"flags": 64
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonRoof"
+						},
+						"flags": 65
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "SewerDepths"
+						},
+						"flags": 72
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "Ossuary"
+						},
+						"flags": 64
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "StiltVillage"
+						},
+						"flags": 325
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "AncientTemple"
+						},
+						"flags": 64
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "Cemetery"
+						},
+						"flags": 65
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "ClockTower"
+						},
+						"flags": 192
+					}
+				]
+			}
+			,
+			{
+				"CPWHERE": {
+					"id": "name",
+					"value": "room"
+				},
+				"lines": [
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonFlaskRoom"
+						},
+						"markers": [
+							{
+								"x": 28,
+								"y": 30,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 93,
+								"y": 28,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 83,
+								"y": 26,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 51,
+								"y": 26,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "Exit_LR"
+						},
+						"markers": [
+							{
+								"x": 3,
+								"y": 7,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 11,
+								"y": 7,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "Exit_LDR"
+						},
+						"markers": [
+							{
+								"x": 6,
+								"y": 6,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 16,
+								"y": 6,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "Exit_UL"
+						},
+						"markers": [
+							{
+								"x": 7,
+								"y": 5,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "Exit_DL"
+						},
+						"markers": [
+							{
+								"x": 9,
+								"y": 11,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "BasicEntrance_R"
+						},
+						"markers": [
+							{
+								"x": 22,
+								"y": 8,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "BasicEntrance_D"
+						},
+						"markers": [
+							{
+								"x": 14,
+								"y": 12,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "BasicEntrance_U"
+						},
+						"markers": [
+							{
+								"x": 17,
+								"y": 7,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "OutsideEntrance"
+						},
+						"markers": [
+							{
+								"x": 22,
+								"y": 14,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonStartExit"
+						},
+						"markers": [
+							{
+								"x": 26,
+								"y": 5,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonMonsterDoor"
+						},
+						"markers": [
+							{
+								"x": 2,
+								"y": 10,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 10,
+								"y": 10,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonDepthsEntrance"
+						},
+						"markers": [
+							{
+								"x": 22,
+								"y": 16,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonHubEntrance"
+						},
+						"markers": [
+							{
+								"x": 19,
+								"y": 17,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "RoofEntrance"
+						},
+						"markers": [
+							{
+								"x": 23,
+								"y": 8,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 18,
+								"y": 28,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "RoofEndSubRoom"
+						},
+						"markers": [
+							{
+								"x": 9,
+								"y": 18,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "RoofEndNothing"
+						},
+						"markers": [
+							{
+								"x": 9,
+								"y": 18,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "RoofEndBridge"
+						},
+						"markers": [
+							{
+								"x": 9,
+								"y": 15,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 39,
+								"y": 16,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "RoofEndExit"
+						},
+						"markers": [
+							{
+								"x": 13,
+								"y": 26,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 23,
+								"y": 108,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "RoofInnerExit"
+						},
+						"markers": [
+							{
+								"x": 14,
+								"y": 5,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "SewerShortEntrance"
+						},
+						"markers": [
+							{
+								"x": 13,
+								"y": 5,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 25,
+								"y": 12,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "SewerDepthsEntrance"
+						},
+						"markers": [
+							{
+								"x": 24,
+								"y": 9,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 32,
+								"y": 23,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "SewerCreature"
+						},
+						"markers": [
+							{
+								"x": 12,
+								"y": 6,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 31,
+								"y": 6,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "OssEntrance"
+						},
+						"markers": [
+							{
+								"x": 18,
+								"y": 24,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 45,
+								"y": 28,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "SVEntrance"
+						},
+						"markers": [
+							{
+								"x": 8,
+								"y": 20,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "SVEnd"
+						},
+						"markers": [
+							{
+								"x": 28,
+								"y": 26,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 12,
+								"y": 80,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 10,
+								"y": 90,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 31,
+								"y": 90,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 59,
+								"y": 90,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "SVInteriorExit"
+						},
+						"markers": [
+							{
+								"x": 22,
+								"y": 40,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "SVMidGate"
+						},
+						"markers": [
+							{
+								"x": 11,
+								"y": 52,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 8,
+								"y": 87,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 14,
+								"y": 87,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "CEntrance"
+						},
+						"markers": [
+							{
+								"x": 7,
+								"y": 27,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 14,
+								"y": 96,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 30,
+								"y": 96,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "CEndExit"
+						},
+						"markers": [
+							{
+								"x": 22,
+								"y": 27,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 8,
+								"y": 83,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 33,
+								"y": 83,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "CLadderGateDone"
+						},
+						"markers": [
+							{
+								"x": 15,
+								"y": 15,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "CemEntrance"
+						},
+						"markers": [
+							{
+								"x": 26,
+								"y": 48,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "CemEnd"
+						},
+						"markers": [
+							{
+								"x": 13,
+								"y": 71,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "CemBigCrypt"
+						},
+						"markers": [
+							{
+								"x": 7,
+								"y": 22,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 48,
+								"y": 22,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 18,
+								"y": 38,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "ClockTowerEntrance"
+						},
+						"markers": [
+							{
+								"x": 49,
+								"y": 13,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "5"
+							},
+							{
+								"x": 33,
+								"y": 31,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							},
+							{
+								"x": 53,
+								"y": 31,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "ClockTowerExit"
+						},
+						"markers": [
+							{
+								"x": 4,
+								"y": 8,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+					},
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "AncientEntrance"
+						},
+						"markers": [
+							{
+								"x": 20,
+								"y": 14,
+								"marker": "DarknessRemover",
+								"width": 1,
+								"height": 1,
+								"customId": "-7"
+							}
+						]
+<<<<<<< HEAD
+					}
+=======
+					},
+					
+					
+					
+					
+					
+>>>>>>> branch 'master' of https://github.com/ReBuilders101/CellPacker
+				]
+			}
+		]
+	}
+}
