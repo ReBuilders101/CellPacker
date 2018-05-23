@@ -3,7 +3,7 @@ A modding utility for Dead Cells
 
 Version 2.0 of CellPacker: Information and Help
 Please read this file before using the program.
-The compiled file can be found in the release folder.
+The compiled file can be found [here](https://github.com/ReBuilders101/CellPacker/raw/master/release/CellPacker.jar).
   
 --------------------------------------------------------------------------------------------------------
 CellPacker is an application to view and modify the resources used by the game Dead Cells.  
@@ -29,16 +29,17 @@ CellPacker is an application to view and modify the resources used by the game D
   
 --------------------------------------------------------------------------------------------------------
 ### How to use:  
-#####Launcher
+[CellPacker Download](https://github.com/ReBuilders101/CellPacker/raw/master/release/CellPacker.jar)
+##### Launcher
 
 1. Place the file CellPacker.jar in your Dead Cells folder (usually found at <Steam folder>/steamapps/common/Dead Cells/)
 2. Double-click the jar file to execute it.
 3. A window with three buttons will appear. The first start may take some time because CellPacker is creating a backup of your resource file.
 4. CellPacker will create the folder `cpscripts` and the file `res.pak.cpbackup`. Do not delete these, they are important for CellPacker.
-5. If you have any scripts (file extension `.patch`), you can drop them into the `cpscripts` folder. They should the show up as a checkbox at the top of the window.
+5. If you have any scripts (file extension `.patch`), you can drop them into the `cpscripts` folder. They should the show up as a checkbox at the top of the window after restarting CellPacker.
 6. Start Dead Cells with the left button.
 
-#####Editor  
+##### Editor  
 
 1. Open the editor with the middle button (`Start CellPacker`). A new window should open.
 2. Open a resource file by selecting File>Open and choosing the res.pak file.
@@ -48,7 +49,7 @@ CellPacker is an application to view and modify the resources used by the game D
 5. You can always restore a modified resource to its original state with the Resource Options menu.
 6. to create a version containing your changes that is useable by Dead Cells, simply use File>Save.
   
-#####Scripting
+##### Scripting
 
 1. A script for CellPacker is just a JSON file that is placed in the `cpscripts` folder.
 2. The root element can have three subelements: `add`, `remove` and `replace`.
@@ -57,7 +58,7 @@ Everything in the `add` tag will be added to or merged with the JSON data from t
 Everything in the `remove` tag will be removed from the JSON data from the data.cdb resource.
 The `replace` tag should be an array. Every item in this array should have the values "old" and "new". "old" will point to a resource in the resource file, e. g. `atlas/ancientTemple.png`, the "new" value should hold the name of a file (in the `cpscripts` folder) that replaces this resource.
 
-#####Scripting example
+##### Scripting example
 
 The following example will spawn 12 scrolls in the start biome (instead of 2). Explainations below.
 ```json
@@ -85,18 +86,18 @@ Explaination:
 * Lines is an array too, so we need the `CPINDEX` property too. Element 1 is the start biome (id: `PrisonStart`).
 * The value of the `tripleUps` property is then set to 12.
 
-#####Updates
+##### Updates
 When Dead Cells updates, this might break CellPacker. The first thing you should try is to delete `res.pak.cpbackup` and start CellPacker again. If this doesn't help, you might want to uninstall CellPacker.
 
-#####Uninstall
+##### Uninstall
 To remove CellPacker, launch the game once without any scripts enabled. Then simply launch the game normally from Steam. You might want to redownload the game files with Steam.
 You can delete the `cpscripts` folder and the files `res.pak.cpbackup` and `CellPacker.jar`.
 
 --------------------------------------------------------------------------------------------------------  
 ### Compiled files and code:
-#####Compiled files
+##### Compiled files
 Use the CellPacker.jar in the release folder.
-#####If you want to compile the code:
+##### If you want to compile the code:
 This repository contains a full eclipse project, you can just clone and import it. It will probably also work with any other IDE.
 All jar files in the `lib` folder are dependencies.
   
@@ -112,7 +113,7 @@ But:
 Also: 
 * If Dead Cells breaks, it is not my fault.
 
-#####Third Party Licenses and Credits:
+##### Third Party Licenses and Credits:
 This program uses the following third party librarys:
 - CodecJOrbis by Paul Lamb (http://paulscode.com), because Java does not support the OGG sound format.
 - Gson (under the Apache License 2.0, can be found at http://www.apache.org/licenses/LICENSE-2.0) to parse JSON.
