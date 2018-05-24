@@ -1,0 +1,31 @@
+{
+	"add": {
+		"sheets":[
+			{
+				"CPWHERE": {
+					"id": "name", "value": "room"
+				}
+				,
+				"lines": [ 
+					{
+						"CPWHERE": {
+							"id": "id",
+							"value": "PrisonFlaskRoom"
+						}
+						,
+						"markers": [
+							{
+								"x": 84,
+								"y": 26,
+								"marker": "FixedLoot",
+								"width": 1,
+								"height": 1,
+								"item": "TimeDistorsion"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}
