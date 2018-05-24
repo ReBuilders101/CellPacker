@@ -15,14 +15,39 @@
 						,
 						"markers": [
 							{
-								"x": 84,
+								"x": 85,
 								"y": 26,
 								"marker": "FixedLoot",
 								"width": 1,
 								"height": 1,
 								"item": "TimeDistorsion"
+							},
+							{
+								"x": 83,
+								"y": 26,
+								"marker": "FixedBlueprint",
+								"width": 1,
+								"height": 1,
+								"item": "TimeDistorsion"
 							}
 						]
+					}
+				]
+			},
+			{
+				"CPWHERE": {
+					"id": "name", "value": "item"
+				}
+				,
+				"lines": [
+					{
+						"CPWHERE": {
+							"id": "id", "value": "TimeDistorsion"
+						}
+						,
+						"droppable": true,
+						"hasLevels": true,
+						"cellCost": 1
 					}
 				]
 			}
