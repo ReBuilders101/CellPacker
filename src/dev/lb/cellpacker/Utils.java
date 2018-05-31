@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
@@ -252,5 +253,21 @@ public final class Utils {
 				}
 			}
 		}
+	}
+	
+	public static <T> boolean contains(Iterable<T> l, Predicate<T> test){
+		for(T t : l){
+			if(test.test(t))
+				return true;
+		}
+		return false;
+	}
+	
+	public static <T> T getFirst(Iterable<T> l, Predicate<T> test){
+		for(T t : l){
+			if(test.test(t))
+				return t;
+		}
+		return null;
 	}
 }

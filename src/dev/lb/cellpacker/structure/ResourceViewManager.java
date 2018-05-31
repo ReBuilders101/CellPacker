@@ -191,22 +191,6 @@ public class ResourceViewManager {
 		return ret;
 	}
 	
-	public static <T> boolean contains(Iterable<T> l, Predicate<T> test){
-		for(T t : l){
-			if(test.test(t))
-				return true;
-		}
-		return false;
-	}
-	
-	public static <T> T getFirst(Iterable<T> l, Predicate<T> test){
-		for(T t : l){
-			if(test.test(t))
-				return t;
-		}
-		return null;
-	}
-	
 	public void addResourceView(String category, ResourceView res){
 		if(views.get(category) == null){
 			List<ResourceView> c = new ArrayList<>();
