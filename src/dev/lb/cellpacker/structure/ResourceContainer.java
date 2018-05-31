@@ -7,6 +7,7 @@ import dev.lb.cellpacker.structure.resource.Resource;
 
 public interface ResourceContainer {
 	
+	public ResourceContainer getParent();
 	public List<Resource> getResources();
 	public List<ResourceContainer> getSubCategories();
 	public String getName();
@@ -48,6 +49,18 @@ public interface ResourceContainer {
 			return false;
 		}else{
 			return !getSubCategories().isEmpty();
+		}
+	}
+	
+	public default boolean isRoot(){
+		return getParent() == null;
+	}
+	
+	public default String getFullPath(){
+		if(isRoot()){
+			return getName();
+		}else{
+			return getParent().getFullPath() + "/" + getName();
 		}
 	}
 }
