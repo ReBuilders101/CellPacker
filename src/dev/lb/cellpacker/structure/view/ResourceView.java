@@ -137,7 +137,7 @@ public abstract class ResourceView {
 				JOptionPane.showMessageDialog(dialogParent, "An error occurred while reading file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				return null;
 			}
-			return Resource.createFromType(oldResource.getName(), data, oldResource.getClass());
+			return Resource.createFromType(oldResource.getName(), oldResource.getPath(), data, oldResource.getClass());
 		}
 		return null;
 	}

@@ -40,9 +40,8 @@ public class AtlasResource extends Resource{
 	private JTextArea textDisplay;
 	private AtlasData atlasData;
 	
-	public AtlasResource(String name, byte[] data) {
-		this.name = name;
-		this.data = data;
+	public AtlasResource(String name, String path, byte[] data) {
+		super(name, path, data);
 	}
 	
 	private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
@@ -96,7 +95,7 @@ public class AtlasResource extends Resource{
 
 	@Override
 	public Resource clone() {
-		return new AtlasResource(name, data);
+		return new AtlasResource(getName(), getPath(), getData());
 	}
 
 	@Override

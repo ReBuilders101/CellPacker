@@ -18,12 +18,11 @@ public class SoundResource extends Resource{
 	private Clip content;
 	private JAudioPlayer current;
 	
-	public SoundResource(String name, byte[] data) {
-		this.isInitialized = false;
-		this.data = data;
+	public SoundResource(String name, String path, byte[] data) {
+		super(name, path, data);
 		if(name.endsWith(".wav"));
 			name = name.substring(0, name.length() - 4) + ".ogg";
-		this.name = name;
+		setName(name);
 	}
 
 	
@@ -73,7 +72,7 @@ public class SoundResource extends Resource{
 
 	@Override
 	public Resource clone() {
-		return new SoundResource(getName(), getData());
+		return new SoundResource(getName(), getPath(), getData());
 	}
 
 	@Override

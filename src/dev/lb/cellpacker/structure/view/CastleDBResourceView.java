@@ -31,7 +31,7 @@ public class CastleDBResourceView extends JsonResourceView{
 	
 	public static JsonResource fixResource(Resource unfixed){
 		StringBuilder cdb = fixCDBType(fixCDBTables((String) unfixed.getContent()));
-		return new JsonResource(unfixed.getName(), cdb.toString().getBytes());
+		return new JsonResource(unfixed.getName(), unfixed.getPath(), cdb.toString().getBytes());
 	}
 	
 	public static StringBuilder fixCDBType(String unfixed){

@@ -41,15 +41,13 @@ public class StaticResourceView extends ResourceView{
 	}
 	
 	public static Resource staticTextResource(String name2, String text, byte[] data2){
-		return new Resource() {
+		return new Resource(name2, "", data2) {
 			
 			JPanel textA;
 			
 			{
 				textA = new JPanel(new FlowLayout());
 				textA.add(new JLabel(text));
-				this.name = name2;
-				this.data = data2;
 				this.isInitialized = true;
 			}
 			
@@ -76,13 +74,13 @@ public class StaticResourceView extends ResourceView{
 		};
 	}
 	
-	public static ImageResource defaultImage(String name, String text){
+	public static ImageResource defaultImage(String name, String path, String text){
 		BufferedImage img =  new BufferedImage(300, 100, BufferedImage.TYPE_INT_ARGB);
 		img.getGraphics().drawString(text, 50, 50);
 		try(ByteArrayOutputStream baos = new ByteArrayOutputStream()){
 			ImageIO.write(img, "png", baos);
 			baos.flush();
-			return new ImageResource(name, baos.toByteArray());
+			return new ImageResource(name, path, baos.toByteArray());
 		}catch (IOException e) {
 			Logger.throwFatal(e);
 		}

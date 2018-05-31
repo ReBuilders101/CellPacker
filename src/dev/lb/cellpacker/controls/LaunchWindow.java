@@ -168,7 +168,7 @@ public class LaunchWindow extends JFrame{
 									} catch (IOException e1) {
 										e1.printStackTrace();
 									}
-									Resource nr = Resource.createFromType(no.getName(), data, no.getClass());
+									Resource nr = Resource.createFromType(no.getName(), no.getPath(), data, no.getClass());
 									template.put(jo.get("old").getAsString(), nr);
 								}
 							}
@@ -180,7 +180,7 @@ public class LaunchWindow extends JFrame{
 			}
 		}
 		
-		datacdb = new JsonResource(datacdb.getName(), new Gson().toJson(cdbJson).getBytes());
+		datacdb = new JsonResource(datacdb.getName(), datacdb.getPath(), new Gson().toJson(cdbJson).getBytes());
 		
 		template.put("atlas/data.cdb", datacdb);
 		ResourceFile patched = ResourceFile.fromTemplate(rf, template);

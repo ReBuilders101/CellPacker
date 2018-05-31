@@ -52,7 +52,7 @@ public class JsonResourceView extends SingleResourceView{
 				disc.setEnabled(false);
 				text.setEditable(false);
 				if(result == 0){ //Anyways
-					JsonResource newRes = new JsonResource(currentResource.getName(), text.getText().getBytes());
+					JsonResource newRes = new JsonResource(currentResource.getName(), currentResource.getPath(), text.getText().getBytes());
 					if(newRes != null){
 						if(changesMade){
 							currentResource = newRes;

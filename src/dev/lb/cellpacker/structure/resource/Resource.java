@@ -11,7 +11,15 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 	
 	protected byte[] data;
 	protected String name;
+	protected String path;
 	protected boolean isInitialized;
+	
+	public Resource(String name, String path, byte[] data){
+		this.name = name;
+		this.path = path;
+		this.data = data;
+		this.isInitialized = false;
+	}
 	
 	@Override
 	public byte[] getData(){
@@ -22,32 +30,32 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 		return name;
 	}
 	
-	public static Resource createFromExtension(String name, byte[] data){
+	public static Resource createFromExtension(String name, String path, byte[] data){
 //		System.out.println("Extension for:" + name + ": " + getExtension(name));
 //		System.err.println(data.length);
 		switch(getExtension(name)){
-			case ".png": return new ImageResource(name, data);
-			case ".ogg": return new SoundResource(name, data);
-			case ".wav": return new SoundResource(name, data);
-			case ".atlas": return new AtlasResource(name, data);
-			case ".json": return new JsonResource(name, data);
-			case ".cdb" : return new JsonResource(name, data);
-			case ".fnt": return new FontResource(name, data);
-			default: return StaticResourceView.staticTextResource(name, "Unknown resource format", data);
+			case ".png": return new ImageResource(name, path, data);
+			case ".ogg": return new SoundResource(name, path, data);
+			case ".wav": return new SoundResource(name, path, data);
+			case ".atlas": return new AtlasResource(name, path, data);
+			case ".json": return new JsonResource(name, path, data);
+			case ".cdb" : return new JsonResource(name, path, data);
+			case ".fnt": return new FontResource(name, path, data);
+			default: return StaticResourceView.staticTextResource(name, "Unknown resource format: " + getExtension(name), data);
 		}
 	}
 	
-	public static Resource createFromType(String name, byte[] data, Class<? extends Resource> type){
+	public static Resource createFromType(String name, String path, byte[] data, Class<? extends Resource> type){
 		if(type == ImageResource.class){
-			return new ImageResource(name, data);
+			return new ImageResource(name, path, data);
 		}else if(type == SoundResource.class){
-			return new SoundResource(name, data);
+			return new SoundResource(name, path, data);
 		}else if(type == AtlasResource.class){
-			return new AtlasResource(name, data);
+			return new AtlasResource(name, path, data);
 		}else if(type == FontResource.class){
-			return new FontResource(name, data);
+			return new FontResource(name, path, data);
 		}else if(type == JsonResource.class){
-			return new JsonResource(name, data);
+			return new JsonResource(name, path, data);
 		}else{
 			return StaticResourceView.staticTextResource(name, "Ooops. Something went wrong while creating a resource: Resource:createFromType()", data);
 		}
@@ -55,6 +63,14 @@ public abstract class Resource implements ByteData, Comparable<Resource>{
 	
 	protected void setName(String newName){
 		this.name = newName;
+	}
+	
+	public String getPath(){
+		return path;
+	}
+	
+	public String getPathAndName(){
+		return path + "/" + name;
 	}
 	
 	public String getMainName(){

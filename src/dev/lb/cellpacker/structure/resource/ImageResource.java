@@ -24,10 +24,8 @@ public class ImageResource extends Resource{
 	
 	private JImageViewer jim;
 	
-	public ImageResource(String name, byte[] data){
-		this.name = name;
-		this.data = data;
-		this.isInitialized = false;
+	public ImageResource(String name, String path, byte[] data){
+		super(name, path, data);
 	}
 
 	@Async
@@ -83,7 +81,7 @@ public class ImageResource extends Resource{
 
 	@Override
 	public Resource clone() {
-		return new ImageResource(getName(), getData());
+		return new ImageResource(getName(), getPath(), getData());
 	}
 
 	@Override
