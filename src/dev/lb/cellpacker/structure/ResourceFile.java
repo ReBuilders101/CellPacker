@@ -11,39 +11,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import dev.lb.cellpacker.Logger;
-import dev.lb.cellpacker.annotation.Shortcut;
 import dev.lb.cellpacker.annotation.Unmodifiable;
-import dev.lb.cellpacker.structure.ResourceFile.Category;
 import dev.lb.cellpacker.structure.resource.Resource;
 
-public class ResourceFile implements Iterable<Category>,ByteData{
-	
-	private List<Category> cat;
+public class ResourceFile implements ByteData{
 	private Map<String, Integer> header;
+	private ResourceContainer root;
 	private byte[] data;
 	private int dataStartPointer;
 	
-	private ResourceFile(List<Category> cat, byte[] data, int ptr, Map<String, Integer> header) {
-		this.cat = cat;
+	private ResourceFile(ResourceContainer root, byte[] data, int ptr) {
 		this.data = data;
 		this.dataStartPointer = ptr;
-		this.header = header;
-	}
-	
-	@Shortcut("getCategories().iterator()")
-	@Override
-	public Iterator<Category> iterator() {
-		return getCategories().iterator();
+		this.root = root;
 	}
 
-	@Unmodifiable
-	public List<Category> getCategories() {
-		return Collections.unmodifiableList(cat);
+	public ResourceContainer getRootContainer(){
+		return root;
 	}
 	
 	@Override
@@ -53,13 +41,6 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 	
 	public byte[] getHeader(){
 		return Arrays.copyOf(getData(), dataStartPointer);
-	}
-	
-	public Category getCategory(String name){
-		for(Category c : cat){
-			if(c.getName().equals(name)) return c;
-		}
-		return null;
 	}
 	
 	@Unmodifiable
@@ -74,7 +55,7 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 	public void writeAllResources(File targetFolder){
 		//Iterate over categories and create folders
 		targetFolder.mkdirs();
-		for(Category cat : getCategories()){
+		for(ResourceContainer cat : root.getSubCategories()){
 			File subFolder = new File(targetFolder.getAbsolutePath() + File.separator + cat.getName());
 			subFolder.mkdir();
 			for(Resource res : cat.getResources()){
@@ -104,44 +85,6 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 		}
 	}
 	
-	public static class Category implements Iterable<Resource>{
-		private List<Resource> resources;
-		private String name;
-		
-		public Category(String name){
-			resources = new ArrayList<>();
-			this.name = name;
-		}
-		
-		public void addResource(Resource res){
-			resources.add(res);
-		}
-		
-		public Resource getByName(String name){
-			for(Resource r : resources){
-				if(r.getName().equals(name))
-					return r;
-			}
-			return null;
-		}
-		
-		@Unmodifiable
-		public List<Resource> getResources(){
-			return Collections.unmodifiableList(resources);
-		}
-		
-		public String getName(){
-			return name;
-		}
-
-		@Override
-		@Shortcut("getResources().iterator()")
-		public Iterator<Resource> iterator() {
-			return getResources().iterator();
-		}
-		
-	}
-	
 	public static ResourceFile fromFile(File file){
 		if(file == null){
 			Logger.throwFatal(new NullPointerException("Argument 'file' must not be null"));
@@ -168,8 +111,80 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 		return null;
 	}
 	
+	/**
+	 * Reads a category from bytes
+	 * @param pointer The current pointer position. It should be on the Name String terminator byte (0x01) 
+	 * @param name The name of the new Category
+	 * @param data The byte data to parse
+	 * @param parent The parent container, can be a category or resource file
+	 * @return The new pointer position. It should be the next item's name string length byte
+	 */
+	private static int readCategory(int pointer, int datatag, String name, byte[] data, ResourceContainer parent){
+		//0. create category object
+		ResourceContainer current = new Category(name, parent);
+		parent.addSubCategory(current);
+		//1. Read category length
+		int length = decodeInt(Arrays.copyOfRange(data, pointer + 1, pointer + 5));
+		pointer += 5; //pointer is now on first item name length byte
+		
+		for(int i = 0; i < length; i++){
+			int stringlength = data[pointer] & 0xFF;
+			String string = new String(Arrays.copyOfRange(data, pointer + 1, pointer + stringlength + 1));
+			pointer += stringlength + 1; //pointer is now on string terminator
+			if(data[pointer] == (byte) 0x00){ //it's a resource
+				pointer = readResource(pointer, datatag, string, data, current);
+			}else if(data[pointer] == (byte) 0x01){ //it's a category
+				pointer = readCategory(pointer, datatag, string, data, current);
+			}else{
+				Logger.throwFatal(new Exception("String terminator is neither 0 nor 1 (pointer: " +
+						Integer.toHexString(pointer) + ", value: " + Integer.toHexString(data[pointer]) + ")"));
+			}
+		}
+		
+		return pointer;
+	}
+	
+	/**
+	 * Reads a resource from bytes
+	 * @param pointer The current pointer position. It should be on the Name String terminator byte (0x00) 
+	 * @param name The name of the new Resource
+	 * @param data The byte data to parse
+	 * @param parent The parent container, can be a category or resource file
+	 * @return The new pointer position. It should be the next item's name string length byte
+	 */
+	private static int readResource(int pointer, int datatag, String name, byte[] data, ResourceContainer parent){
+		//0.Read all 3 ints
+		int offset = decodeInt(Arrays.copyOfRange(data, pointer + 1, pointer + 5));
+		int length = decodeInt(Arrays.copyOfRange(data, pointer + 5, pointer + 9));
+		int magicn = decodeInt(Arrays.copyOfRange(data, pointer + 9, pointer + 13));
+		pointer += 13;
+		String path = parent.getFullPath() + "/" + name;
+		byte[] resData = Arrays.copyOfRange(data, datatag + offset, datatag + offset + length);
+		Resource res = Resource.createFromExtension(name, path, magicn, resData);
+		
+		parent.addResource(res);
+		return pointer;
+	}
 	
 	public static ResourceFile fromBytes(byte[] bytes){
+		//0. validate
+		if(bytes == null){
+			Logger.throwFatal(new NullPointerException("Argument 'bytes' must not be null"));
+		}
+		if(!(bytes[0] == (byte) 0x50 && bytes[1] == (byte) 0x41 && bytes[2] == (byte) 0x4B))
+			Logger.printWarning("ResourceFile.fromBytes()", "Could not find identifier string 'PAK'!");
+		//1. Find data tag
+		int datatag = decodeInt(Arrays.copyOfRange(bytes, 4, 8));
+		//2. Read header
+		ResourceContainer root0 = new Category("$ROOT", null); //Root, so parent is null
+		readCategory(0x0D, datatag, "res.pak", bytes, root0); //0x0D might not work if atlas is the root category
+		
+		ResourceContainer root = root0.getSubCategory("res.pak"); //extract the root again
+		return new ResourceFile(root, bytes, datatag);
+	}
+
+	@Deprecated
+	public static ResourceFile fromBytes0(byte[] bytes){
 		//0. validate
 		if(bytes == null){
 			Logger.throwFatal(new NullPointerException("Argument 'bytes' must not be null"));
@@ -201,7 +216,7 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 				
 //				System.out.println("len: " + bytes.length + " | begin " + (datatag + offset) + " end " + (datatag + offset + length));
 				
-				Resource newRes = Resource.createFromExtension(name, Arrays.copyOfRange(bytes, datatag + offset, datatag + offset + length));
+				Resource newRes = Resource.createFromExtension(name, "whatever", 69, Arrays.copyOfRange(bytes, datatag + offset, datatag + offset + length));
 				head.put(current.getName() + "/" + newRes.getName(), pointer + 1);
 				current.addResource(newRes);
 				pointer += 13;
@@ -210,19 +225,19 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 			}else{//new Category
 				if(current != null){
 					all.add(current);
-					System.out.println("Finished Category: " + current.getName() + "; Items: " + current.resources.size());
+					System.out.println("Finished Category: " + current.getName() + "; Items: " + current.getResources().size());
 				}
-				current =  new Category(name);
+				current =  new Category(name, null);
 				pointer += 5;
 				System.out.println("Category: " + name);
 			}
 			//System.out.println(pointer + " | " + datatag);
 		}while(pointer + 5 < datatag);
 		all.add(current);
-		System.out.println("Finished Category: " + current.getName() + "; Items: " + current.resources.size());
+		System.out.println("Finished Category: " + current.getName() + "; Items: " + current.getResources().size());
 		
 		System.out.println("Parse: " + resources + " resources");
-		return new ResourceFile(all, bytes, datatag, head);
+		return new ResourceFile(null, bytes, datatag);
 	}
 	
 	public static ResourceFile fromFolder(File headerFile, File folder){
@@ -246,7 +261,7 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				Resource newRes = Resource.createFromExtension(resource.getName(), resourceData);
+				Resource newRes = Resource.createFromExtension(resource.getName(), "old code", 420, resourceData);
 				data.put(categoryName + "/" + newRes.getName(), newRes);
 			}
 		}
@@ -288,11 +303,7 @@ public class ResourceFile implements Iterable<Category>,ByteData{
 	
 	public Map<String,Resource> createTemplateMap(){
 		Map<String,Resource> map = new HashMap<>();
-		for(Category c : cat){
-			for(Resource r : c.resources){
-				map.put(c.getName() + "/" + r.getName(), r);
-			}
-		}
+		//This is boken right now
 		return map;
 	}
 	
