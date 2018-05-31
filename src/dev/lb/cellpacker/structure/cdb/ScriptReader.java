@@ -28,7 +28,7 @@ public class ScriptReader {
 			Utils.removeJSON(res2, scriptRemove);
 			Utils.addJSON(res2, scriptAdd);
 			String newJson = new Gson().toJson(res2);
-			return new JsonResource(json.getName(), json.getPath(), newJson.getBytes());
+			return new JsonResource(json.getName(), json.getPath(), json.getMagicNumber(), newJson.getBytes());
 		}
 	}
 	

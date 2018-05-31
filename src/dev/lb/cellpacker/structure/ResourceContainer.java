@@ -63,4 +63,15 @@ public interface ResourceContainer {
 			return getParent().getFullPath() + "/" + getName();
 		}
 	}
+	
+	public default Resource getResouceByPath(String pathFromHere){
+		if(pathFromHere.startsWith("/")) pathFromHere = pathFromHere.substring(1);
+		if(!pathFromHere.contains("/")){//only one left, so it's the name
+			return getResource(pathFromHere);
+		}else{//The first path element is the next category
+			ResourceContainer cat = getSubCategory(pathFromHere.substring(0, pathFromHere.indexOf("/")));
+			String newPath = pathFromHere.substring(pathFromHere.indexOf("/"));
+			return cat.getResouceByPath(newPath);
+		}
+	}
 }
