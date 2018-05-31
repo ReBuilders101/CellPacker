@@ -5,14 +5,14 @@ import java.util.List;
 
 import dev.lb.cellpacker.structure.resource.Resource;
 
-public class Category implements ResourceContainer{
+public class ResourceCategory implements ResourceContainer<Resource>{
 
 	private List<Resource> res;
-	private List<ResourceContainer> con;
+	private List<ResourceContainer<Resource>> con;
 	private String name;
-	private ResourceContainer parent;
+	private ResourceContainer<Resource> parent;
 	
-	public Category(String name, ResourceContainer parent){
+	public ResourceCategory(String name, ResourceContainer<Resource> parent){
 		this.name = name;
 		res = new ArrayList<>();
 		con = new ArrayList<>();
@@ -24,7 +24,7 @@ public class Category implements ResourceContainer{
 	}
 
 	@Override
-	public List<ResourceContainer> getSubCategories() {
+	public List<ResourceContainer<Resource>> getSubCategories() {
 		return con;
 	}
 
@@ -34,7 +34,7 @@ public class Category implements ResourceContainer{
 	}
 
 	@Override
-	public ResourceContainer getParent() {
+	public ResourceContainer<Resource> getParent() {
 		return parent;
 	}
 }

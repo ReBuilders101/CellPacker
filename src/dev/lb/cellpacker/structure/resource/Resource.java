@@ -5,9 +5,10 @@ import java.awt.Component;
 import javax.swing.filechooser.FileFilter;
 
 import dev.lb.cellpacker.structure.ByteData;
+import dev.lb.cellpacker.structure.NamedObject;
 import dev.lb.cellpacker.structure.view.StaticResourceView;
 
-public abstract class Resource implements ByteData, Comparable<Resource>{
+public abstract class Resource implements ByteData, Comparable<Resource>, NamedObject{
 	
 	protected byte[] data;
 	protected String name;

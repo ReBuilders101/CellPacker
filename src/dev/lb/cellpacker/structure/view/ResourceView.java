@@ -14,9 +14,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
+import dev.lb.cellpacker.structure.NamedObject;
 import dev.lb.cellpacker.structure.resource.Resource;
 
-public abstract class ResourceView {
+public abstract class ResourceView implements NamedObject{
 	
 	/**
 	 * Returns a name for this resource view. This name will be displayed in the tree view
@@ -137,7 +138,7 @@ public abstract class ResourceView {
 				JOptionPane.showMessageDialog(dialogParent, "An error occurred while reading file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				return null;
 			}
-			return Resource.createFromType(oldResource.getName(), oldResource.getPath(), data, oldResource.getClass());
+			return Resource.createFromType(oldResource.getName(), oldResource.getPath(), oldResource.getMagicNumber(), data, oldResource.getClass());
 		}
 		return null;
 	}

@@ -36,13 +36,21 @@ import dev.lb.cellpacker.structure.view.StaticResourceView;
 
 public class ResourceViewManager {
 
-	protected Map<String,List<ResourceView>> views;
+	protected List<ResourceView> views;
 	protected ResourceFile file;
 	
 	public ResourceViewManager(ResourceFile res){
-		views = new HashMap<>();
+		views = new ArrayList<>();
 		file = res;
-		for(ResourceFile.Category cat : res.getCategories()){
+		//now buld the views;
+		
+		readCategory(file.getRootContainer());
+		
+		return;
+		
+		//What follows is deprecated and incomatple code
+		
+		for(ResourceContainer cat : res.getRootContainer().getSubCategories()){
 			//All of this can go to the trash now
 			ArrayList<Resource> resources = new ArrayList<>(cat.getResources());
 			for(Resource r : cat.getResources()){
@@ -129,6 +137,11 @@ public class ResourceViewManager {
 				this.addResourceView(cat.getName(), new StaticResourceView("$NULL", "<html>This category is empty.<br>" + (cat.getName().equals("scroller") ? "The scroller category will always show up as empty,<br>because it actually contains subcategories (the ones named after level names),<br>but the program currently does not support nested categories.<br>Sorry." : "I don't know why."), new byte[0]));
 			}
 		}
+	}
+	
+	
+	private void readCategory(ResourceContainer cat){
+		
 	}
 	
 	@Unmodifiable

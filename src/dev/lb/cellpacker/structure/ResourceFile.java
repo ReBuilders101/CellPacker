@@ -20,17 +20,17 @@ import dev.lb.cellpacker.structure.resource.Resource;
 
 public class ResourceFile implements ByteData{
 	private Map<String, Integer> header;
-	private ResourceContainer root;
+	private ResourceCategory root;
 	private byte[] data;
 	private int dataStartPointer;
 	
-	private ResourceFile(ResourceContainer root, byte[] data, int ptr) {
+	private ResourceFile(ResourceCategory root, byte[] data, int ptr) {
 		this.data = data;
 		this.dataStartPointer = ptr;
 		this.root = root;
 	}
 
-	public ResourceContainer getRootContainer(){
+	public ResourceCategory getRootContainer(){
 		return root;
 	}
 	
@@ -53,28 +53,7 @@ public class ResourceFile implements ByteData{
 	}
 	
 	public void writeAllResources(File targetFolder){
-		//Iterate over categories and create folders
-		targetFolder.mkdirs();
-		for(ResourceContainer cat : root.getSubCategories()){
-			File subFolder = new File(targetFolder.getAbsolutePath() + File.separator + cat.getName());
-			subFolder.mkdir();
-			for(Resource res : cat.getResources()){
-				//Write resource
-				File resFile = new File(subFolder.getAbsolutePath() + File.separator + res.getName());
-				try(FileOutputStream fos = new FileOutputStream(resFile)){
-					fos.write(res.getData());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		//Also write the header
-		File header = new File(targetFolder.getAbsolutePath() + File.separator + "res.pak.header");
-		try(FileOutputStream fos = new FileOutputStream(header)){
-			fos.write(getHeader());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 	}
 	
 	public void writeToFile(File file){
@@ -119,9 +98,9 @@ public class ResourceFile implements ByteData{
 	 * @param parent The parent container, can be a category or resource file
 	 * @return The new pointer position. It should be the next item's name string length byte
 	 */
-	private static int readCategory(int pointer, int datatag, String name, byte[] data, ResourceContainer parent){
+	private static int readCategory(int pointer, int datatag, String name, byte[] data, ResourceCategory parent){
 		//0. create category object
-		ResourceContainer current = new Category(name, parent);
+		ResourceCategory current = new ResourceCategory(name, parent);
 		parent.addSubCategory(current);
 		//1. Read category length
 		int length = decodeInt(Arrays.copyOfRange(data, pointer + 1, pointer + 5));
@@ -152,7 +131,7 @@ public class ResourceFile implements ByteData{
 	 * @param parent The parent container, can be a category or resource file
 	 * @return The new pointer position. It should be the next item's name string length byte
 	 */
-	private static int readResource(int pointer, int datatag, String name, byte[] data, ResourceContainer parent){
+	private static int readResource(int pointer, int datatag, String name, byte[] data, ResourceCategory parent){
 		//0.Read all 3 ints
 		int offset = decodeInt(Arrays.copyOfRange(data, pointer + 1, pointer + 5));
 		int length = decodeInt(Arrays.copyOfRange(data, pointer + 5, pointer + 9));
@@ -176,10 +155,10 @@ public class ResourceFile implements ByteData{
 		//1. Find data tag
 		int datatag = decodeInt(Arrays.copyOfRange(bytes, 4, 8));
 		//2. Read header
-		ResourceContainer root0 = new Category("$ROOT", null); //Root, so parent is null
+		ResourceCategory root0 = new ResourceCategory("$ROOT", null); //Root, so parent is null
 		readCategory(0x0D, datatag, "res.pak", bytes, root0); //0x0D might not work if atlas is the root category
 		
-		ResourceContainer root = root0.getSubCategory("res.pak"); //extract the root again
+		ResourceCategory root = (ResourceCategory) root0.getSubCategory("res.pak"); //extract the root again
 		return new ResourceFile(root, bytes, datatag);
 	}
 
@@ -195,8 +174,8 @@ public class ResourceFile implements ByteData{
 		int datatag = decodeInt(Arrays.copyOfRange(bytes, 4, 8));
 		int pointer = 0x12;
 		//2. Read header
-		Category current = null;
-		List<Category> all = new ArrayList<>();
+		ResourceCategory current = null;
+		List<ResourceCategory> all = new ArrayList<>();
 		Map<String, Integer> head = new HashMap<>();
 		
 		System.out.println("\nData: " + datatag + " length: " + bytes.length);
@@ -227,7 +206,7 @@ public class ResourceFile implements ByteData{
 					all.add(current);
 					System.out.println("Finished Category: " + current.getName() + "; Items: " + current.getResources().size());
 				}
-				current =  new Category(name, null);
+				current =  new ResourceCategory(name, null);
 				pointer += 5;
 				System.out.println("Category: " + name);
 			}

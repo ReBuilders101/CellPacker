@@ -41,7 +41,7 @@ public class StaticResourceView extends ResourceView{
 	}
 	
 	public static Resource staticTextResource(String name2, String text, byte[] data2){
-		return new Resource(name2, "", data2) {
+		return new Resource(name2, "", 0, data2) {
 			
 			JPanel textA;
 			
@@ -80,7 +80,7 @@ public class StaticResourceView extends ResourceView{
 		try(ByteArrayOutputStream baos = new ByteArrayOutputStream()){
 			ImageIO.write(img, "png", baos);
 			baos.flush();
-			return new ImageResource(name, path, baos.toByteArray());
+			return new ImageResource(name, path, 0, baos.toByteArray());
 		}catch (IOException e) {
 			Logger.throwFatal(e);
 		}
