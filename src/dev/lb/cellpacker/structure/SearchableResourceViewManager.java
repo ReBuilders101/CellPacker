@@ -39,6 +39,8 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 
 	@Override
 	public TreeNode createTree() {
+		return super.createTree();
+		/*
 		DefaultMutableTreeNode root = 
 				new DefaultMutableTreeNode(new StaticResourceView("res.pak", "Resource file root node", new byte[0]));
 		for(Map.Entry<String, List<ResourceView>> cat : views.entrySet()){
@@ -50,6 +52,6 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 			}
 			root.add(catNode);
 		}
-		return root;
+		return root;*/
 	}
 }

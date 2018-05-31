@@ -26,11 +26,14 @@ public class CellPackerMain {
 			Logger.printWarning("CellPackerMain.main()", "Could not set L&F for this platform");
 		}
 		
-		LaunchWindow lw = new LaunchWindow();
-		lw.setVisible(true);
+		//LaunchWindow lw = new LaunchWindow();
+		//lw.setVisible(true);
 		
 		
-		lw.setIconImage(new ImageIcon(CellPackerMain.class.getResource("/resources/ico.png")).getImage());
+		//lw.setIconImage(new ImageIcon(CellPackerMain.class.getResource("/resources/ico.png")).getImage());
+		
+		mainFrame = new MainWindow();
+		mainFrame.setVisible(true);
 		
 		String cc = concat(args);
 		if(cc != null){ //Load file

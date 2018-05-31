@@ -196,7 +196,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 				return;
 			}
 			if(JOptionPane.showConfirmDialog(this, "<html>Unsaved changes will be lost.<br>Are you sure you want to restore all resources?", "Restore resources", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-				view.getViewsUnsorted().forEach((v) -> v.restoreAllResources(this));
+				//view.getViewsUnsorted().forEach((v) -> v.restoreAllResources(this));
 			}
 		});
 		edit.add(reuseable);
