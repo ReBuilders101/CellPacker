@@ -5,8 +5,8 @@ public class CompoundAtlasResource extends AtlasResource{
 	private String compoundFileName;
 	private int index;
 	
-	public CompoundAtlasResource(String name, String path, byte[] data, String compoundFileName, int index) {
-		super(name, path, data);
+	public CompoundAtlasResource(String name, String path, int magic, byte[] data, String compoundFileName, int index) {
+		super(name, path, magic, data);
 		this.compoundFileName = compoundFileName;
 		this.index = index;
 	}
@@ -31,7 +31,7 @@ public class CompoundAtlasResource extends AtlasResource{
 
 	@Override
 	public Resource clone() {
-		return new CompoundAtlasResource(getName(), getPath(), getData(), getCompoundFileName(), getIndex());
+		return new CompoundAtlasResource(getName(), getPath(), getMagicNumber(), getData(), getCompoundFileName(), getIndex());
 	}
 
 }

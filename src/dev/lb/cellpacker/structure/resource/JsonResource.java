@@ -14,8 +14,8 @@ public class JsonResource extends Resource{
 
 	private String content;
 	
-	public JsonResource(String name, String path, byte[] data) {
-		super(name, path, data);
+	public JsonResource(String name, String path, int magic, byte[] data) {
+		super(name, path, magic, data);
 	}
 
 	public void init() {
@@ -49,7 +49,7 @@ public class JsonResource extends Resource{
 
 	@Override
 	public Resource clone() {
-		return new JsonResource(getName(), getPath(), getData());
+		return new JsonResource(getName(), getPath(), getMagicNumber(), getData());
 	}
 
 	@Override

@@ -16,8 +16,8 @@ public class FontResource extends Resource{
 	private String hexString;
 	private JTextArea textDisplay;
 	
-	public FontResource(String name, String path, byte[] data) {
-		super(name, path, data);
+	public FontResource(String name, String path, int magic, byte[] data) {
+		super(name, path, magic, data);
 	}
 
 	public void init() {
@@ -54,7 +54,7 @@ public class FontResource extends Resource{
 
 	@Override
 	public Resource clone() {
-		return new FontResource(getName(), getPath(), getData());
+		return new FontResource(getName(), getPath(), getMagicNumber(), getData());
 	}
 
 	@Override

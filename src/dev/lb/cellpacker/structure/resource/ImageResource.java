@@ -24,8 +24,8 @@ public class ImageResource extends Resource{
 	
 	private JImageViewer jim;
 	
-	public ImageResource(String name, String path, byte[] data){
-		super(name, path, data);
+	public ImageResource(String name, String path, int magic, byte[] data){
+		super(name, path, magic, data);
 	}
 
 	@Async
@@ -81,7 +81,7 @@ public class ImageResource extends Resource{
 
 	@Override
 	public Resource clone() {
-		return new ImageResource(getName(), getPath(), getData());
+		return new ImageResource(getName(), getPath(), getMagicNumber(), getData());
 	}
 
 	@Override
