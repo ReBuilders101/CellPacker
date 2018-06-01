@@ -37,6 +37,10 @@ public abstract class Resource implements ByteData, Comparable<Resource>, NamedO
 		return magic;
 	}
 	
+	public String getOriginalName(){
+		return getName();
+	}
+	
 	public static Resource createFromExtension(String name, String path, int magic, byte[] data){
 //		System.out.println("Extension for:" + name + ": " + getExtension(name));
 //		System.err.println(data.length);

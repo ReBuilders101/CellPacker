@@ -1,26 +1,19 @@
 package dev.lb.cellpacker.structure;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
-
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import dev.lb.cellpacker.CellPackerMain;
 import dev.lb.cellpacker.NamedRange;
 import dev.lb.cellpacker.Utils;
-import dev.lb.cellpacker.annotation.Unmodifiable;
 import dev.lb.cellpacker.structure.resource.AtlasResource;
 import dev.lb.cellpacker.structure.resource.CompoundAtlasResource;
 import dev.lb.cellpacker.structure.resource.FontResource;
@@ -230,55 +223,27 @@ public class ResourceViewManager {
 		return thisNode;
 	}
 	
-	public ResourceFile buildFile(){
-		//Iterate over all resources and create a new map:
-		Map<String, Resource> map = new HashMap<>();
-		Map<String, List<CompoundAtlasResource>> compRes = new HashMap<>();
-		for(String name : views.keySet()){
-			for(ResourceView rv : views.get(name)){
-				for(Resource res : rv.getAllResources()){
-					if(res == null) continue;
-					//Pay attention to compound resources
-					if(res instanceof CompoundAtlasResource){
-						String compName = name + "/" + ((CompoundAtlasResource) res).getCompoundFileName();
-						List<CompoundAtlasResource> rlist = compRes.get(compName);
-						if(rlist == null){ //Create list if necessary
-							rlist = new ArrayList<>();
-							compRes.put(compName, rlist);
-						}
-						rlist.add((CompoundAtlasResource) res);
-					}else{
-						map.put(name + "/" + res.getName(), res);
-					}
-				}
+	private ResourceCategory createResourceTree(ResourceContainer<ResourceView> treeRoot, ResourceContainer<Resource> parent){
+		//Do the subcategories first
+		ResourceCategory returnRoot = new ResourceCategory(treeRoot.getName(), parent);
+		for(ResourceContainer<ResourceView> subViewCat : treeRoot.getSubCategories()){
+			returnRoot.addSubCategory(createResourceTree(subViewCat, returnRoot));
+		}
+		//Then the resourceviews
+		for(ResourceView rvs : treeRoot.getResources()){
+			//Add all resources to root
+			for(Resource res : rvs.getAllResources()){
+					returnRoot.addResource(res);
 			}
 		}
-		//The also process compounds
-		for(Map.Entry<String, List<CompoundAtlasResource>> e : compRes.entrySet()){
-			Collections.sort(e.getValue(), CompoundAtlasResource::compare);
-			ByteArrayOutputStream data = new ByteArrayOutputStream();
-			try{
-				data.write(new byte[]{0x42, 0x41, 0x54, 0x4C});
-				for(int i = 0; i < e.getValue().size(); i++){
-					CompoundAtlasResource current = e.getValue().get(i);
-					//Everything except the first four bytes
-					data.write(Arrays.copyOfRange(current.getData(), 4, current.getLength()));
-					if(i != e.getValue().size() - 1) {
-						data.write(0);
-					}
-				}
-			}catch(IOException ex){ //How would a BAOS throw an IOExecption - Last words before the fatal crash
-				ex.printStackTrace();
-			}
-			AtlasResource newRes = new AtlasResource(e.getValue().get(0).getCompoundFileName(), data.toByteArray());
-			map.put(e.getKey(), newRes);
-		}
-		//If necessary, make a fixed cdb version
-		if(CellPackerMain.getMainFrame().fixCDB()){
-			JsonResource jr = (JsonResource) map.get("atlas/data.cdb");
-			map.put("atlas/data.exported.cdb", CastleDBResourceView.fixResource(jr));
-		}
-		return ResourceFile.fromTemplate(file, map);
+		return returnRoot;
+	}
+	
+	public ResourceFile buildFileWithChanges(){
+		//So basically just convert the view tree back into a resource tree
+		ResourceCategory resources = createResourceTree(root, null);
+		//And then make a new resource file
+		return ResourceFile.fromTree(resources);
 	}
 	
 	public void setTree(JTree tree){

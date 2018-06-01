@@ -37,4 +37,9 @@ public class ResourceCategory implements ResourceContainer<Resource>{
 	public ResourceContainer<Resource> getParent() {
 		return parent;
 	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
 }

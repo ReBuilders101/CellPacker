@@ -1,5 +1,6 @@
 package dev.lb.cellpacker;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import javax.swing.ImageIcon;

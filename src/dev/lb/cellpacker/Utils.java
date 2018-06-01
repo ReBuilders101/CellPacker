@@ -7,6 +7,7 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -270,4 +271,37 @@ public final class Utils {
 		}
 		return null;
 	}
+	
+	public static byte[] concat(byte[] a, byte[] b){
+		byte[] c = new byte[a.length + b.length];
+		System.arraycopy(a, 0, c, 0, a.length);
+	    System.arraycopy(b, 0, c, a.length, b.length);
+	    return c;
+	}
+	
+	public static byte[] encodeInt(int num){
+		return new byte[] {
+	            (byte)(num),
+	            (byte)(num >>> 8),
+	            (byte)(num >>> 16),
+	            (byte)(num >>> 24)};
+	}
+	
+	public static int decodeInt(byte[] num){
+		if(num.length != 4)
+			throw new NumberFormatException("Array size must be 4");
+		return ((num[0]) & 0xFF) + ((num[1] & 0xFF) << 8) +
+				((num[2] & 0xFF) << 16) + ((num[3] & 0xFF) << 24);
+	}
+	
+	public static void writeInt(ByteArrayOutputStream out, int i) throws IOException{
+		out.write(encodeInt(i));
+	}
+	
+	public static void writeString(ByteArrayOutputStream out, String s, byte terminator) throws IOException{
+		out.write((byte) s.length());
+		out.write(s.getBytes());
+		out.write(terminator);
+	}
+	
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import dev.lb.cellpacker.Logger;
+import dev.lb.cellpacker.Utils;
 import dev.lb.cellpacker.annotation.Unmodifiable;
 import dev.lb.cellpacker.structure.resource.Resource;
 
@@ -53,7 +54,7 @@ public class ResourceFile implements ByteData{
 	}
 	
 	public void writeAllResources(File targetFolder){
-		
+		//TODO
 	}
 	
 	public void writeToFile(File file){
@@ -103,7 +104,7 @@ public class ResourceFile implements ByteData{
 		ResourceCategory current = new ResourceCategory(name, parent);
 		parent.addSubCategory(current);
 		//1. Read category length
-		int length = decodeInt(Arrays.copyOfRange(data, pointer + 1, pointer + 5));
+		int length = Utils.decodeInt(Arrays.copyOfRange(data, pointer + 1, pointer + 5));
 		pointer += 5; //pointer is now on first item name length byte
 		
 		for(int i = 0; i < length; i++){
@@ -133,9 +134,9 @@ public class ResourceFile implements ByteData{
 	 */
 	private static int readResource(int pointer, int datatag, String name, byte[] data, ResourceCategory parent){
 		//0.Read all 3 ints
-		int offset = decodeInt(Arrays.copyOfRange(data, pointer + 1, pointer + 5));
-		int length = decodeInt(Arrays.copyOfRange(data, pointer + 5, pointer + 9));
-		int magicn = decodeInt(Arrays.copyOfRange(data, pointer + 9, pointer + 13));
+		int offset = Utils.decodeInt(Arrays.copyOfRange(data, pointer + 1, pointer + 5));
+		int length = Utils.decodeInt(Arrays.copyOfRange(data, pointer + 5, pointer + 9));
+		int magicn = Utils.decodeInt(Arrays.copyOfRange(data, pointer + 9, pointer + 13));
 		pointer += 13;
 		String path = parent.getFullPath() + "/" + name;
 		byte[] resData = Arrays.copyOfRange(data, datatag + offset, datatag + offset + length);
@@ -153,7 +154,7 @@ public class ResourceFile implements ByteData{
 		if(!(bytes[0] == (byte) 0x50 && bytes[1] == (byte) 0x41 && bytes[2] == (byte) 0x4B))
 			Logger.printWarning("ResourceFile.fromBytes()", "Could not find identifier string 'PAK'!");
 		//1. Find data tag
-		int datatag = decodeInt(Arrays.copyOfRange(bytes, 4, 8));
+		int datatag = Utils.decodeInt(Arrays.copyOfRange(bytes, 4, 8));
 		//2. Read header
 		ResourceCategory root0 = new ResourceCategory("$ROOT", null); //Root, so parent is null
 		readCategory(0x0D, datatag, "res.pak", bytes, root0); //0x0D might not work if atlas is the root category
@@ -162,186 +163,55 @@ public class ResourceFile implements ByteData{
 		return new ResourceFile(root, bytes, datatag);
 	}
 
-	@Deprecated
-	public static ResourceFile fromBytes0(byte[] bytes){
-		//0. validate
-		if(bytes == null){
-			Logger.throwFatal(new NullPointerException("Argument 'bytes' must not be null"));
-		}
-		if(!(bytes[0] == (byte) 0x50 && bytes[1] == (byte) 0x41 && bytes[2] == (byte) 0x4B))
-			Logger.printWarning("ResourceFile.fromBytes()", "Could not find identifier string 'PAK'!");
-		//1. Find data tag
-		int datatag = decodeInt(Arrays.copyOfRange(bytes, 4, 8));
-		int pointer = 0x12;
-		//2. Read header
-		ResourceCategory current = null;
-		List<ResourceCategory> all = new ArrayList<>();
-		Map<String, Integer> head = new HashMap<>();
-		
-		System.out.println("\nData: " + datatag + " length: " + bytes.length);
-		int resources = 0;
-		
-		do{
-			//Read identifier
-			int stringLength = bytes[pointer] & 0xFF;
-			String name = new String(Arrays.copyOfRange(bytes, pointer + 1, pointer + stringLength + 1));
-			pointer += stringLength + 1;
-			//Category or Resource
-			if(bytes[pointer] == (byte) 0x00){//Resource
-				if(current == null) Logger.throwFatal(new Exception("The first item has to be a category"));
-				int offset = decodeInt(Arrays.copyOfRange(bytes, pointer + 1, pointer + 5));
-				int length = decodeInt(Arrays.copyOfRange(bytes, pointer + 5, pointer + 9));
-//				System.err.println(offset + " | " + length);
-				
-//				System.out.println("len: " + bytes.length + " | begin " + (datatag + offset) + " end " + (datatag + offset + length));
-				
-				Resource newRes = Resource.createFromExtension(name, "whatever", 69, Arrays.copyOfRange(bytes, datatag + offset, datatag + offset + length));
-				head.put(current.getName() + "/" + newRes.getName(), pointer + 1);
-				current.addResource(newRes);
-				pointer += 13;
-				resources++;
-//				System.out.println("Added " + name + " to " + current.getName());
-			}else{//new Category
-				if(current != null){
-					all.add(current);
-					System.out.println("Finished Category: " + current.getName() + "; Items: " + current.getResources().size());
-				}
-				current =  new ResourceCategory(name, null);
-				pointer += 5;
-				System.out.println("Category: " + name);
-			}
-			//System.out.println(pointer + " | " + datatag);
-		}while(pointer + 5 < datatag);
-		all.add(current);
-		System.out.println("Finished Category: " + current.getName() + "; Items: " + current.getResources().size());
-		
-		System.out.println("Parse: " + resources + " resources");
-		return new ResourceFile(null, bytes, datatag);
+	public static ResourceFile fromFolder(File headerFile, File folder){
+		//TODO
+		return null;
 	}
 	
-	public static ResourceFile fromFolder(File headerFile, File folder){
-		//Header file
-		byte[] header = new byte[(int) headerFile.length()];
-		Map<String, Resource> data = new HashMap<>();
-		try(FileInputStream fis = new FileInputStream(headerFile)){
-			fis.read(header);
+	public static ResourceFile fromTree(ResourceContainer<Resource> resources){
+		ByteArrayOutputStream header = new ByteArrayOutputStream();
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		try {
+			//The PAK. Identifier
+			header.write(new byte[]{(byte) 0x50, (byte) 0x41, (byte) 0x4B, (byte) 0x00}); //=PAK.
+			//8 bytes for data offset and length, leave them at 09 for now since these values are not yet known
+			header.write(new byte[8]); //=........
+			//The actual header content
+			resources.setName(""); //Set an empty name for the root category
+			treeToBytes(resources, header, data);
+			//Then write the DATA Identifier
+			header.write(new byte[]{(byte) 0x44, (byte) 0x41, (byte) 0x54, (byte) 0x41}); //=DATA
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//Iterate through folders like categories
-		for(File subfolder : folder.listFiles(File::isDirectory)){
-			String categoryName = subfolder.getName();
-			//Iterate through files like resources 
-			for(File resource : subfolder.listFiles(File::isFile)){
-				//Create a resource from the file
-				byte[] resourceData = new byte[(int) resource.length()];
-				try(FileInputStream fis = new FileInputStream(resource)){
-					fis.read(resourceData);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				Resource newRes = Resource.createFromExtension(resource.getName(), "old code", 420, resourceData);
-				data.put(categoryName + "/" + newRes.getName(), newRes);
-			}
+		
+		byte[] allData = Utils.concat(header.toByteArray(), data.toByteArray());
+		//TODO data length and offset
+		return new ResourceFile((ResourceCategory) resources, allData, header.size());
+	}
+	
+	private static void treeToBytes(ResourceContainer<Resource> resources, ByteArrayOutputStream header, ByteArrayOutputStream data) throws IOException{
+		//First write the name
+		Utils.writeString(header, resources.getName(), (byte) 0x01);
+		//Then the length
+		Utils.writeInt(header, resources.getTotalSize());
+		//And then the resources/categories
+		//Categories first
+		for(ResourceContainer<Resource> categories : resources.getSubCategories()){
+			treeToBytes(categories, header, data);
 		}
-		//Now the header map
-		Map<String, Integer> headerMap = new HashMap<>();
-		
-		int datatag = decodeInt(Arrays.copyOfRange(header, 4, 8));
-		int pointer = 0x12;
-		
-		String currentCategory = "$INVALID$";
-		do{
-			//Read name
-			int stringLength = header[pointer] & 0xFF;
-			String name = new String(Arrays.copyOfRange(header, pointer + 1, pointer + stringLength + 1));
-			pointer += stringLength + 1;
-			//Category or Resource
-			if(header[pointer] == (byte) 0x00){//Resource
-				//The name for sounds has to be corrected:
-				if(name.endsWith(".wav")){
-					name = name.substring(0, name.length() - 4) + ".ogg";
-				}
-				headerMap.put(currentCategory + "/" + name, pointer + 1);
-				pointer += 13;
-			}else{//new Category, change name string
-				currentCategory = name;
-				pointer += 5;
-			}
-		}while(pointer + 5 < datatag);
-		
-		
-		
-		//And parse again
-		return ResourceFile.fromTemplate(header, headerMap, data);
-	}
-	
-	public static ResourceFile fromTemplate(ResourceFile template, Map<String, Resource> data){
-		return ResourceFile.fromTemplate(template.getHeader(), template.header, data);
-	}
-	
-	public Map<String,Resource> createTemplateMap(){
-		Map<String,Resource> map = new HashMap<>();
-		//This is boken right now
-		return map;
-	}
-	
-	public static ResourceFile fromTemplate(byte[] headerTemplate, Map<String, Integer> headerMap, Map<String, Resource> data){
-		//The data part has to be re-built
-		int dataPointer = 0;
-		int resources = 0;
-		byte[] headerPart = Arrays.copyOf(headerTemplate, headerTemplate.length);
-		ByteArrayOutputStream dataPart = new ByteArrayOutputStream();
-		//Iterate over the resources and look up and change offsets
-		for(String resName : headerMap.keySet()){
-			Resource toPut = data.get(resName);
-			
-//			System.out.println(toPut.getName());
-			if(!headerMap.containsKey(resName)) continue; //Something not right, just skip
-			//Read all values that have to be rewritten
-			int headerPointer = headerMap.get(resName);
-			byte[] offset = encodeInt(dataPointer);
-			byte[] size   = encodeInt(toPut.getLength());
-			//Write them to the new header
-			System.arraycopy(offset, 0, headerPart, headerPointer, 4);
-			System.arraycopy(size  , 0, headerPart, headerPointer + 4, 4);
-			//Also write the data
-			try {
-				dataPart.write(toPut.getData());
-			} catch (IOException e) { //Why would this ever happen to a ByteArrayOutputStream ?
-				e.printStackTrace();
-			}
-			dataPointer += toPut.getLength();
-			resources++;
+		//Resources second
+		for(Resource res : resources.getResources()){
+			//Write the resource:
+			//Name first
+			Utils.writeString(header, res.getOriginalName(), (byte) 0x00);
+			//Then the three integers
+			Utils.writeInt(header, data.size()); //The data offset
+			Utils.writeInt(header, res.getData().length); //The data length
+			Utils.writeInt(header, res.getMagicNumber()); //The magic number
+			//Also write bytes to the data section
+			data.write(res.getData());
 		}
-		//So the changed byte data has to be re-parsed
-		byte[] dataPart2 = dataPart.toByteArray();
-		
-		System.out.println("\nBuild: " + resources + " resources");
-		System.out.println("Bulid: head: " + headerPart.length + " (" + headerTemplate.length + ") data: " + dataPart2.length + "(" + dataPart.size() + ") sum: " + (dataPart2.length + headerPart.length) );
-		
-		return ResourceFile.fromBytes(concat(headerPart, dataPart2));
-	}
-	
-	public static byte[] concat(byte[] a, byte[] b){
-		byte[] c = new byte[a.length + b.length];
-		System.arraycopy(a, 0, c, 0, a.length);
-	    System.arraycopy(b, 0, c, a.length, b.length);
-	    return c;
-	}
-	
-	public static byte[] encodeInt(int num){
-		return new byte[] {
-	            (byte)(num),
-	            (byte)(num >>> 8),
-	            (byte)(num >>> 16),
-	            (byte)(num >>> 24)};
-	}
-	
-	public static int decodeInt(byte[] num){
-		if(num.length != 4)
-			throw new NumberFormatException("Array size must be 4");
-		return ((num[0]) & 0xFF) + ((num[1] & 0xFF) << 8) +
-				((num[2] & 0xFF) << 16) + ((num[3] & 0xFF) << 24);
 	}
 }

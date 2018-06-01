@@ -37,4 +37,9 @@ public class ViewCategory implements ResourceContainer<ResourceView>{
 	public ResourceContainer<ResourceView> getParent() {
 		return parent;
 	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
 }

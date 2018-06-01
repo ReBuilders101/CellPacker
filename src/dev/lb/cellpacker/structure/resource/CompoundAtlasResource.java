@@ -1,5 +1,7 @@
 package dev.lb.cellpacker.structure.resource;
 
+import java.util.Comparator;
+
 public class CompoundAtlasResource extends AtlasResource{
 
 	private String compoundFileName;
@@ -32,6 +34,18 @@ public class CompoundAtlasResource extends AtlasResource{
 	@Override
 	public Resource clone() {
 		return new CompoundAtlasResource(getName(), getPath(), getMagicNumber(), getData(), getCompoundFileName(), getIndex());
+	}
+	
+	public static Comparator<CompoundAtlasResource> getIndexComparator(){
+		return new Comparator<CompoundAtlasResource>() {
+			@Override
+			public int compare(CompoundAtlasResource o1, CompoundAtlasResource o2) {
+				if(o1.getIndex() < o2.getIndex()) return -1;
+				if(o1.getIndex() == o2.getIndex()) return 0;
+				if(o1.getIndex() > o2.getIndex()) return 1;
+				return 0; //This is actually impossible to reach, but the compiler needs it to be happy.
+			}
+		};
 	}
 
 }

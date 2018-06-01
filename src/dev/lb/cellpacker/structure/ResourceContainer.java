@@ -10,6 +10,7 @@ public interface ResourceContainer<T extends NamedObject> {
 	public List<T> getResources();
 	public List<ResourceContainer<T>> getSubCategories();
 	public String getName();
+	public void setName(String name);
 	
 	public default T getResource(int index){
 		return getResources().get(index);
@@ -72,5 +73,9 @@ public interface ResourceContainer<T extends NamedObject> {
 			String newPath = pathFromHere.substring(pathFromHere.indexOf("/"));
 			return cat.getResouceByPath(newPath);
 		}
+	}
+	
+	public default int getTotalSize(){
+		return getResources().size() + getSubCategories().size();
 	}
 }

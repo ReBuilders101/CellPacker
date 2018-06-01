@@ -17,9 +17,11 @@ public class SoundResource extends Resource{
 
 	private Clip content;
 	private JAudioPlayer current;
+	private String origName;
 	
 	public SoundResource(String name, String path, int magic, byte[] data) {
 		super(name, path, magic, data);
+		origName = name;
 		if(name.endsWith(".wav"));
 			name = name.substring(0, name.length() - 4) + ".ogg";
 		setName(name);
@@ -78,6 +80,12 @@ public class SoundResource extends Resource{
 	@Override
 	public FileFilter getFileFilter() {
 		return new FileNameExtensionFilter("OGG Sound", "*.ogg", ".ogg", "ogg");
+	}
+
+
+	@Override
+	public String getOriginalName() {
+		return origName;
 	}
 
 }
