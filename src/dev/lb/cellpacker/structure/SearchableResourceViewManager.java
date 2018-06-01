@@ -1,8 +1,5 @@
 package dev.lb.cellpacker.structure;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -22,8 +19,6 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 	public String getSearchString() {
 		return searchString;
 	}
-	
-	
 
 	public boolean setSearchString(String searchString) {
 		String old = this.searchString;
@@ -39,19 +34,24 @@ public class SearchableResourceViewManager extends ResourceViewManager{
 
 	@Override
 	public TreeNode createTree() {
-		return super.createTree();
-		/*
-		DefaultMutableTreeNode root = 
-				new DefaultMutableTreeNode(new StaticResourceView("res.pak", "Resource file root node", new byte[0]));
-		for(Map.Entry<String, List<ResourceView>> cat : views.entrySet()){
-			DefaultMutableTreeNode catNode =
-					new DefaultMutableTreeNode(new StaticResourceView(cat.getKey(), "Category root node", new byte[0]));
-			for(ResourceView rv : cat.getValue()){
-				if(rv.getName().contains(searchString))
-					catNode.add(new DefaultMutableTreeNode(rv));
+		return createTreeForSearch(root);
+	}
+	
+	private DefaultMutableTreeNode createTreeForSearch(ViewCategory vc){
+		DefaultMutableTreeNode thisNode = new DefaultMutableTreeNode(new StaticResourceView(vc.getName(), "Category root node", new byte[0]));
+		//first loop subcategories, add them if they are not empty
+		for(ResourceContainer<ResourceView> subcvs : vc.getSubCategories()){
+			DefaultMutableTreeNode subNode = createTreeForSearch((ViewCategory) subcvs);
+			if(!subNode.isLeaf()){
+				thisNode.add(createTreeForSearch((ViewCategory) subcvs));
 			}
-			root.add(catNode);
 		}
-		return root;*/
+		//then the resourceviews if name matches
+		for(ResourceView subrv : vc.getResources()){
+			if(subrv.getName().contains(searchString)){
+				thisNode.add(new DefaultMutableTreeNode(subrv));
+			}
+		}
+		return thisNode;
 	}
 }
