@@ -107,8 +107,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			JFileChooser jfc = new JFileChooser();
 			jfc.setFileFilter(new FileNameExtensionFilter("Dead Cells Resource File", "*.pak", "pak", ".pak"));
 			if(jfc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
-//				ResourceFile withChanges = view.buildFile();
-//				withChanges.writeToFile(jfc.getSelectedFile());
+				view.buildFileWithChanges().writeToFile(jfc.getSelectedFile());
 			}
 		});
 		file.add(reuseable);

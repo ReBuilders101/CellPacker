@@ -188,6 +188,10 @@ public class ResourceFile implements ByteData{
 		
 		byte[] allData = Utils.concat(header.toByteArray(), data.toByteArray());
 		//TODO data length and offset
+		byte[] dataoff = Utils.encodeInt(header.size());
+		byte[] datalen = Utils.encodeInt(data.size());
+		System.arraycopy(dataoff, 0, allData, 4, 4);
+		System.arraycopy(datalen, 0, allData, 8, 4);
 		return new ResourceFile((ResourceCategory) resources, allData, header.size());
 	}
 	
