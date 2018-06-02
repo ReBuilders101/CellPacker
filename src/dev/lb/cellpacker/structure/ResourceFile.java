@@ -7,11 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import dev.lb.cellpacker.Logger;
@@ -54,7 +51,24 @@ public class ResourceFile implements ByteData{
 	}
 	
 	public void writeAllResources(File targetFolder){
-		//TODO
+		writeCategoryToFolder(root, targetFolder);
+	}
+	
+	private static void writeCategoryToFolder(ResourceContainer<Resource> category, File targetFolder){
+		//Write subcategories recursively
+		targetFolder.mkdirs();
+		for(ResourceContainer<Resource> cat : category.getSubCategories()){
+			writeCategoryToFolder(cat, new File(targetFolder.getAbsolutePath() + File.separator + cat.getName()));
+		}
+		//Then write all resources
+		for(Resource res : category.getResources()){
+			File resFile = new File(targetFolder.getAbsolutePath() + File.separator + res.getName());
+			try(FileOutputStream fos = new FileOutputStream(resFile)){
+				fos.write(res.getData());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void writeToFile(File file){
@@ -161,11 +175,6 @@ public class ResourceFile implements ByteData{
 		
 		ResourceCategory root = (ResourceCategory) root0.getSubCategory("res.pak"); //extract the root again
 		return new ResourceFile(root, bytes, datatag);
-	}
-
-	public static ResourceFile fromFolder(File headerFile, File folder){
-		//TODO
-		return null;
 	}
 	
 	public static ResourceFile fromTree(ResourceContainer<Resource> resources){

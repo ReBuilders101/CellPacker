@@ -112,23 +112,6 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 		});
 		file.add(reuseable);
 		file.addSeparator();
-		//IMPORT
-		reuseable = new JMenuItem("Import");
-		reuseable.setToolTipText("Import files as resources by selecting a header template file. (The template is created when using the Export all action)");
-		reuseable.addActionListener((e) -> {
-			if(view != null){
-				if(JOptionPane.showConfirmDialog(this, "A resource file is already opened. Unsaved changes will be lost. Do you want to continue?", "Open Resource",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION){
-					return;
-				}
-			}
-			JFileChooser jfc = new JFileChooser();
-			jfc.setFileFilter(new FileNameExtensionFilter("CellPacker Header File", "*.header", "header", ".header"));
-			if(jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
-				setResourceFileOnStart(ResourceFile.fromFolder(jfc.getSelectedFile(), jfc.getSelectedFile().getParentFile()));
-			}
-		});
-		file.add(reuseable);
 		//EXPORTALL
 		reuseable = new JMenuItem("Export all");
 		reuseable.setToolTipText("Export all resources to a folder. (and create a header template file for future imports)");
@@ -140,8 +123,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 			JFileChooser jfc = new JFileChooser();
 			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			if(jfc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION && jfc.getSelectedFile() != null){
-//				ResourceFile withChanges = view.buildFile();
-//				withChanges.writeAllResources(jfc.getSelectedFile());
+				view.buildFileWithChanges().writeAllResources(jfc.getSelectedFile());
 			}
 		});
 		file.add(reuseable);
