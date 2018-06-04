@@ -49,7 +49,7 @@ public class MainWindow extends JFrame implements TreeSelectionListener, WindowL
 	private boolean fixCDB;
 	
 	public MainWindow(){
-		super("Cellpacker Editor 2.0");
+		super("Cellpacker Editor 2.1");
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		fixCDB = true;
 		

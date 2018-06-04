@@ -1,6 +1,5 @@
 package dev.lb.cellpacker;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import javax.swing.ImageIcon;
@@ -27,25 +26,13 @@ public class CellPackerMain {
 			Logger.printWarning("CellPackerMain.main()", "Could not set L&F for this platform");
 		}
 		
-		//LaunchWindow lw = new LaunchWindow();
-		//lw.setVisible(true);
+		LaunchWindow lw = new LaunchWindow(false);
+		lw.setVisible(true);
+		lw.setIconImage(new ImageIcon(CellPackerMain.class.getResource("/resources/ico.png")).getImage());
 		
+		//mainFrame = new MainWindow();
+		//mainFrame.setVisible(true);
 		
-		//lw.setIconImage(new ImageIcon(CellPackerMain.class.getResource("/resources/ico.png")).getImage());
-		
-		mainFrame = new MainWindow();
-		mainFrame.setVisible(true);
-		
-		String cc = concat(args);
-		if(cc != null){ //Load file
-			File toOpen = new File(cc);
-			if(toOpen.exists()){
-				ResourceFile rf = ResourceFile.fromFile(toOpen);
-				((MainWindow) mainFrame).setResourceFileOnStart(rf);
-			}else{
-				JOptionPane.showMessageDialog(mainFrame, "<html>Could not find resouce file to open:<br>" + toOpen.getAbsolutePath(), "Error", JOptionPane.ERROR_MESSAGE);
-			}
-		}
 	}
 
 	

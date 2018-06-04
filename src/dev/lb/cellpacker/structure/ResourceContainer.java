@@ -78,4 +78,10 @@ public interface ResourceContainer<T extends NamedObject> {
 	public default int getTotalSize(){
 		return getResources().size() + getSubCategories().size();
 	}
+	
+	public default void replaceResource(String oldName, T newRes){
+		T res = getResource(oldName);
+		getResources().remove(res);
+		getResources().add(newRes);
+	}
 }

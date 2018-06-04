@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -21,6 +22,8 @@ public class CheckBoxList extends JList<JCheckBox>{
 
 	public CheckBoxList()
 	{
+		super(new DefaultListModel<>());
+		
 		setCellRenderer(new CellRenderer());
 
 		addMouseListener(new MouseAdapter()
