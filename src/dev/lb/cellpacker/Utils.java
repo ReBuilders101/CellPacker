@@ -193,40 +193,91 @@ public final class Utils {
 	}
 	
 	public static void addJSON(JsonObject base, JsonObject add){
-		for(String s : add.keySet()){
-			JsonElement element = add.get(s);
-			//If base does not have this tag, just add it
-			if(!base.has(s)){
-				base.add(s, element);
-			}else{ //If it is already there, replace or merge
-				JsonElement there = base.get(s);
-				if(there instanceof JsonObject && element instanceof JsonObject){ //If both are objects, merge them
-					addJSON((JsonObject) there, (JsonObject) element);
-				}else if(there instanceof JsonArray && element instanceof JsonArray){ //if they are arrays, append the entries of add to base
-					//Iterate over new Array entries
-					for(JsonElement addEntry : (JsonArray) element){
-						if(addEntry instanceof JsonObject){ //If the element to append is an object
-							JsonObject toMerge = (JsonObject) addEntry;
-							if(toMerge.has("CPINDEX")){ //Can replace
-								int cp = toMerge.get("CPINDEX").getAsInt();
-								toMerge.remove("CPINDEX");
-								JsonElement cdbEntry = ((JsonArray) there).get(cp); 
-								if(cdbEntry instanceof JsonObject){
-									addJSON((JsonObject) cdbEntry, toMerge);
-								}else{
-									((JsonArray) there).add(addEntry);
+		//Iterate over all entries in add
+		for(String addKey : add.keySet()){
+			//get the current entry as an object
+			JsonElement addElement = add.get(addKey); 
+			//If the base tag does not have this tag yet, add this tag to base
+			if(!base.has(addKey)){
+				base.add(addKey, addElement);
+			}else{ //If it does exist, try to merge depending on the type
+				addJsonByType(base.get(addKey), addElement, (e) -> base.add(addKey, e));
+			}
+		}
+	}
+	
+	private static void addJsonByType(JsonElement baseElement, JsonElement addElement, Consumer<JsonElement> overwriteAction){
+		//The simplest is a primitive, it is just replaced:
+		if(baseElement.isJsonPrimitive() && addElement.isJsonPrimitive()){
+			overwriteAction.accept(addElement);
+		//If they are both objects, recursively call this merge method
+		}else if(baseElement.isJsonObject() && addElement.isJsonObject()){
+			addJSON(baseElement.getAsJsonObject(), addElement.getAsJsonObject());
+		//If they are arrays, find markers or append
+		}else if(baseElement.isJsonArray() && addElement.isJsonArray()){
+			//save the elements in new variables
+			JsonArray addArray = addElement.getAsJsonArray();
+			JsonArray baseArray = baseElement.getAsJsonArray();
+			//Then iterate over the added array
+			for(JsonElement addArrayElement : addArray){
+				//Handle depending on type
+				//If it is an object, look for markers
+				if(addArrayElement.isJsonObject()){
+					//Check for CPWHERE (overrides CPINDEX) and if it is an object
+					if(addArrayElement.getAsJsonObject().has("CPWHERE") &&
+							addArrayElement.getAsJsonObject().get("CPWHERE").isJsonObject()){
+						JsonObject whereObject = addArrayElement.getAsJsonObject().get("CPWHERE").getAsJsonObject();
+						//Test if where has the Strings 'id' and 'value'
+						if(whereObject.has("id") && whereObject.get("id").isJsonPrimitive() &&
+								whereObject.has("value") && whereObject.get("value").isJsonPrimitive()){
+							String id = whereObject.get("id").getAsString();
+							String value = whereObject.get("value").getAsString();
+							//Now find an entry in the base array that has id==value
+							for(int i = 0; i < baseArray.size(); i++){
+								JsonElement baseArrayElement = baseArray.get(i);
+								//The element has to be an object and has to have a tag called id that is a primitive
+								if(baseArrayElement.isJsonObject() && baseArrayElement.getAsJsonObject().has(id) &&
+										baseArrayElement.getAsJsonObject().get(id).isJsonPrimitive()){
+									//Value has to be equal
+									if(baseArrayElement.getAsJsonObject().get(id).getAsString().equals(value)){
+										//We found a tag
+										final int index = i; //This is necessary, lambda doesn't like non-finals 
+										addJsonByType(baseArrayElement, addArrayElement, (e) -> baseArray.set(index, e));
+										//Then break out of the for loop, only the first item should be modified
+										break;
+									}
 								}
-							}else{
-								((JsonArray) there).add(addEntry);
 							}
 						}else{
-							((JsonArray) there).add(addEntry);
+							System.err.println("Json Parser: Found CPWHERE tag, but 'id' or 'value' tags were missing");
 						}
+						//if the reqired fields do not exist, do nothing
+						
+					//Check for CPINDEX next and if it is a primitive
+					}else if(addArrayElement.getAsJsonObject().has("CPINDEX") &&
+							addArrayElement.getAsJsonObject().get("CPINDEX").isJsonPrimitive()){
+						//Check if the index is within range
+						int index = addArrayElement.getAsJsonObject().get("CPINDEX").getAsInt();
+						if(index >= 0 && index < baseArray.size()){
+							//Get the element from the base array
+							JsonElement baseArrayElement = baseArray.get(index);
+							addJsonByType(baseArrayElement, addArrayElement, (e) -> baseArray.set(index, e));
+						}else{
+							System.err.println("Json Parser: Found CPINDEX tag, but index was out of bounds");
+						}
+						//If the index is out of bounds, do nothing
+					//If no marker is found, simply append
+					}else{
+						baseArray.add(addArrayElement);
 					}
-				}else{ //if they are primitives or different types, replace
-					base.add(s, element);
+				//Primitives and arrays (can you even put arrays in arrays in json?) cannot have a marker and are appended
+				}else{
+					baseArray.add(addArrayElement);
 				}
 			}
+		//If they are different types, they are also replaced
+		}else{
+			overwriteAction.accept(addElement);
 		}
 	}
 	

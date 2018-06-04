@@ -3,13 +3,11 @@ package dev.lb.cellpacker;
 import java.io.File;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import dev.lb.cellpacker.controls.LaunchWindow;
 import dev.lb.cellpacker.controls.MainWindow;
-import dev.lb.cellpacker.structure.ResourceFile;
 
 public class CellPackerMain {
 
@@ -36,6 +34,7 @@ public class CellPackerMain {
 	}
 
 	
+	@SuppressWarnings("unused")
 	private static String concat(String[] array){
 		if(array == null) return null;
 		if(array.length == 0) return null;

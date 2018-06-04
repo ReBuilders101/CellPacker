@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +23,6 @@ import javax.swing.ListModel;
 import javax.swing.border.EmptyBorder;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -35,7 +33,6 @@ import dev.lb.cellpacker.structure.ResourceCategory;
 import dev.lb.cellpacker.structure.ResourceFile;
 import dev.lb.cellpacker.structure.Script;
 import dev.lb.cellpacker.structure.resource.JsonResource;
-import dev.lb.cellpacker.structure.resource.Resource;
 
 public class LaunchWindow extends JFrame{
 	private static final long serialVersionUID = 2286569184156822247L;
@@ -45,6 +42,7 @@ public class LaunchWindow extends JFrame{
 	public static final int NOT_DEADCELLS = 2; 
 	
 	private Map<JCheckBox,Script> chk2script = new HashMap<>();
+	@SuppressWarnings("unused")
 	private boolean update;
 	private JButton launch;
 	private JButton launchgl;
@@ -158,6 +156,7 @@ public class LaunchWindow extends JFrame{
 					}
 					Script sc = new Script(name, desc, add, remove);
 					JCheckBox box = new JCheckBox(name);
+					box.setToolTipText(desc);
 					chk2script.put(box, sc);
 					chl.addCheckbox(box);
 				}else{
