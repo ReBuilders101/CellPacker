@@ -167,7 +167,7 @@ public class LaunchWindow extends JFrame{
 				JOptionPane.showMessageDialog(this, "The file " + script.getName() + " is not valid JSON and cannot be used as a script", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			
-			chl.addCheckbox(new JCheckBox(script.getName().substring(0, script.getName().lastIndexOf('.'))));
+			//chl.addCheckbox(new JCheckBox(script.getName().substring(0, script.getName().lastIndexOf('.'))));
 		}
 	}
 	
