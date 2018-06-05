@@ -13,8 +13,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -241,6 +239,8 @@ public final class Utils {
 									//Value has to be equal
 									if(baseArrayElement.getAsJsonObject().get(id).getAsString().equals(value)){
 										//We found a tag
+										//Now remove the CPWHERE part
+										addArrayElement.getAsJsonObject().remove("CPWHERE");
 										final int index = i; //This is necessary, lambda doesn't like non-finals 
 										addJsonByType(baseArrayElement, addArrayElement, (e) -> baseArray.set(index, e));
 										//Then break out of the for loop, only the first item should be modified
@@ -249,7 +249,7 @@ public final class Utils {
 								}
 							}
 						}else{
-							System.err.println("Json Parser: Found CPWHERE tag, but 'id' or 'value' tags were missing");
+							System.err.println("Json Parser - Add: Found CPWHERE tag, but 'id' or 'value' tags were missing");
 						}
 						//if the reqired fields do not exist, do nothing
 						
@@ -261,9 +261,11 @@ public final class Utils {
 						if(index >= 0 && index < baseArray.size()){
 							//Get the element from the base array
 							JsonElement baseArrayElement = baseArray.get(index);
+							//Also remove the CPINDEX tag before merging
+							addArrayElement.getAsJsonObject().remove("CPINDEX");
 							addJsonByType(baseArrayElement, addArrayElement, (e) -> baseArray.set(index, e));
 						}else{
-							System.err.println("Json Parser: Found CPINDEX tag, but index was out of bounds");
+							System.err.println("Json Parser - Add: Found CPINDEX tag, but index was out of bounds");
 						}
 						//If the index is out of bounds, do nothing
 					//If no marker is found, simply append
@@ -280,29 +282,71 @@ public final class Utils {
 			overwriteAction.accept(addElement);
 		}
 	}
+
+	
+	private static void removeJsonByType(JsonElement baseElement, JsonElement removeElement, Runnable deleteAction){
+		//Basic behavior: if any is primitive, delete
+		//If both are objects, recursive call removeJson
+		//If both are arrays, go through entries and apply this
+		//If they are different types, delete
+		if(baseElement.isJsonPrimitive() && removeElement.isJsonPrimitive()){
+			deleteAction.run();
+		}else if(baseElement.isJsonObject() && removeElement.isJsonObject()){
+			removeJSON(baseElement.getAsJsonObject(), removeElement.getAsJsonObject());
+		}else if(baseElement.isJsonArray() && removeElement.isJsonArray()){
+			//Iterate over the remove array entries
+			JsonArray removeArray = removeElement.getAsJsonArray();
+			JsonArray baseArray = baseElement.getAsJsonArray();
+			for(JsonElement removeArrayElement : removeArray){
+				if(removeArrayElement.isJsonObject()){
+					if(removeArrayElement.getAsJsonObject().has("CPINDEX") &&
+							removeArrayElement.getAsJsonObject().get("CPINDEX").isJsonPrimitive()){
+						final int index = removeArrayElement.getAsJsonObject().get("CPINDEX").getAsInt();
+						if(index >= 0 && index < baseArray.size()){
+							removeJsonByType(baseArray.get(index), removeArrayElement, () -> baseArray.remove(index));
+						}else{
+							System.err.println("Json Parser - Remove: Found CPINDEX tag, but index was out of bounds");
+						}
+					}else if(removeArrayElement.getAsJsonObject().has("CPWHERE") &&
+							removeArrayElement.getAsJsonObject().get("CPWHERE").isJsonObject()){
+						JsonObject whereObject = removeArrayElement.getAsJsonObject().get("CPWHERE").getAsJsonObject();
+						if(whereObject.has("id") && whereObject.get("id").isJsonPrimitive() &&
+								whereObject.has("value") && whereObject.get("value").isJsonPrimitive()){
+							String id = whereObject.get("id").getAsString();
+							String value = whereObject.get("value").getAsString();
+							//Now iterate over basearray and find tag to remove
+							for(int i = 0; i < baseArray.size(); i++){
+								JsonElement baseArrayElement = baseArray.get(i);
+								//can only delete objects bc only objects can have id==value
+								if(baseArrayElement.isJsonObject() && baseArrayElement.getAsJsonObject().has(id) &&
+										baseArrayElement.getAsJsonObject().get(id).isJsonPrimitive() &&
+										baseArrayElement.getAsJsonObject().get(id).getAsString().equals(value)){
+									//We have a match, now delete it
+									final int index = i;
+									removeJsonByType(baseArrayElement, removeArrayElement, () -> baseArray.remove(index));
+									break;
+								}
+							}
+						}else{
+							System.err.println("Json Parser - Remove: Found CPWHERE tag, but 'id' or 'value' tags were missing");
+						}
+					}
+				}
+				//If you don't give me a hint on what entry you mean, I'm afraid I can't do anything for you. 
+			}
+		}else{
+			deleteAction.run();
+		}
+	}
 	
 	public static void removeJSON(JsonObject base, JsonObject remove){
-		for(String s : remove.keySet()){
-			JsonElement element = remove.get(s);
-			//If base does not have this tag, just ignore
-			if(!base.has(s)){
-				//Ignore
-			}else{ //If it is already there, remove or recursive remove 
-				JsonElement there = base.get(s);
-				if(there instanceof JsonObject && element instanceof JsonObject){ //If both are objects, recurse
-					removeJSON((JsonObject) there, (JsonObject) element);
-				}else if(there instanceof JsonArray && element instanceof JsonArray){ //if they are arrays, get Entries and remove them
-					List<JsonElement> entriesThere = new ArrayList<>();
-					List<JsonElement> entriesRemove = new ArrayList<>();
-					((JsonArray) there).forEach((e) -> entriesThere.add(e));
-					((JsonArray) element).forEach((e) -> entriesRemove.add(e));
-					entriesThere.removeIf((e) -> entriesRemove.contains(e));
-					JsonArray newArray = new JsonArray(entriesThere.size());
-					entriesThere.forEach((e) -> newArray.add(e));
-					base.add(s, newArray);
-				}else{ //if they are primitives or different types, remove
-					base.remove(s);
-				}
+		//iterate over all entries in remove
+		for(String removeKey : remove.keySet()){
+			//If base does not have this tag, just ignore, else handle depending on type
+			if(base.has(removeKey)){
+				JsonElement removeElement = remove.get(removeKey);
+				JsonElement baseElement = base.get(removeKey);
+				removeJsonByType(baseElement, removeElement, () -> base.remove(removeKey));
 			}
 		}
 	}
