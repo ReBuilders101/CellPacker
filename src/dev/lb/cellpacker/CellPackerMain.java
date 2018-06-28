@@ -11,6 +11,8 @@ import dev.lb.cellpacker.controls.MainWindow;
 
 public class CellPackerMain {
 
+	public static final boolean MODLOADER = false;
+	
 	public static boolean ASK_RESOURCE_RESTORE = true;
 	public static File CHOOSE_ROOT_FILE = new File(".");
 	
@@ -24,13 +26,14 @@ public class CellPackerMain {
 			Logger.printWarning("CellPackerMain.main()", "Could not set L&F for this platform");
 		}
 		
-		LaunchWindow lw = new LaunchWindow(false);
-		lw.setVisible(true);
-		lw.setIconImage(new ImageIcon(CellPackerMain.class.getResource("/resources/ico.png")).getImage());
-		
-		//mainFrame = new MainWindow();
-		//mainFrame.setVisible(true);
-		
+		if(MODLOADER){
+			LaunchWindow lw = new LaunchWindow(false);
+			lw.setVisible(true);
+			lw.setIconImage(new ImageIcon(CellPackerMain.class.getResource("/resources/ico.png")).getImage());
+		}else{
+			mainFrame = new MainWindow();
+			mainFrame.setVisible(true);
+		}
 	}
 
 	
