@@ -2,6 +2,7 @@ package dev.lb.cellpacker.structure;
 
 import com.google.gson.JsonObject;
 
+@Deprecated
 public class Script {
 	private String name;
 	private String desc;
